@@ -1,10 +1,10 @@
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import { installResizeMock } from "../test/resize-mock";
-import { animateCallCount, installWaapiMock } from "../test/waapi-mock";
-import { Frame } from "./Frame";
-import type { FrameProps } from "./types";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import { installResizeMock } from "../helpers/resize-mock";
+import { animateCallCount, installWaapiMock } from "../helpers/waapi-mock";
+import { Frame } from "../../src/frame/Frame";
+import type { FrameProps } from "../../src/frame/types";
 
 /**
  * A frame is drawn on top of someone else's text, so the interesting bugs are

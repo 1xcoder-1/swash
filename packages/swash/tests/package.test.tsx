@@ -9,7 +9,7 @@ import {
   Reveal,
   Scramble,
   Typewriter,
-} from "../index";
+} from "../src/index";
 
 /**
  * This file has no window and no document, on purpose. A component that reaches

@@ -1,10 +1,10 @@
 import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { splitGraphemes } from "../shared/grapheme";
-import { installFrameStub } from "../test/frames";
-import { installIntersectionMock } from "../test/intersection-mock";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import type { ScrambleProps } from "./types";
+import { splitGraphemes } from "../../src/shared/grapheme";
+import { installFrameStub } from "../helpers/frames";
+import { installIntersectionMock } from "../helpers/intersection-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import type { ScrambleProps } from "../../src/scramble/types";
 
 /**
  * A scramble is only allowed to fail in one way: by moving letters around
@@ -21,7 +21,7 @@ async function renderScrambled(props: ScrambleProps) {
   // Fresh modules per test, because both the observer registry and the set of
   // warnings already printed outlive a component.
   vi.resetModules();
-  const { Scramble } = await import("./Scramble");
+  const { Scramble } = await import("../../src/scramble/Scramble");
   const view = render(<Scramble {...props} />);
   const textEl = view.container.querySelector("span > span") as HTMLElement;
   return {

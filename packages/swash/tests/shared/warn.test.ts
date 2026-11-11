@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { warnOnce } from "./warn";
+import { warnOnce } from "../../src/shared/warn";
 
 afterEach(() => vi.restoreAllMocks());
 

@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { animateCallCount, installWaapiMock } from "./waapi-mock";
-import { Counter } from "../index";
+import { animateCallCount, installWaapiMock } from "./helpers/waapi-mock";
+import { Counter } from "../src/index";
 
 describe("scaffold", () => {
   it("imports the package entry", () => {

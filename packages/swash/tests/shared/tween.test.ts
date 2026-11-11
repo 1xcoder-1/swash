@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { cubicBezier, EASE } from "./bezier";
-import { tween } from "./tween";
+import { cubicBezier, EASE } from "../../src/shared/bezier";
+import { tween } from "../../src/shared/tween";
 
 beforeEach(() => {
   vi.useFakeTimers();

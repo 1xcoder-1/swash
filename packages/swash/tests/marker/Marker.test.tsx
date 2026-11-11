@@ -1,12 +1,12 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { StrictMode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installFrameStub } from "../test/frames";
-import { installIntersectionMock } from "../test/intersection-mock";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import { installResizeMock } from "../test/resize-mock";
-import { animateCallCount, animationAt, installWaapiMock } from "../test/waapi-mock";
-import type { MarkerProps } from "./types";
+import { installFrameStub } from "../helpers/frames";
+import { installIntersectionMock } from "../helpers/intersection-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import { installResizeMock } from "../helpers/resize-mock";
+import { animateCallCount, animationAt, installWaapiMock } from "../helpers/waapi-mock";
+import type { MarkerProps } from "../../src/marker/types";
 
 /**
  * A marker draws over someone else's sentence, so the tests are mostly about
@@ -65,7 +65,7 @@ async function renderMarked(props: MarkerProps, strict = false) {
   // Fresh modules per test: the observer registry and the set of warnings
   // already printed both outlive a component.
   vi.resetModules();
-  const { Marker } = await import("./Marker");
+  const { Marker } = await import("../../src/marker/Marker");
   const view = render(<Marker {...props} />, {
     wrapper: strict ? ({ children }) => <StrictMode>{children}</StrictMode> : undefined,
   });

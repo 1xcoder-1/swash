@@ -7,11 +7,11 @@ The name comes from typography. A swash is a decorative stroke added to a letter
 Swash is not an animation engine. It does not compete with Framer Motion or GSAP. It competes with the snippet you paste out of a copy-paste UI collection and with the npm package that has not been touched in two years.
 
 ```bash
-npm install swash
+npm install swash      # or: pnpm add swash
 ```
 
 ```bash
-pnpm add swash
+bun add swash          # or: deno add npm:swash
 ```
 
 React 18 or newer. Every component is a client component already, so a Next.js App Router page needs no `"use client"` line of its own to use them.

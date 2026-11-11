@@ -1,12 +1,12 @@
 import { act, renderHook } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { installMatchMediaMock } from "../test/match-media-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
 
 const REDUCE_QUERY = "(prefers-reduced-motion: reduce)";
 
 async function load() {
   vi.resetModules();
-  return import("./motion");
+  return import("../../src/shared/motion");
 }
 
 afterEach(() => {

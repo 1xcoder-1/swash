@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { wobblyBox, wobblyEllipse, wobblyLine } from "./paths";
+import { wobblyBox, wobblyEllipse, wobblyLine } from "../../src/marker/paths";
 
 /**
  * A hand-drawn stroke still has to land where the text is, so the rule these

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { splitGraphemes, splitWordTokens } from "./grapheme";
+import { splitGraphemes, splitWordTokens } from "../../src/shared/grapheme";
 
 describe("splitGraphemes", () => {
   it("keeps family emoji as one unit", () => {

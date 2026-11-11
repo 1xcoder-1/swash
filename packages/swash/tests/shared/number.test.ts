@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ms, offset, pixels } from "./number";
+import { ms, offset, pixels } from "../../src/shared/number";
 
 /**
  * One helper, four components. What is being checked here is the promise the

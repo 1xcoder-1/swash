@@ -1,12 +1,12 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installFrameStub } from "../test/frames";
-import { installIntersectionMock } from "../test/intersection-mock";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import { installWaapiMock } from "../test/waapi-mock";
-import type { Feel } from "../shared/presets";
-import { Typewriter } from "./Typewriter";
-import type { TypewriterProps } from "./types";
+import { installFrameStub } from "../helpers/frames";
+import { installIntersectionMock } from "../helpers/intersection-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import { installWaapiMock } from "../helpers/waapi-mock";
+import type { Feel } from "../../src/shared/presets";
+import { Typewriter } from "../../src/typewriter/Typewriter";
+import type { TypewriterProps } from "../../src/typewriter/types";
 
 /**
  * Typewriter is the one component allowed to touch React state per step: a

@@ -1,9 +1,9 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installIntersectionMock } from "../test/intersection-mock";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import { animateCallCount, animationAt, installWaapiMock } from "../test/waapi-mock";
-import type { RevealProps } from "./types";
+import { installIntersectionMock } from "../helpers/intersection-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import { animateCallCount, animationAt, installWaapiMock } from "../helpers/waapi-mock";
+import type { RevealProps } from "../../src/reveal/types";
 
 /**
  * A reveal has to arrive from the same markup the server sent, or hydration
@@ -44,7 +44,7 @@ async function renderRevealed(props: RevealProps) {
   // Fresh modules per test, because the shared observer registry outlives a
   // component and this test empties the instance list it searches.
   vi.resetModules();
-  const { Reveal } = await import("./Reveal");
+  const { Reveal } = await import("../../src/reveal/Reveal");
   const view = render(<Reveal {...props} />);
   const root = view.container.firstChild as HTMLElement;
   return {

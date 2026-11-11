@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { planTransition } from "./transition";
+import { planTransition } from "../../src/morph/transition";
 
 /**
  * The plan is what makes a morph cheap: everything both strings agree on stays

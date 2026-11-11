@@ -1,9 +1,9 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Mock } from "vitest";
-import { installFrameStub } from "../test/frames";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import type { MorphProps } from "./types";
+import { installFrameStub } from "../helpers/frames";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import type { MorphProps } from "../../src/morph/types";
 
 /**
  * A morph fails in two ways: it shows a character that was in neither string,
@@ -19,7 +19,7 @@ async function renderMorphing(props: MorphProps) {
   // Fresh modules per test, because the set of warnings already printed
   // outlives a component.
   vi.resetModules();
-  const { Morph } = await import("./Morph");
+  const { Morph } = await import("../../src/morph/Morph");
   const view = render(<Morph {...props} />);
   const body = view.container.querySelector("[data-swash-morph]") as HTMLElement;
   return {

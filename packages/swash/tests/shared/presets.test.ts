@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { FEELS, resolveFeel } from "./presets";
+import { FEELS, resolveFeel } from "../../src/shared/presets";
 
 describe("resolveFeel", () => {
   it("maps known names", () => {

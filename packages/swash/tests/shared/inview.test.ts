@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { FakeIntersectionObserver, installIntersectionMock } from "../test/intersection-mock";
+import { FakeIntersectionObserver, installIntersectionMock } from "../helpers/intersection-mock";
 
 async function load() {
   vi.resetModules();
-  const mod = await import("./inview");
+  const mod = await import("../../src/shared/inview");
   return mod.observeInview;
 }
 

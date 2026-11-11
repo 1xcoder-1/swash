@@ -1,9 +1,9 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { installFrameStub } from "../test/frames";
-import { installIntersectionMock } from "../test/intersection-mock";
-import { installMatchMediaMock } from "../test/match-media-mock";
-import type { CounterProps } from "./types";
+import { installFrameStub } from "../helpers/frames";
+import { installIntersectionMock } from "../helpers/intersection-mock";
+import { installMatchMediaMock } from "../helpers/match-media-mock";
+import type { CounterProps } from "../../src/counter/types";
 
 /**
  * The Counter's job is to survive the three ways people break counters in the
@@ -16,7 +16,7 @@ async function renderCounted(props: CounterProps) {
   // Fresh modules per test, so the shared inview registry starts empty and the
   // observer this test installs is the one the component actually uses.
   vi.resetModules();
-  const { Counter } = await import("./Counter");
+  const { Counter } = await import("../../src/counter/Counter");
   const view = render(<Counter {...props} />);
   const valueEl = view.container.querySelector("span > span") as HTMLElement;
   return {
