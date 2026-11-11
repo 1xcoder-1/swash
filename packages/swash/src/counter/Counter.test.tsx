@@ -174,4 +174,17 @@ describe("Counter", () => {
     counted.unmount();
     expect(vi.getTimerCount()).toBe(0);
   });
+
+  it("warns once about a negative duration and counts with the default", async () => {
+    // A duration below zero is not a fast count: divided by a negative, the
+    // tween never reaches its last frame, and the number stops somewhere it
+    // was never headed. The default is used instead, and said out loud once.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const counted = await renderCounted({ to: 100, duration: -1, startOnView: false });
+    counted.update({ to: 100, duration: -1, startOnView: false });
+    const complaints = warn.mock.calls.filter((call) => String(call[0]).includes("duration"));
+    expect(complaints).toHaveLength(1);
+    await vi.advanceTimersByTimeAsync(1600);
+    expect(numberOf(counted.display())).toBe(100);
+  });
 });

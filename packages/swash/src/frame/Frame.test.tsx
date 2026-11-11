@@ -116,9 +116,23 @@ describe("Frame", () => {
   it("gives the badge back the space after its last glyph", () => {
     const { container } = renderFramed({ ...shown, label: "Cmd K" });
     const badge = container.querySelector("[data-swash-frame-label]") as HTMLElement;
-    expect(badge.textContent).toBe("Cmd K");
-    expect(badge.style.letterSpacing).not.toBe("");
-    expect(badge.style.marginRight).toBe(`-${badge.style.letterSpacing}`);
+    const ink = badge.firstElementChild as HTMLElement;
+    expect(ink.textContent).toBe("Cmd K");
+    expect(ink.style.letterSpacing).not.toBe("");
+    expect(ink.style.marginRight).toBe(`-${ink.style.letterSpacing}`);
+  });
+
+  it("fills the badge with the frame's colour and writes the label in another", () => {
+    // Both halves used to sit on the same element, where currentColor is only
+    // ever that element's own colour: the chip was painted with its own text
+    // colour, and the label came out invisible in either theme.
+    const { container } = renderFramed({ ...shown, label: "Cmd K" });
+    const badge = container.querySelector("[data-swash-frame-label]") as HTMLElement;
+    const ink = badge.firstElementChild as HTMLElement;
+    // jsdom keeps the keyword in lower case, the way the CSSOM does.
+    expect(badge.style.background.toLowerCase()).toBe("currentcolor");
+    expect(ink.style.color).not.toBe("");
+    expect(ink.style.color).not.toBe(badge.style.background);
   });
 
   it("measures when the content changes, not on every render", () => {

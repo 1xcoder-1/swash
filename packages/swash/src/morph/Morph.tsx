@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { splitGraphemes } from "../shared/grapheme";
 import { useReducedMotion } from "../shared/motion";
+import { ms } from "../shared/number";
 import { tween } from "../shared/tween";
 import { warnOnce } from "../shared/warn";
 import { planTransition } from "./transition";
@@ -176,14 +177,6 @@ function createMorpher(
   };
 }
 
-/** Milliseconds, or the default, with one warning if the caller meant neither. */
-function ms(value: number | undefined, fallback: number, name: string): number {
-  if (value === undefined) return fallback;
-  if (Number.isFinite(value) && value >= 0) return value;
-  warnOnce("morph:ms", `${name} has to be a number of milliseconds; using ${fallback}`);
-  return fallback;
-}
-
 /**
  * Changes one word into another by moving only the part of it that differs:
  * the shared beginning holds still, the tail that leaves squeezes out and the
@@ -212,8 +205,8 @@ export function Morph(props: MorphProps) {
 
   const live = useRef<Live>({
     values,
-    duration: ms(duration, DEFAULT_DURATION, "duration"),
-    hold: ms(hold, DEFAULT_HOLD, "hold"),
+    duration: ms(duration, DEFAULT_DURATION, "duration", "Morph"),
+    hold: ms(hold, DEFAULT_HOLD, "hold", "Morph"),
     loop,
     step: step ?? 1,
     reduced,
@@ -222,8 +215,8 @@ export function Morph(props: MorphProps) {
   useIsomorphicLayoutEffect(() => {
     live.current = {
       values,
-      duration: ms(duration, DEFAULT_DURATION, "duration"),
-      hold: ms(hold, DEFAULT_HOLD, "hold"),
+      duration: ms(duration, DEFAULT_DURATION, "duration", "Morph"),
+      hold: ms(hold, DEFAULT_HOLD, "hold", "Morph"),
       loop,
       step: step ?? 1,
       reduced,

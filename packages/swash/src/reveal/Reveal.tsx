@@ -5,6 +5,7 @@ import { useIsomorphicLayoutEffect } from "../shared/client";
 import { splitGraphemes, splitWordTokens } from "../shared/grapheme";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
+import { ms } from "../shared/number";
 import { useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import type { RevealBy, RevealProps } from "./types";
@@ -67,8 +68,8 @@ export function Reveal(props: RevealProps) {
   const {
     children,
     by = "word",
-    stagger = 40,
-    duration = 400,
+    stagger,
+    duration,
     y,
     startOnView = true,
     once = true,
@@ -77,6 +78,10 @@ export function Reveal(props: RevealProps) {
   } = props;
 
   const text = typeof children === "string" ? children : null;
+  // A negative duration is not a shorter reveal: Web Animations throws on it,
+  // which would take the page down over a typo in a prop.
+  const take = ms(duration, 400, "duration", "Reveal");
+  const gap = ms(stagger, 40, "stagger", "Reveal");
   const pieces = useMemo(
     () => (text === null ? [] : tokenize(text, by)),
     [text, by],
@@ -90,9 +95,9 @@ export function Reveal(props: RevealProps) {
   // Timing and the motion setting are read when a pass starts rather than
   // when its effect was built, so retuning either one cannot restart a line
   // that is already on its way.
-  const live = useRef({ duration, stagger, y, reduced });
+  const live = useRef({ duration: take, stagger: gap, y, reduced });
   useIsomorphicLayoutEffect(() => {
-    live.current = { duration, stagger, y, reduced };
+    live.current = { duration: take, stagger: gap, y, reduced };
   });
 
   useIsomorphicLayoutEffect(() => {

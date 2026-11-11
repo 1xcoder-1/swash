@@ -11,7 +11,7 @@ import {
 import { EASE_CSS } from "../shared/bezier";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
-import { warnOnce } from "../shared/warn";
+import { ms, pixels } from "../shared/number";
 import { contentOverhang } from "./metrics";
 import type { FrameProps } from "./types";
 
@@ -42,12 +42,6 @@ const same = (a: Measurement | null, b: Measurement) =>
   Math.abs(a.bleed - b.bleed) < EPSILON &&
   Math.abs(a.trail - b.trail) < EPSILON;
 
-function pixels(value: number, fallback: number, name: string): number {
-  if (Number.isFinite(value) && value >= 0) return value;
-  warnOnce(`frame:${name}`, `Frame ${name} wants a number of pixels, got ${value}. Using ${fallback}.`);
-  return fallback;
-}
-
 /**
  * Draws a selection frame over its children, the way a design tool draws one
  * over a text layer: an outline that sweeps in, and an optional badge on the
@@ -64,7 +58,7 @@ export function Frame(props: FrameProps) {
     color = "currentColor",
     radius = 4,
     width = 2,
-    duration = 500,
+    duration,
     children,
     className,
     style,
@@ -81,6 +75,7 @@ export function Frame(props: FrameProps) {
   const ctrl = controller.current;
 
   const reduced = useReducedMotion();
+  const take = ms(duration, 500, "duration", "Frame");
 
   // Measure whenever the content it sits around changes, and once more when a
   // webfont finishes swapping in, because the fallback's leading is not the
@@ -102,9 +97,9 @@ export function Frame(props: FrameProps) {
   // Only `show` and the motion setting can start or stop a pass, so a parent
   // re-render that leaves both alone leaves the frame alone with them.
   useIsomorphicLayoutEffect(() => {
-    if (show) ctrl.show(duration, reduced);
-    else ctrl.hide(duration, reduced);
-  }, [ctrl, show, reduced, duration]);
+    if (show) ctrl.show(take, reduced);
+    else ctrl.hide(take, reduced);
+  }, [ctrl, show, reduced, take]);
 
   useEffect(
     () => () => {
@@ -113,8 +108,8 @@ export function Frame(props: FrameProps) {
     [ctrl],
   );
 
-  const stroke = pixels(width, 2, "width");
-  const corner = pixels(radius, 4, "radius");
+  const stroke = pixels(width, 2, "width", "Frame");
+  const corner = pixels(radius, 4, "radius", "Frame");
   const bleed = measurement?.bleed ?? 0;
   const trail = measurement?.trail ?? 0;
 
@@ -151,7 +146,7 @@ export function Frame(props: FrameProps) {
         <span data-swash-frame-outline="" style={outlineStyle} />
         {label ? (
           <span data-swash-frame-label="" style={badgeStyle}>
-            {label}
+            <span style={badgeInkStyle}>{label}</span>
           </span>
         ) : null}
       </span>
@@ -236,7 +231,7 @@ function createController({ rootRef, layerRef, setMeasurement }: ControllerArgs)
   const play = (
     from: typeof DRAWN,
     to: typeof DRAWN,
-    ms: number,
+    time: number,
     done: () => void,
   ) => {
     const layer = layerRef.current;
@@ -245,7 +240,7 @@ function createController({ rootRef, layerRef, setMeasurement }: ControllerArgs)
       return;
     }
     const anim = layer.animate([from, to], {
-      duration: ms,
+      duration: time,
       easing: EASE_CSS.out,
       fill: "forwards",
     });
@@ -346,13 +341,24 @@ const badgeStyle: CSSProperties = {
   boxSizing: "border-box",
   padding: "1px 5px",
   borderRadius: 999,
-  background: "var(--frame-color, currentColor)",
-  color: "var(--frame-label-color, light-dark(#fff, #111))",
+  // The chip is filled with the frame's own colour, which the layer above has
+  // already resolved out of --frame-color.
+  background: "currentColor",
   fontSize: 11,
   fontWeight: 500,
   lineHeight: 1.3,
   fontVariantNumeric: "tabular-nums",
   whiteSpace: "nowrap",
+};
+
+/**
+ * The label is a second element, not a second property, because currentColor is
+ * always the colour of the element carrying it: an ink set on the chip would
+ * have painted the chip's own background with itself, and the word would be
+ * invisible in both themes. White on the accent by default, and overridable.
+ */
+const badgeInkStyle: CSSProperties = {
+  color: "var(--frame-label-color, light-dark(#fff, #111))",
   // letter-spacing puts a step after the last character as well as between
   // them, and a chip centred by a percentage is centred on that step: the
   // text sits left of the middle. Giving one step back as a margin lands the

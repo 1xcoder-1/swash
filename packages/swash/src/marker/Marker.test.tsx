@@ -1,4 +1,5 @@
 import { act, cleanup, render } from "@testing-library/react";
+import { StrictMode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { installFrameStub } from "../test/frames";
 import { installIntersectionMock } from "../test/intersection-mock";
@@ -60,12 +61,14 @@ function mockLayout(rects: Array<ReturnType<typeof rect>>) {
   } as unknown as DOMRect);
 }
 
-async function renderMarked(props: MarkerProps) {
+async function renderMarked(props: MarkerProps, strict = false) {
   // Fresh modules per test: the observer registry and the set of warnings
   // already printed both outlive a component.
   vi.resetModules();
   const { Marker } = await import("./Marker");
-  const view = render(<Marker {...props} />);
+  const view = render(<Marker {...props} />, {
+    wrapper: strict ? ({ children }) => <StrictMode>{children}</StrictMode> : undefined,
+  });
   const root = view.container.firstChild as HTMLElement;
   return {
     ...view,
@@ -158,6 +161,17 @@ describe("Marker", () => {
     expect(Number(paths()[0]!.style.strokeDashoffset)).toBe(0);
   });
 
+  it("draws on a mount that was rehearsed, which is what StrictMode does", async () => {
+    // StrictMode runs the mount effects, throws them away and runs them again.
+    // A pen that was left mid-stroke by the first pass would be cancelled by
+    // the cleanup and then never picked up again, and the mark would simply
+    // never arrive in every development environment that uses StrictMode.
+    const { paths } = await renderMarked(underlined, true);
+    await advance(900);
+    expect(paths()).toHaveLength(1);
+    expect(Number(paths()[0]!.style.strokeDashoffset)).toBe(0);
+  });
+
   it("rings the whole phrase once, even across lines", async () => {
     mockLayout([rect(100, 50, 300), rect(100, 78, 180)]);
     const { paths } = await renderMarked({ ...underlined, action: "circle" });
@@ -165,7 +179,10 @@ describe("Marker", () => {
     const [ring] = paths();
     expect(paths()).toHaveLength(1);
     expect(ring!.getAttribute("d")!.endsWith("Z")).toBe(true);
-    expect(ring!.getAttribute("transform")).toBe("translate(-5 -5)");
+    // The ring is padded by 5 at the sides and by more top and bottom: the two
+    // lines sit on a leading of 8, and half of that goes back to the ring, or
+    // its upper arc would cut through the line above the phrase.
+    expect(ring!.getAttribute("transform")).toBe("translate(-5 -9)");
     // The ring reaches past the widest line and covers both, which one rect
     // cannot do.
     expect(Math.max(...xs(ring!.getAttribute("d")!))).toBeGreaterThan(300);

@@ -3,6 +3,16 @@
   "version": "0.1.0",
   "description": "Ready-made, dependency-free text effect components for React.",
   "license": "MIT",
+  "keywords": [
+    "react",
+    "text-effect",
+    "animation",
+    "typewriter",
+    "counter",
+    "scramble",
+    "highlight",
+    "prefers-reduced-motion"
+  ],
   "type": "module",
   "sideEffects": false,
   "exports": {

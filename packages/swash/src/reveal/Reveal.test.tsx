@@ -181,4 +181,22 @@ describe("Reveal", () => {
     expect(pieces()).toHaveLength(0);
     expect(warn.mock.calls.filter((call) => String(call[0]).includes("string"))).toHaveLength(1);
   });
+
+  it("reads a negative timing as the default instead of throwing", async () => {
+    // Web Animations throws on a negative duration, so a typo in a prop would
+    // have taken the page down rather than arriving on the default rhythm.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const { arrive, pieces } = await renderRevealed({
+      children: "Ship it",
+      duration: -400,
+      stagger: -10,
+    });
+    arrive();
+    expect(animationAt(pieces()[0]!, 0)!.options.duration).toBe(400);
+    expect(animationAt(pieces()[1]!, 0)!.options.delay).toBe(40);
+    const complaints = warn.mock.calls.filter((call) =>
+      String(call[0]).includes("duration"),
+    );
+    expect(complaints).toHaveLength(1);
+  });
 });

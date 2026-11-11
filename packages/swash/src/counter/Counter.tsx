@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { observeInview } from "../shared/inview";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
+import { ms } from "../shared/number";
 import { tween } from "../shared/tween";
 import type { TweenController } from "../shared/tween";
 import type { CounterProps } from "./types";
@@ -19,8 +20,8 @@ export function Counter(props: CounterProps) {
   const {
     to,
     from = 0,
-    duration = 1500,
-    delay = 0,
+    duration,
+    delay,
     prefix = "",
     suffix = "",
     startOnView = true,
@@ -37,6 +38,11 @@ export function Counter(props: CounterProps) {
   /** `delay` belongs to the first count only, not to every resume or replay. */
   const started = useRef(false);
   const latest = useRef(props);
+
+  // A negative duration would leave the number stuck wherever the first frame
+  // put it, so it is read the way every other component reads one.
+  const take = ms(duration, 1500, "duration", "Counter");
+  const wait = ms(delay, 0, "delay", "Counter");
 
   const reduced = useReducedMotion();
   /** How many counts this element has asked for; zero while off screen. */
@@ -68,8 +74,8 @@ export function Counter(props: CounterProps) {
     ctrl.current = tween({
       from: value.current,
       to,
-      duration,
-      delay: started.current ? 0 : delay,
+      duration: take,
+      delay: started.current ? 0 : wait,
       onUpdate: (n) => {
         value.current = n;
         write(n);
@@ -86,7 +92,7 @@ export function Counter(props: CounterProps) {
       ctrl.current?.cancel();
       ctrl.current = null;
     };
-  }, [run, background, reduced, to, duration, delay]);
+  }, [run, background, reduced, to, take, wait]);
 
   useEffect(() => {
     if (!startOnView || !root.current) return;

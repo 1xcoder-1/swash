@@ -9,6 +9,7 @@ import { EASE_CSS, EASE } from "../shared/bezier";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
 import { observeInview } from "../shared/inview";
+import { ms } from "../shared/number";
 import { useStyle } from "../shared/style";
 import { tween, type TweenController } from "../shared/tween";
 import { warnOnce } from "../shared/warn";
@@ -63,13 +64,6 @@ function ink(color: string): string {
   return color;
 }
 
-function ms(value: number | undefined, fallback: number, name: string): number {
-  if (value === undefined) return fallback;
-  if (Number.isFinite(value) && value >= 0) return value;
-  warnOnce(`marker:${name}`, `Marker ${name} wants a number of ms, got ${value}. Using ${fallback}.`);
-  return fallback;
-}
-
 /** Marks one instance differently from the next, so two rings on a page are not twins. */
 let instances = 0;
 
@@ -120,8 +114,8 @@ export function Marker(props: MarkerProps) {
     );
     known = "highlight";
   }
-  const take = ms(duration, 800, "duration");
-  const wait = ms(delay, 0, "delay");
+  const take = ms(duration, 800, "duration", "Marker");
+  const wait = ms(delay, 0, "delay", "Marker");
 
   // Everything a pass needs is read at the start of it, so changing the text,
   // the ink or the timing halfway through lands on the next pass rather than
@@ -353,11 +347,18 @@ function createMarker({ rootRef, textRef, layerRef }: ControllerArgs) {
     // A ring goes round the whole phrase, so one closed stroke covers every
     // line it spans rather than one stroke per line.
     const union = around(boxes);
+    // Two lines sit on their own leading, and a ring measured from the ink alone
+    // would cut through the line above the phrase. The air the browser left
+    // between the lines is the air the ring needs back.
+    const [first, second] = boxes;
+    const leading =
+      first && second ? Math.max(0, second.y - first.y - first.h) : 0;
+    const clear = AROUND + Math.round(leading / 2);
     const box = {
       x: union.x - AROUND,
-      y: union.y - AROUND,
+      y: union.y - clear,
       w: union.w + AROUND * 2,
-      h: union.h + AROUND * 2,
+      h: union.h + clear * 2,
     };
     const d =
       action === "box"
@@ -552,8 +553,11 @@ function createMarker({ rootRef, textRef, layerRef }: ControllerArgs) {
   };
 
   const dispose = () => {
-    stopWork();
-    dropWork();
+    // A mount that is thrown away and put back, which StrictMode does to every
+    // component in development, has to leave the machine at rest. A wipe does,
+    // and a half-finished pass left pointing at a cancelled tween does not: the
+    // second mount would find a mark already "drawing" and draw nothing.
+    wipe();
   };
 
   return { draw, finish, wipe, refit, dispose };
