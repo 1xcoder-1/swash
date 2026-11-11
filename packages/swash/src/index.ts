@@ -1,1 +1,2 @@
-export const __swashReady = true;
+export { Counter } from "./counter/Counter";
+export type { CounterProps } from "./counter/types";

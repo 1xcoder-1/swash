@@ -1,11 +1,11 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { installWaapiMock } from "./waapi-mock";
-import { __swashReady } from "../index";
+import { Counter } from "../index";
 
 describe("scaffold", () => {
   it("imports the package entry", () => {
-    expect(__swashReady).toBe(true);
+    expect(Counter).toBeTypeOf("function");
   });
   it("waapi mock records animate calls", () => {
     installWaapiMock();
