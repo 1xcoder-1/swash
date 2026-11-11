@@ -1,3 +1,8 @@
+interface Recorded {
+  keys: PropertyDescriptor[] | Keyframe[];
+  options: KeyframeAnimationOptions;
+}
+
 interface FakeAnimation {
   finished: Promise<void>;
   onfinish: (() => void) | null;
@@ -8,7 +13,7 @@ interface FakeAnimation {
   pause(): void;
 }
 
-const calls = new WeakMap<Element, (PropertyDescriptor[] | Keyframe[])[]>();
+const calls = new WeakMap<Element, Recorded[]>();
 
 /**
  * WAAPI for jsdom, which has none. What components lean on is `onfinish` and
@@ -23,14 +28,15 @@ export function installWaapiMock() {
     options: KeyframeAnimationOptions | number = 0,
   ): FakeAnimation {
     const list = calls.get(this) ?? [];
-    list.push(keys);
+    const timing: KeyframeAnimationOptions =
+      typeof options === "number" ? { duration: options } : options;
+    list.push({ keys, options: timing });
     calls.set(this, list);
 
     let done!: () => void;
     const finished = new Promise<void>((resolve) => (done = resolve));
     let settled = false;
-    const ms = typeof options === "number" ? options : Number(options.duration) || 0;
-    const timer = window.setTimeout(finish, ms);
+    const timer = window.setTimeout(finish, Number(timing.duration) || 0);
 
     function finish() {
       window.clearTimeout(timer);
@@ -65,4 +71,9 @@ export function installWaapiMock() {
 /** How many times this element has been asked to animate, ever. */
 export function animateCallCount(el: Element): number {
   return calls.get(el)?.length ?? 0;
+}
+
+/** What this element was asked to animate, and with what timing. */
+export function animationAt(el: Element, index = 0): Recorded | undefined {
+  return calls.get(el)?.[index];
 }
