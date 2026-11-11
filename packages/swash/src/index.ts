@@ -2,6 +2,8 @@ export { Counter } from "./counter/Counter";
 export type { CounterProps } from "./counter/types";
 export { Frame } from "./frame/Frame";
 export type { FrameProps } from "./frame/types";
+export { Marker } from "./marker/Marker";
+export type { MarkerAction, MarkerColor, MarkerProps } from "./marker/types";
 export { Morph } from "./morph/Morph";
 export type { MorphProps } from "./morph/types";
 export { Reveal } from "./reveal/Reveal";
