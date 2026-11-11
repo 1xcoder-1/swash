@@ -12,7 +12,8 @@
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "check": "node scripts/gates.mjs && tsup && node scripts/smoke.mjs"
   },
   "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0" }
 }

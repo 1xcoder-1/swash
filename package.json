@@ -5,13 +5,15 @@
   "scripts": {
     "build": "pnpm -r --filter swash build",
     "test": "pnpm -r --filter swash test",
-    "typecheck": "pnpm -r --filter swash typecheck"
+    "typecheck": "pnpm -r --filter swash typecheck",
+    "check": "pnpm -r --filter swash check"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.3.0",
     "jsdom": "^31.0.0",
     "react": "^19.3.1",
