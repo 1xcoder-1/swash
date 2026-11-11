@@ -1,0 +1,18 @@
+{
+  "name": "swash",
+  "version": "0.1.0",
+  "description": "Ready-made, dependency-free text effect components for React.",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsup && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0" }
+}

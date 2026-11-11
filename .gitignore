@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+kasumi-main/
+ram-main/
+*.tsbuildinfo
+.superpowers/
+.agents/
+skills-lock.json
