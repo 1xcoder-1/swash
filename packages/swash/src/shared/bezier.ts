@@ -66,3 +66,12 @@ export const EASE = {
   out: cubicBezier(0.16, 1, 0.3, 1),
   inOut: cubicBezier(0.65, 0, 0.35, 1),
 };
+
+/**
+ * The same curves as strings, because CSS and the Web Animations API take an
+ * easing as text and cannot be handed the function above.
+ */
+export const EASE_CSS = {
+  out: "cubic-bezier(0.16, 1, 0.3, 1)",
+  inOut: "cubic-bezier(0.65, 0, 0.35, 1)",
+} as const;

@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { installWaapiMock } from "./waapi-mock";
+import { animateCallCount, installWaapiMock } from "./waapi-mock";
 import { Counter } from "../index";
 
 describe("scaffold", () => {
@@ -12,6 +12,6 @@ describe("scaffold", () => {
     const { container } = render(<div />);
     const el = container.firstChild as HTMLElement;
     el.animate([], {});
-    expect(((globalThis as any).__waapiCalls.get(el).length)).toBe(1);
+    expect(animateCallCount(el)).toBe(1);
   });
 });
