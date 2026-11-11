@@ -9,6 +9,7 @@ describe("warnOnce", () => {
     warnOnce("t2-key", "bad preset: nope");
     warnOnce("t2-key", "bad preset: nope");
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy.mock.calls[0][0]).toContain("bad preset: nope");
+    const firstCall = spy.mock.calls[0];
+    expect(firstCall?.[0]).toContain("bad preset: nope");
   });
 });
