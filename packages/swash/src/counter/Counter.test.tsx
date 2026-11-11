@@ -154,6 +154,28 @@ describe("Counter", () => {
     expect(clock.frames).toBe(0);
   });
 
+  it("tells the caller the number landed even when it never travelled", async () => {
+    // Reduced motion still puts the final value on screen, so a page that
+    // waits on onDone to reveal the next section has to be told: every other
+    // component fires its finish callback in the reduced branch too.
+    media.set(true);
+    const onDone = vi.fn();
+    const counted = await renderCounted({ to: 1000, startOnView: false, onDone });
+    expect(counted.display()).toBe("1,000");
+    expect(onDone).toHaveBeenCalledTimes(1);
+  });
+
+  it("starts when the scroll gate is taken away, not only when it is put up", async () => {
+    // Turning startOnView off used to leave the number sitting on `from`:
+    // the state latched at mount, and the observer that would have released it
+    // had just been unregistered.
+    const counted = await renderCounted({ to: 500, startOnView: true, duration: 100 });
+    expect(counted.display()).toBe("0");
+    counted.update({ to: 500, startOnView: false, duration: 100 });
+    await vi.runAllTimersAsync();
+    expect(counted.display()).toBe("500");
+  });
+
   it("renders the prefix and the suffix around the number", async () => {
     const counted = await renderCounted({
       to: 42,

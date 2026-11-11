@@ -5,7 +5,7 @@ import { useIsomorphicLayoutEffect } from "../shared/client";
 import { splitGraphemes, splitWordTokens } from "../shared/grapheme";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
-import { ms } from "../shared/number";
+import { ms, offset } from "../shared/number";
 import { useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import type { RevealBy, RevealProps } from "./types";
@@ -118,7 +118,10 @@ export function Reveal(props: RevealProps) {
 
     const steps = by === "line" ? lineSteps(elements) : elements.map((_, i) => i);
     const fontSize = Number.parseFloat(getComputedStyle(root).fontSize) || 0;
-    const rise = live.current.y ?? Math.round(fontSize * 0.35);
+    // A distance that is not a usable number would land inside the transform
+    // string, and one invalid property throws the whole keyframe away: the
+    // pieces would fade in place instead of rising, with nothing said about it.
+    const rise = offset(live.current.y, Math.round(fontSize * 0.35), "y", "Reveal");
 
     const animations = elements.map((el, i) => {
       el.style.willChange = "opacity, transform";

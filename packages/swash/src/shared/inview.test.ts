@@ -62,6 +62,23 @@ describe("observeInview", () => {
     io.fire(el);
   });
 
+  it("lets an observer go when nothing is left to watch", async () => {
+    // The registry is module-level, so an observer nobody registered against
+    // any more would sit there for the rest of the document. A routed page
+    // that puts a fresh margin on each screen would collect one per visit.
+    const observeInview = await load();
+    const el = document.createElement("div");
+    const cleanup = observeInview(el, { ratio: 0.4 }, vi.fn());
+    const worn = Observer.instances[0];
+    cleanup();
+    expect(worn!.disconnectCalls).toBe(1);
+
+    // The next caller must not be handed the disconnected one.
+    observeInview(document.createElement("div"), { ratio: 0.4 }, vi.fn());
+    expect(Observer.instances).toHaveLength(2);
+    expect(Observer.instances[1]!.observeCalls).toBe(1);
+  });
+
   it("keeps one observer per threshold", async () => {
     const observeInview = await load();
     const a = document.createElement("div");

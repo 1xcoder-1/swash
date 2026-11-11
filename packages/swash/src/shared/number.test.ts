@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { ms, pixels } from "./number";
+import { ms, offset, pixels } from "./number";
 
 /**
  * One helper, four components. What is being checked here is the promise the
@@ -38,5 +38,14 @@ describe("number props", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     expect(ms(undefined, 600, "duration", "Morph")).toBe(600);
     expect(warn).not.toHaveBeenCalled();
+  });
+
+  it("lets a distance point the other way, but not mean nothing", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    expect(offset(-24, 14, "y", "Reveal")).toBe(-24);
+    expect(offset(Number.NaN, 14, "y", "Reveal")).toBe(14);
+    expect(complaints(warn)).toEqual([
+      "[swash] Reveal y wants a number of pixels, got NaN. Using 14.",
+    ]);
   });
 });

@@ -100,7 +100,7 @@ The outline sweeps around the child's border box and the chip's letter-spacing a
 | `once` | `boolean` | `true` | Stay revealed, rather than replaying on every visit. |
 | `className`, `style` | | | Passed to the wrapper. |
 
-Letter mode measures the ranges the browser actually laid out, so kerning stays where the font put it and the spacing never shifts mid-animation. The pieces are spans around your words, not a replacement for them: the sentence is in the markup before any of it moves.
+Word mode is the default for a reason. Letter mode puts every grapheme in its own inline box so the browser can move it, and a box that small is where the font's shaping stops: kerning pairs across a break lose their adjustment, and a cursive or connected script falls apart. Use it on short display text, not on a paragraph. The pieces are spans around your words, not a replacement for them: the sentence is in the markup before any of it moves.
 
 ## Scramble
 
@@ -246,7 +246,7 @@ Other things worth knowing:
 
 Zero runtime dependencies. React is a peer dependency, which means your app's copy of React is the only one on the page.
 
-The whole package is about 50 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
+The whole package is about 53 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
 
 ```bash
 npm install swash

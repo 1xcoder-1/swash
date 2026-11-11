@@ -9,4 +9,6 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck && pnpm test && pnpm build
+      # build also emits the type declarations; check runs the gates over src and
+      # loads the built files the way an application would.
+      - run: pnpm typecheck && pnpm test && pnpm build && pnpm check

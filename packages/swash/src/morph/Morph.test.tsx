@@ -118,6 +118,57 @@ describe("Morph", () => {
     ]);
   });
 
+  it("keeps turning when the list hands back the word already on screen", async () => {
+    // A list with the same value twice used to end the pass in silence and with
+    // no timer to arm the next turn, so a rotator with a repeated word in it
+    // stopped for the rest of the page's life. The repeat itself is not a swap
+    // and is not reported as one.
+    const onMorphed = vi.fn();
+    const line = await renderMorphing({
+      values: ["ab", "cd", "cd"],
+      loop: true,
+      duration: 100,
+      hold: 20,
+      onMorphed,
+    });
+    await land(onMorphed, 3);
+    expect(onMorphed.mock.calls).toEqual([
+      ["cd", 1],
+      ["ab", 0],
+      ["cd", 1],
+    ]);
+    expect(line.text()).toBe("cd");
+  });
+
+  it("rests on what it has when the list shrinks under a loop", async () => {
+    // With one value left the modulo is a division that has nowhere to go, and
+    // the timer armed at the end of every turn would keep handing the swap a
+    // value that is not in the list. The turn already in flight still lands.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const onMorphed = vi.fn();
+    const line = await renderMorphing({
+      values: ["one", "two", "three"],
+      loop: true,
+      duration: 100,
+      hold: 20,
+      onMorphed,
+    });
+    await line.advance(60);
+    line.update({ values: ["two"], loop: true, duration: 100, hold: 20, onMorphed });
+
+    await land(onMorphed, 1);
+    expect(onMorphed).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls.filter((call) => /at least two/.test(String(call[0])))).toHaveLength(
+      1,
+    );
+
+    // Nothing left to cycle between, so the line just stays on that word.
+    await line.advance(5000);
+    expect(onMorphed).toHaveBeenCalledTimes(1);
+    expect(line.text()).toBe("two");
+    warn.mockRestore();
+  });
+
   it("follows the step prop when it is handed one", async () => {
     const onMorphed = vi.fn();
     const base = { values: ["a", "b", "c"], step: 0, onMorphed };

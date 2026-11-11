@@ -20,6 +20,9 @@ const CARET_CSS = `@keyframes swash-caret-blink { 0%, 45% { opacity: 1 } 55%, 10
   border-left: 1px solid currentColor;
   margin-left: 1px;
   animation: swash-caret-blink 1.05s steps(1, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-swash-caret] { animation: none }
 }`;
 
 export function Typewriter(props: TypewriterProps) {
@@ -40,11 +43,15 @@ export function Typewriter(props: TypewriterProps) {
 
   const root = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
-  const [visible, setVisible] = useState(!startOnView);
+  const [entered, setEntered] = useState(false);
+  // Read on every render instead of latched at mount: a page that turns
+  // startOnView off has to get going, even though the observer it had asked
+  // for is unregistered by then.
+  const visible = !startOnView || entered;
 
   useEffect(() => {
     if (!startOnView || !root.current) return;
-    return observeInview(root.current, { once: true, ratio: 0.3 }, () => setVisible(true));
+    return observeInview(root.current, { once: true, ratio: 0.3 }, () => setEntered(true));
   }, [startOnView]);
 
   useIsomorphicLayoutEffect(() => {

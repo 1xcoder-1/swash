@@ -32,6 +32,17 @@ for (const [label, bundle] of [["esm", esm], ["cjs", cjs]]) {
   }
 }
 
+// The source files declare "use client", but a bundler is free to drop a
+// directive that is not on a module of its own, and the file that ships is the
+// one a framework reads. A bundle without the line stops being a client
+// boundary, so a Next.js server component that renders one of these gets an
+// invariant violation instead of a component.
+for (const [label, file] of [["esm", esmPath], ["cjs", cjsPath]]) {
+  const head = readFileSync(file, "utf8").slice(0, 200);
+  const boundary = '"use client";';
+  if (!head.startsWith(boundary)) report(`${label} dist does not open with the client directive`);
+}
+
 const code = readFileSync(esmPath, "utf8");
 const specifiers = [...code.matchAll(/from\s+"([^"]+)"|import\s+"([^"]+)"/g)]
   .map((match) => match[1] ?? match[2]);
@@ -52,4 +63,4 @@ if (problems > 0) {
   console.error(`\n${problems} smoke problem(s).`);
   process.exit(1);
 }
-console.log(`smoke: ${NAMES.length} exports in both formats, no dependencies, ${esmKb} KB esm / ${cjsKb} KB cjs`);
+console.log(`smoke: ${NAMES.length} exports in both formats, client boundary intact, no dependencies, ${esmKb} KB esm / ${cjsKb} KB cjs`);

@@ -41,12 +41,13 @@ async function renderTyped(props: TypewriterProps) {
 }
 
 let media: ReturnType<typeof installMatchMediaMock>;
+let Observer: ReturnType<typeof installIntersectionMock>;
 
 beforeEach(() => {
   vi.useFakeTimers();
   installFrameStub();
   installWaapiMock();
-  installIntersectionMock();
+  Observer = installIntersectionMock();
   media = installMatchMediaMock(false);
 });
 
@@ -153,5 +154,46 @@ describe("Typewriter", () => {
     const second = render(<Typewriter text="two" feel={FLAT} />);
     second.unmount();
     expect(document.querySelectorAll("style#swash-caret")).toHaveLength(1);
+  });
+
+  it("stops the caret blinking when the reader asked for no motion", async () => {
+    // A caret that blinks forever is the one animation a reduced-motion reader
+    // is least able to ignore, and it is still a compositor job for as long as
+    // the page is open.
+    await renderTyped({ text: "one", feel: FLAT });
+    const css = document.querySelector("style#swash-caret")?.textContent ?? "";
+    expect(css).toContain("@media (prefers-reduced-motion: reduce)");
+  });
+
+  it("starts typing when the scroll gate is taken away", async () => {
+    // startOnView off used to leave the phrase invisible forever: the flag was
+    // read once at mount, and the observer that would have lifted it had just
+    // been unregistered.
+    const { container, rerender } = await renderTyped({
+      text: "ab",
+      feel: FLAT,
+      startOnView: true,
+    });
+    expect(typed(container)).toBe("");
+
+    rerender(<Typewriter text="ab" feel={FLAT} startOnView={false} />);
+    await advance(40);
+    expect(typed(container)).toBe("ab");
+  });
+
+  it("waits for the scroll when the gate is put up", async () => {
+    const { container } = await renderTyped({
+      text: "ab",
+      feel: FLAT,
+      startOnView: true,
+    });
+    const root = container.firstChild as Element;
+    expect(Observer.forElement(root)).toBeDefined();
+    await advance(40);
+    expect(typed(container)).toBe("");
+
+    act(() => Observer.instances[0]!.fire(root));
+    await advance(40);
+    expect(typed(container)).toBe("ab");
   });
 });

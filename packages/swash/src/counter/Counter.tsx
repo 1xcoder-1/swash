@@ -45,8 +45,11 @@ export function Counter(props: CounterProps) {
   const wait = ms(delay, 0, "delay", "Counter");
 
   const reduced = useReducedMotion();
-  /** How many counts this element has asked for; zero while off screen. */
-  const [run, setRun] = useState(startOnView ? 0 : 1);
+  /** How many times this element has come into view; the run is derived from it. */
+  const [visits, setVisits] = useState(0);
+  // Derived rather than latched: flip startOnView off and the number has to
+  // count now, with the observer it had asked for already unregistered.
+  const run = !startOnView || visits > 0;
   const [background, setBackground] = useState(
     () => typeof document !== "undefined" && document.hidden,
   );
@@ -66,9 +69,13 @@ export function Counter(props: CounterProps) {
       value.current = n;
       write(n);
     };
-    // Reduced motion wants the answer without the journey, and a number that
-    // already sits on the target wants no journey either way.
-    if (reduced) settle(to);
+    // Reduced motion wants the answer without the journey, and the journey is
+    // over the moment the answer is on screen, so the caller hears about it.
+    if (reduced) {
+      settle(to);
+      latest.current.onDone?.();
+      return;
+    }
     if (!run || background || value.current === to) return;
 
     ctrl.current = tween({
@@ -92,7 +99,7 @@ export function Counter(props: CounterProps) {
       ctrl.current?.cancel();
       ctrl.current = null;
     };
-  }, [run, background, reduced, to, take, wait]);
+  }, [visits, run, background, reduced, to, take, wait]);
 
   useEffect(() => {
     if (!startOnView || !root.current) return;
@@ -100,7 +107,7 @@ export function Counter(props: CounterProps) {
       // With `once` off, coming back into view means counting again from the
       // beginning rather than picking up where the last pass stopped.
       if (!once) value.current = from;
-      setRun((n) => n + 1);
+      setVisits((n) => n + 1);
     });
   }, [startOnView, once, from]);
 

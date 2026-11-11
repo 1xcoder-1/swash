@@ -3,13 +3,15 @@ import { vi } from "vitest";
 /**
  * Stands in for the browser's IntersectionObserver: it never reports anything
  * on its own, a test calls `fire` when it wants an element to scroll into
- * view. `instances` lets a test reach the observer that is watching a given
- * element, and `observeCalls` makes double-observation bugs visible.
+ * view. `instances` lets a test reach the observer watching a given element,
+ * `observeCalls` makes double-observation bugs visible, and `disconnectCalls`
+ * shows an observer that was let go once nobody used it.
  */
 export class FakeIntersectionObserver {
   static instances: FakeIntersectionObserver[] = [];
   observed = new Set<Element>();
   observeCalls = 0;
+  disconnectCalls = 0;
 
   constructor(
     public cb: IntersectionObserverCallback,
@@ -26,6 +28,7 @@ export class FakeIntersectionObserver {
     this.observed.delete(el);
   }
   disconnect() {
+    this.disconnectCalls++;
     this.observed.clear();
   }
   takeRecords(): IntersectionObserverEntry[] {

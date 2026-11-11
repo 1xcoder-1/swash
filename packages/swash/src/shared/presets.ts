@@ -1,3 +1,4 @@
+import { ms } from "./number";
 import { warnOnce } from "./warn";
 
 export type FeelName = "cinematic" | "snappy" | "playful";
@@ -15,16 +16,41 @@ export const FEELS: Record<FeelName, Feel> = {
   playful: { charDelay: 55, jitter: 0.2, deleteRatio: 0.6, pause: 1000 },
 };
 
+/** Reads a proportion the way the timing fields want one: finite, and under 1. */
+function ratio(value: number | undefined, fallback: number, name: string): number {
+  if (value === undefined) return fallback;
+  if (Number.isFinite(value) && value >= 0 && value < 1) return value;
+  warnOnce(
+    `feel:${name}`,
+    `Feel ${name} wants a number from 0 up to 1, got ${value}. Using ${fallback}.`,
+  );
+  return fallback;
+}
+
 /**
  * Turns a feel name or custom object into a usable timing object. A name that
  * does not exist warns once in development and falls back to cinematic rather
  * than returning undefined, because a missing timing object crashes the caller
  * mid-animation.
+ *
+ * A custom object is read field by field for the same reason: one NaN in it
+ * would otherwise reach a setTimeout, where it degrades to an immediate call
+ * and the text types itself as fast as the loop can run.
  */
 export function resolveFeel(feel?: FeelName | Feel): Feel {
-  if (typeof feel === "object" && feel) return feel;
+  if (feel !== null && typeof feel === "object") {
+    const base = FEELS.cinematic;
+    return {
+      charDelay: ms(feel.charDelay, base.charDelay, "charDelay", "Feel"),
+      jitter: ratio(feel.jitter, base.jitter, "jitter"),
+      deleteRatio: ratio(feel.deleteRatio, base.deleteRatio, "deleteRatio"),
+      pause: ms(feel.pause, base.pause, "pause", "Feel"),
+    };
+  }
   if (feel === undefined) return FEELS.cinematic;
-  const found: Feel | undefined = FEELS[feel as FeelName];
+  // A plain bracket read would find Object.prototype members through a prop
+  // like "constructor", and hand back a function with no timing in it.
+  const found: Feel | undefined = Object.hasOwn(FEELS, feel) ? FEELS[feel as FeelName] : undefined;
   if (!found) {
     warnOnce(`feel:${String(feel)}`, `unknown feel "${String(feel)}", using cinematic`);
     return FEELS.cinematic;

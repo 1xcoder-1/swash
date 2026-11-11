@@ -25,6 +25,12 @@ function pieceEls(container: HTMLElement) {
   return [...container.querySelectorAll<HTMLElement>("[data-swash-reveal]")];
 }
 
+/** The starting transform of the first keyframe this piece was handed. */
+function transformOf(el: Element): string {
+  const key = animationAt(el, 0)!.keys[0] as { transform?: string };
+  return String(key.transform);
+}
+
 /** Scrolls the line in or out, the way the reader would. */
 function scroll(el: Element, intersecting: boolean) {
   act(() => {
@@ -198,5 +204,26 @@ describe("Reveal", () => {
       String(call[0]).includes("duration"),
     );
     expect(complaints).toHaveLength(1);
+  });
+
+  it("writes a distance it can actually animate", async () => {
+    // A junk distance used to be dropped straight into the transform string, and
+    // a browser throws away one invalid property with the whole keyframe: the
+    // line would fade in place, silent. A distance that points downwards is a
+    // different thing, and must survive as written.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const junk = await renderRevealed({ children: "Ship it", y: Number.NaN });
+    junk.arrive();
+    expect(transformOf(junk.pieces()[0]!)).toMatch(
+      /^translateY\(-?\d+(?:\.\d+)?px\)$/,
+    );
+    expect(warn.mock.calls.filter((call) => /Reveal y\b/.test(String(call[0])))).toHaveLength(
+      1,
+    );
+
+    const falling = await renderRevealed({ children: "Ship it", y: -20 });
+    falling.arrive();
+    expect(transformOf(falling.pieces()[0]!)).toBe("translateY(-20px)");
+    warn.mockRestore();
   });
 });

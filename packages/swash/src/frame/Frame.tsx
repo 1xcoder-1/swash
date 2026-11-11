@@ -80,6 +80,10 @@ export function Frame(props: FrameProps) {
   // Measure whenever the content it sits around changes, and once more when a
   // webfont finishes swapping in, because the fallback's leading is not the
   // loaded font's and the outline would still be sized for the first.
+  // An element child is a new object on every parent render, which is not a
+  // content change: the resize watcher the controller keeps at rest is what
+  // notices an element child growing.
+  const content = typeof children === "string" ? children : null;
   useIsomorphicLayoutEffect(() => {
     ctrl.measure();
     const ready = (document as unknown as { fonts?: { ready?: Promise<unknown> } })
@@ -92,7 +96,7 @@ export function Frame(props: FrameProps) {
     return () => {
       live = false;
     };
-  }, [ctrl, children]);
+  }, [ctrl, content]);
 
   // Only `show` and the motion setting can start or stop a pass, so a parent
   // re-render that leaves both alone leaves the frame alone with them.

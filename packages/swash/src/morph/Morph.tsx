@@ -46,7 +46,8 @@ function span(text: string): HTMLSpanElement {
 
 function createMorpher(
   body: HTMLElement,
-  ruler: HTMLElement,
+  /** The span inside the ruler, which is the only part allowed to be wide. */
+  ruler: HTMLSpanElement,
   read: () => Live,
 ): Morpher {
   let index = 0;
@@ -76,16 +77,30 @@ function createMorpher(
     body.style.verticalAlign = "";
   };
 
+  /** Hands the next turn to the clock, when the list is long enough for one. */
+  const arm = (live: Live) => {
+    // One value left in the list is not a cycle: the modulo would be a division
+    // by zero, and the timer would keep handing the same word over forever.
+    if (!live.loop || live.values.length < 2) return;
+    timer = window.setTimeout(() => go((index + 1) % live.values.length), live.hold);
+  };
+
   const landed = (text: string) => {
     heading = null;
     rest(text);
     const live = read();
     live.onMorphed?.(text, index);
-    if (live.loop) timer = window.setTimeout(() => go((index + 1) % live.values.length), live.hold);
+    arm(live);
   };
 
   const go = (next: number) => {
     const live = read();
+    if (live.values.length < 2) {
+      // The list shrank under a pass that was already scheduled.
+      clear();
+      rest(live.values[0] ?? "");
+      return;
+    }
     const to = live.values[next] ?? "";
     // Read from what is on screen rather than from an index: the list may have
     // changed underneath this run, and the reader's eye is still on the old word.
@@ -94,7 +109,13 @@ function createMorpher(
     clear();
 
     if (to === from) {
+      // A list that comes back round to the word already on screen is still a
+      // turn of it, and a turn is what keeps a loop alive: walking out of here
+      // without arming the next one would stop a rotator for the rest of the
+      // page's life, quietly. Nothing changed under the reader's eye, so
+      // nothing is reported as having landed.
       rest(to);
+      arm(read());
       return;
     }
     if (live.reduced || live.duration <= 0) {
@@ -165,7 +186,11 @@ function createMorpher(
     cycle() {
       const live = read();
       clear();
-      timer = window.setTimeout(() => go((index + 1) % live.values.length), live.hold);
+      if (live.values.length < 2) {
+        rest(live.values[0] ?? "");
+        return;
+      }
+      arm(live);
     },
     settle() {
       if (heading === null) return;
@@ -196,7 +221,7 @@ export function Morph(props: MorphProps) {
   } = props;
 
   const bodyRef = useRef<HTMLSpanElement>(null);
-  const rulerRef = useRef<HTMLSpanElement>(null);
+  const rulerTextRef = useRef<HTMLSpanElement>(null);
   const reduced = useReducedMotion();
   // The markup carries the first value, so a reader without script still gets
   // a word rather than a gap. It is never written again; from here the effect
@@ -227,9 +252,9 @@ export function Morph(props: MorphProps) {
   const morpher = useRef<Morpher | null>(null);
   useIsomorphicLayoutEffect(() => {
     const body = bodyRef.current;
-    const ruler = rulerRef.current;
-    if (!body || !ruler) return;
-    const controller = createMorpher(body, ruler, () => live.current);
+    const text = rulerTextRef.current;
+    if (!body || !text) return;
+    const controller = createMorpher(body, text, () => live.current);
     morpher.current = controller;
     return () => {
       if (morpher.current === controller) morpher.current = null;
@@ -261,23 +286,31 @@ export function Morph(props: MorphProps) {
   }, [reduced]);
 
   return (
-    <span className={className} style={{ display: "inline-block", ...style }}>
+    <span className={className} style={{ display: "inline-block", position: "relative", ...style }}>
       <span ref={bodyRef} data-swash-morph="" style={{ display: "inline-block" }}>
         {first}
       </span>
+      {/* Zero box, so the wide word inside it adds nothing to the page's
+          scrollable area: an invisible element still lays out, and a long value
+          measured next to the last one of a line would push a scrollbar onto
+          the document for as long as the swap lasted. The inner span is what
+          gets measured, and it is measured at the size its own text wants. */}
       <span
-        ref={rulerRef}
         data-swash-morph-ruler=""
         aria-hidden="true"
         style={{
           position: "absolute",
           top: 0,
           left: 0,
+          width: 0,
+          height: 0,
+          overflow: "hidden",
           visibility: "hidden",
-          whiteSpace: "pre",
           pointerEvents: "none",
         }}
-      />
+      >
+        <span ref={rulerTextRef} style={{ display: "inline-block", whiteSpace: "pre" }} />
+      </span>
     </span>
   );
 }

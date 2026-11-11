@@ -71,5 +71,13 @@ export function observeInview(
       active.subs.delete(el);
       active.observer.unobserve(el);
     }
+    // An observer nobody is using any more is a live object holding a closure
+    // over this module for the rest of the document. A routed page that mounts
+    // a reveal with a new margin on each screen would otherwise keep one per
+    // margin.
+    if (active.subs.size === 0) {
+      active.observer.disconnect();
+      registry.delete(key);
+    }
   };
 }
