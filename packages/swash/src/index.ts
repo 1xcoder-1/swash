@@ -4,5 +4,7 @@ export { Frame } from "./frame/Frame";
 export type { FrameProps } from "./frame/types";
 export { Reveal } from "./reveal/Reveal";
 export type { RevealProps } from "./reveal/types";
+export { Scramble } from "./scramble/Scramble";
+export type { ScrambleProps } from "./scramble/types";
 export { Typewriter } from "./typewriter/Typewriter";
 export type { TypewriterProps } from "./typewriter/types";

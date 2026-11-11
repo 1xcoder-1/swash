@@ -61,8 +61,11 @@ export function cubicBezier(
   };
 }
 
-/** The two curves the package ships with, so callers never pass raw numbers. */
+/** The curves the package ships with, so callers never pass raw numbers. */
 export const EASE = {
+  // A run that should feel like a clock, not like a landing: scrambling slows
+  // down under an ease-out, and the last characters take forever to arrive.
+  linear: (t: number) => t,
   out: cubicBezier(0.16, 1, 0.3, 1),
   inOut: cubicBezier(0.65, 0, 0.35, 1),
 };
