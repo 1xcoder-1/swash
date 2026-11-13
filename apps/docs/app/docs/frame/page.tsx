@@ -1,6 +1,12 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { FrameDemo } from "@/components/demos";
+import {
+  FrameDemo,
+  FrameStyleDemo,
+  FrameToggleDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Frame" };
 
@@ -8,40 +14,27 @@ export default function FramePage() {
   return (
     <>
       <h1>Frame</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         A selection frame that draws itself around any element, with a corner
         badge and font-metric-aware sizing.
       </p>
 
       <FrameDemo />
+      <FrameToggleDemo />
+      <FrameStyleDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Frame } from "swash";'>
-        <span className="tok-k">import</span> {" { Frame } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Frame } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Frame label="step 2" color="var(--accent)" radius={10}>\n  <button>Continue</button>\n</Frame>`}
-      >
-        {"<"}
-        <span className="tok-t">Frame</span> <span className="tok-a">label</span>
-        {"="}<span className="tok-s">"step 2"</span>{" "}
-        <span className="tok-a">color</span>
-        {"="}<span className="tok-s">"var(--accent)"</span>
-        {" "}
-        <span className="tok-a">radius</span>={"{"}
-        <span className="tok-n">10</span>
-        {"}>"}
-        <br />
-        {"  <"}
-        <span className="tok-t">button</span>{">Continue</"}
-        <span className="tok-t">button</span>
-        <br />
-        {"</"}
-        <span className="tok-t">Frame</span>{">"}
-      </CodeBlock>
+      <p>Wrap any element — the frame draws itself around it:</p>
+      <CodeTabs
+        js={`<Frame label="step 2" color="var(--accent)" radius={10}>\n  <button>Continue</button>\n</Frame>`}
+        ts={`import { Frame, type FrameProps } from "swash";\n\nconst frame: Partial<FrameProps> = {\n  label: "step 2",\n  color: "var(--accent)",\n  radius: 10,\n};\n\n<Frame {...frame}>\n  <button>Continue</button>\n</Frame>`}
+      />
 
       <h2>Props</h2>
       <PropsTable

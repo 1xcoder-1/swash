@@ -1,6 +1,12 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { RevealDemo } from "@/components/demos";
+import {
+  RevealDemo,
+  RevealFadeDemo,
+  RevealLineDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Reveal" };
 
@@ -8,37 +14,27 @@ export default function RevealPage() {
   return (
     <>
       <h1>Reveal</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         Lines of text whose words, letters or whole lines rise into place — on
         mount or on scroll — using kerning-safe ranges so nothing jumps.
       </p>
 
       <RevealDemo />
+      <RevealLineDemo />
+      <RevealFadeDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Reveal } from "swash";'>
-        <span className="tok-k">import</span> {" { Reveal } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Reveal } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Reveal by="word" stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
-      >
-        {"<"}
-        <span className="tok-t">Reveal</span> <span className="tok-a">by</span>
-        {"="}<span className="tok-s">"word"</span>{" "}
-        <span className="tok-a">stagger</span>={"{"}
-        <span className="tok-n">70</span>
-        {"} "}
-        <span className="tok-a">startOnView</span> <span className="tok-a">once</span>
-        {">"}
-        <br />
-        {"  Every word arrives on its own beat."}
-        <br />
-        {"</"}
-        <span className="tok-t">Reveal</span>{">"}
-      </CodeBlock>
+      <p>Wrap your text — words, letters or lines rise into place:</p>
+      <CodeTabs
+        js={`<Reveal by="word" stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
+        ts={`import { Reveal, type RevealProps } from "swash";\n\nconst by: RevealProps["by"] = "word";\n\n<Reveal by={by} stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
+      />
 
       <h2>Props</h2>
       <PropsTable

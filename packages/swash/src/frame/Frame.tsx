@@ -1,46 +1,20 @@
 "use client";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
 import {
-  type CSSProperties,
-  type Dispatch,
-  type RefObject,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { EASE_CSS } from "../shared/bezier";
+  createFrameController,
+  sameMeasurement,
+  type FrameController,
+  type FrameMeasurement,
+} from "../core/frame";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
 import { ms, pixels } from "../shared/number";
-import { contentOverhang } from "./metrics";
 import type { FrameProps } from "./types";
 
 /** Air between the text box and the outline, in px. */
 const INSET = 4;
-/** A frame should leave faster than it arrives, however long the arrival is. */
-const LEAVE = 200;
 /** The badge is tracked like a chip, and given the last step back. */
 const LABEL_TRACKING = "0.08em";
-/** Sub-pixel churn is not a resize, and re-rendering on it would never settle. */
-const EPSILON = 0.5;
-
-/** The two ends of the sweep: nothing, and the whole outline. */
-const CLIPPED = { opacity: 0, clipPath: "inset(0 100% 0 0)" };
-const DRAWN = { opacity: 1, clipPath: "inset(0 0 0 0)" };
-
-type Phase = "hidden" | "entering" | "shown" | "leaving";
-
-interface Measurement {
-  /** How far the outline has to reach past the line box, per side, in px. */
-  bleed: number;
-  /** The letter-space the element carries but the text does not, in px. */
-  trail: number;
-}
-
-const same = (a: Measurement | null, b: Measurement) =>
-  a !== null &&
-  Math.abs(a.bleed - b.bleed) < EPSILON &&
-  Math.abs(a.trail - b.trail) < EPSILON;
 
 /**
  * Draws a selection frame over its children, the way a design tool draws one
@@ -66,11 +40,22 @@ export function Frame(props: FrameProps) {
 
   const rootRef = useRef<HTMLSpanElement>(null);
   const layerRef = useRef<HTMLSpanElement>(null);
-  const [measurement, setMeasurement] = useState<Measurement | null>(null);
+  const outlineRef = useRef<HTMLSpanElement>(null);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const [measurement, setMeasurement] = useState<FrameMeasurement | null>(null);
 
-  const controller = useRef<ReturnType<typeof createController> | null>(null);
+  // The engine is framework-free; this binding only hands it the elements and a
+  // measurement callback that skips a re-render when nothing changed.
+  const controller = useRef<FrameController | null>(null);
   if (controller.current === null) {
-    controller.current = createController({ rootRef, layerRef, setMeasurement });
+    controller.current = createFrameController({
+      getRoot: () => rootRef.current,
+      getLayer: () => layerRef.current,
+      getOutline: () => outlineRef.current,
+      getBadge: () => badgeRef.current,
+      onMeasure: (next) =>
+        setMeasurement((previous) => (sameMeasurement(previous, next) ? previous : next)),
+    });
   }
   const ctrl = controller.current;
 
@@ -147,163 +132,15 @@ export function Frame(props: FrameProps) {
           right: -INSET + trail,
         }}
       >
-        <span data-swash-frame-outline="" style={outlineStyle} />
+        <span ref={outlineRef} data-swash-frame-outline="" style={outlineStyle} />
         {label ? (
-          <span data-swash-frame-label="" style={badgeStyle}>
+          <span ref={badgeRef} data-swash-frame-label="" style={badgeStyle}>
             <span style={badgeInkStyle}>{label}</span>
           </span>
         ) : null}
       </span>
     </span>
   );
-}
-
-type ControllerArgs = {
-  rootRef: RefObject<HTMLSpanElement | null>;
-  layerRef: RefObject<HTMLSpanElement | null>;
-  setMeasurement: Dispatch<SetStateAction<Measurement | null>>;
-};
-
-/**
- * The pass, as imperative work against the DOM. React is only asked about the
- * box itself, and only when the frame is at rest: a state update per frame of
- * the sweep would be a re-render per frame, and the animation is the only
- * reason not to have one.
- */
-function createController({ rootRef, layerRef, setMeasurement }: ControllerArgs) {
-  let phase: Phase = "hidden";
-  let animation: Animation | null = null;
-  let resize: ResizeObserver | undefined;
-
-  const measure = (): Measurement | null => {
-    const root = rootRef.current;
-    if (!root) return null;
-    const rect = root.getBoundingClientRect();
-    const bleed = contentOverhang(root, rect.height);
-    // Reads "normal" when nothing has set the tracking, which parses to NaN.
-    const trail = Number.parseFloat(getComputedStyle(root).letterSpacing) || 0;
-    const next = { bleed, trail };
-    setMeasurement((previous) => (same(previous, next) ? previous : next));
-    return next;
-  };
-
-  /** A late webfont should not cost a layout read while nothing is on screen. */
-  const remeasure = () => {
-    if (phase !== "hidden") measure();
-  };
-
-  const dropAnimation = () => {
-    animation?.cancel();
-    animation = null;
-  };
-
-  const stopWork = () => {
-    dropAnimation();
-    resize?.disconnect();
-    resize = undefined;
-  };
-
-  const watch = () => {
-    const root = rootRef.current;
-    // Attached at rest only. Through the sweep the box is a different size on
-    // every frame, so watching it there would measure and render on every one.
-    if (!root || resize || typeof ResizeObserver === "undefined") return;
-    resize = new ResizeObserver(() => measure());
-    resize.observe(root);
-  };
-
-  const hold = () => {
-    const layer = layerRef.current;
-    if (layer) {
-      layer.style.opacity = "1";
-      layer.style.clipPath = "none";
-    }
-    phase = "shown";
-    watch();
-  };
-
-  const tuck = () => {
-    const layer = layerRef.current;
-    if (layer) {
-      layer.style.opacity = "0";
-      layer.style.clipPath = "";
-      layer.style.visibility = "hidden";
-    }
-    phase = "hidden";
-  };
-
-  const play = (
-    from: typeof DRAWN,
-    to: typeof DRAWN,
-    time: number,
-    done: () => void,
-  ) => {
-    const layer = layerRef.current;
-    if (!layer) {
-      done();
-      return;
-    }
-    const anim = layer.animate([from, to], {
-      duration: time,
-      easing: EASE_CSS.out,
-      fill: "forwards",
-    });
-    animation = anim;
-    anim.onfinish = () => {
-      // A pass that was cancelled on the way here has nothing left to settle.
-      if (animation !== anim) return;
-      animation = null;
-      done();
-      // The held fill effect has written its last style; hand the look to the
-      // inline styles above and let the animation go.
-      anim.cancel();
-    };
-  };
-
-  const show = (ms: number, reduced: boolean) => {
-    if (phase === "shown") return;
-    if (phase === "entering") {
-      // The setting can be flipped mid-sweep. The frame should be up rather
-      // than carry on drawing for the rest of the duration.
-      if (reduced) {
-        dropAnimation();
-        hold();
-      }
-      return;
-    }
-    stopWork();
-    const layer = layerRef.current;
-    if (!layer) return;
-    if (measure() === null) return;
-    layer.style.visibility = "visible";
-    if (reduced || ms <= 0) {
-      hold();
-      return;
-    }
-    phase = "entering";
-    play(CLIPPED, DRAWN, ms, hold);
-  };
-
-  const hide = (ms: number, reduced: boolean) => {
-    if (phase === "hidden" || phase === "leaving") return;
-    const midSweep = phase === "entering";
-    stopWork();
-    // Half-drawn, or motion reduced, and there is no pass worth watching: the
-    // frame was never properly up, so it goes rather than fades.
-    if (midSweep || reduced || !layerRef.current) {
-      tuck();
-      return;
-    }
-    phase = "leaving";
-    play(DRAWN, CLIPPED, Math.min(ms, LEAVE), tuck);
-  };
-
-  const dispose = () => {
-    stopWork();
-    tuck();
-  };
-
-  return { measure, remeasure, show, hide, dispose };
 }
 
 const layerStyle: CSSProperties = {

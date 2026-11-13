@@ -1,28 +1,43 @@
-import type { ReactNode } from "react";
 import { CopyButton } from "./copy-button";
+import { Highlighted } from "./highlight";
+import { LangBadge } from "./lang-badge";
 
-/**
- * A framed code block. `plain` children are the raw text for the copy button;
- * children can include token spans for light highlighting.
- */
+/** Line-number gutter shared by every framed code pane. */
+export function CodeGutter({ lines }: { lines: number }) {
+  return (
+    <div className="code-gutter" aria-hidden>
+      {Array.from({ length: lines }, (_, n) => (
+        <span key={n}>{n + 1}</span>
+      ))}
+    </div>
+  );
+}
+
+/** A code block with a language badge, optional filename, and copy button. */
 export function CodeBlock({
   caption,
   copy,
-  children,
+  lang = "ts",
+  highlight = "tsx",
 }: {
   caption?: string;
   copy: string;
-  children: ReactNode;
+  lang?: string;
+  highlight?: string;
 }) {
   return (
     <div className="code">
-      {caption ? <div className="code-caption">{caption}</div> : null}
-      <pre>
-        <code>{children}</code>
-      </pre>
-      <span className="copy">
-        <CopyButton text={copy} />
-      </span>
+      <div className="code-head">
+        <LangBadge lang={lang} />
+        {caption ? <span className="code-file">{caption}</span> : null}
+        <span className="code-head-copy">
+          <CopyButton text={copy} />
+        </span>
+      </div>
+      <div className="code-body">
+        <CodeGutter lines={copy.split("\n").length} />
+        <Highlighted code={copy} lang={highlight} />
+      </div>
     </div>
   );
 }

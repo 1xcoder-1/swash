@@ -197,3 +197,14 @@ describe("Typewriter", () => {
     expect(typed(container)).toBe("ab");
   });
 });
+
+describe("caret styling", () => {
+  it("anchors the caret with logical properties so it mirrors in right-to-left text", async () => {
+    // A physical `border-left` caret sits on the wrong edge when the reading
+    // direction flips; the inline-start longhand follows the text either way.
+    const { CARET_CSS } = await import("../../src/core/typewriter");
+    expect(CARET_CSS).toContain("border-inline-start");
+    expect(CARET_CSS).toContain("margin-inline-start");
+    expect(CARET_CSS).not.toMatch(/border-left|margin-left/);
+  });
+});

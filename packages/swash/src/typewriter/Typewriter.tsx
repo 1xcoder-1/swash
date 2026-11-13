@@ -5,25 +5,9 @@ import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
 import { useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
+import { CARET_CSS } from "../core/typewriter";
 import { useTypewriter } from "./useTypewriter";
 import type { TypewriterProps } from "./types";
-
-/**
- * The caret lives on the element after the last grapheme, so it travels with
- * the text. Blinking is CSS: a timer would be one more thing to pause when the
- * tab goes away and one more reason to re-render.
- */
-const CARET_CSS = `@keyframes swash-caret-blink { 0%, 45% { opacity: 1 } 55%, 100% { opacity: 0 } }
-[data-swash-caret] {
-  display: inline-block;
-  width: 0;
-  border-left: 1px solid currentColor;
-  margin-left: 1px;
-  animation: swash-caret-blink 1.05s steps(1, end) infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-swash-caret] { animation: none }
-}`;
 
 export function Typewriter(props: TypewriterProps) {
   const {

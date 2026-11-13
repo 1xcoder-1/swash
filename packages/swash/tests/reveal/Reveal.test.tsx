@@ -97,6 +97,22 @@ describe("Reveal", () => {
     });
   });
 
+  it("announces the line once and hides the split pieces from readers", async () => {
+    // Splitting a heading into per-word spans makes VoiceOver/NVDA spell it out
+    // word by word. The whole string is announced from an aria-label on the root
+    // and every animated piece is aria-hidden, the same contract Typewriter and
+    // Scramble keep.
+    const { container, pieces, root } = await renderRevealed({
+      children: "Read me as one line",
+    });
+    expect(root.getAttribute("aria-label")).toBe("Read me as one line");
+    const units = pieces();
+    expect(units.length).toBeGreaterThan(1);
+    expect(units.every((el) => el.getAttribute("aria-hidden") === "true")).toBe(true);
+    // The visible text is unchanged, so nothing is lost without a reader.
+    expect(container.textContent).toBe("Read me as one line");
+  });
+
   it("reveals again when once is off and the line comes back", async () => {
     const { arrive, leave, pieces } = await renderRevealed({
       children: "Ship it",

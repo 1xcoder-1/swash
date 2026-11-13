@@ -8,7 +8,22 @@ import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { pathToFileURL, fileURLToPath } from "node:url";
 
-const NAMES = ["Counter", "Frame", "Marker", "Morph", "Reveal", "Scramble", "Typewriter"];
+const NAMES = [
+  "Counter",
+  "Frame",
+  "Marker",
+  "Morph",
+  "Reveal",
+  "Scramble",
+  "Typewriter",
+  "Ticker",
+  "Shimmer",
+  "BlurReveal",
+  "FlipWords",
+  "Glitch",
+  "CurvedText",
+  "Wave",
+];
 
 /** Anything that is not a relative path has to be React and only React. */
 const BARE_OK = /^react(-dom)?(\/.*)?$/;
