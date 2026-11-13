@@ -1,6 +1,12 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { ScrambleDemo } from "@/components/demos";
+import {
+  ScrambleCharsetDemo,
+  ScrambleClickDemo,
+  ScrambleDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Scramble" };
 
@@ -8,31 +14,27 @@ export default function ScramblePage() {
   return (
     <>
       <h1>Scramble</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         Text that decodes itself: a churn of glyphs that settles letter by
         letter into the real line.
       </p>
 
       <ScrambleDemo />
+      <ScrambleClickDemo />
+      <ScrambleCharsetDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Scramble } from "swash";'>
-        <span className="tok-k">import</span> {" { Scramble } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Scramble } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger="prop" speed={1.4} onDone={track} />`}
-      >
-        {"<"}
-        <span className="tok-t">Scramble</span>{" "}
-        <span className="tok-a">text</span>
-        {"="}<span className="tok-s">"Initiating decode sequence."</span>{" "}
-        <span className="tok-a">trigger</span>
-        {"="}<span className="tok-s">"mount"</span>
-        {"/>"}
-      </CodeBlock>
+      <p>Point it at a line — it churns, then settles into the real text:</p>
+      <CodeTabs
+        js={`<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger="prop" speed={1.4} onDone={track} />`}
+        ts={`import { Scramble, type ScrambleProps } from "swash";\n\nconst trigger: ScrambleProps["trigger"] = "prop";\n\n<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger={trigger} speed={1.4} onDone={track} />`}
+      />
 
       <h2>Props</h2>
       <PropsTable

@@ -7,25 +7,29 @@ export type PropRow = {
 
 export function PropsTable({ rows }: { rows: PropRow[] }) {
   return (
-    <table className="props">
-      <thead>
-        <tr>
-          <th>Prop</th>
-          <th>Type</th>
-          <th>Default</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((r) => (
-          <tr key={r.name}>
-            <td>{r.name}</td>
-            <td>{r.type}</td>
-            <td>{r.default ?? "—"}</td>
-            <td>{r.desc}</td>
+    <div className="props-card">
+      <table className="props">
+        <thead>
+          <tr>
+            <th>Prop</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.name}>
+              <td>
+                <code className="prop-pill">{r.name}</code>
+              </td>
+              <td>{r.type}</td>
+              <td>{r.default ?? "—"}</td>
+              <td>{r.desc}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

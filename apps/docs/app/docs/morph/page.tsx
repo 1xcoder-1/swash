@@ -1,6 +1,14 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { MorphDemo } from "@/components/demos";
+import {
+  MorphDemo,
+  MorphStepDemo,
+  PhraseDemo,
+  SpringDemo,
+  ToneDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Morph" };
 
@@ -8,35 +16,53 @@ export default function MorphPage() {
   return (
     <>
       <h1>Morph</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         One word becomes the next — whole graphemes transitioning in place, with
         the line width compensated so nothing around it shifts.
       </p>
 
       <MorphDemo />
+      <MorphStepDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Morph } from "swash";'>
-        <span className="tok-k">import</span> {" { Morph } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Character continuity</h2>
+      <p>
+        The same behaviour one level deeper: shared characters stay put and only
+        what changed moves. A sentence re-types itself, a rewrite reflows without
+        a layout jump, and a change of pace is one prop away — all on the
+        dependency-free <code className="inline-code">Morph</code>, no separate
+        library.
+      </p>
+      <PhraseDemo />
+      <ToneDemo />
+      <SpringDemo />
+
+      <CodeTabs
+        js={`import { Morph } from "swash";
+
+// A sentence rewriting itself in place:
+<Morph values={["Running late.", "Almost there, hold tight."]} loop={false} step={i} />
+
+// A quicker, tighter swap:
+<Morph values={["Settled", "Bouncy", "Gentle"]} loop={false} step={i} duration={450} />`}
+        ts={`import { Morph, type MorphProps } from "swash";
+
+const phrases: MorphProps["values"] = ["Running late.", "Almost there, hold tight."];
+
+<Morph values={phrases} loop={false} step={i} />`}
+      />
+
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Morph } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Morph values={["fast", "focused", "finished"]} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
-      >
-        {"<"}
-        <span className="tok-t">Morph</span>{" "}
-        <span className="tok-a">values</span>={"{"}
-        {"["}<span className="tok-s">"fast"</span>,{" "}
-        <span className="tok-s">"focused"</span>,{" "}
-        <span className="tok-s">"finished"</span>
-        {"]}"}
-        {"} "}
-        <span className="tok-a">hold</span>={"{"}
-        <span className="tok-n">1100</span>
-        {"} />"}
-      </CodeBlock>
+      <p>Give it a list of words — it morphs between them in place:</p>
+      <CodeTabs
+        js={`<Morph values={["fast", "focused", "finished"]} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
+        ts={`import { Morph, type MorphProps } from "swash";\n\nconst values: MorphProps["values"] = ["fast", "focused", "finished"];\n\n<Morph values={values} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
+      />
 
       <h2>Props</h2>
       <PropsTable

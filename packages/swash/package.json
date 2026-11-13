@@ -1,11 +1,12 @@
 {
   "name": "swash",
   "version": "0.1.0",
-  "description": "Ready-made, dependency-free text effect components for React.",
+  "description": "Dependency-free text morphing and motion components for React.",
   "license": "MIT",
   "keywords": [
     "react",
     "text-effect",
+    "text-morph",
     "animation",
     "typewriter",
     "counter",
@@ -16,14 +17,23 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "require": "./dist/index.cjs" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "check": "node scripts/gates.mjs && tsup && node scripts/smoke.mjs"
   },
-  "peerDependencies": { "react": ">=18.0.0", "react-dom": ">=18.0.0" }
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  }
 }

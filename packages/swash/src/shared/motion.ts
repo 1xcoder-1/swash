@@ -30,6 +30,19 @@ function subscribe(listener: Listener): () => void {
 }
 
 /**
+ * Non-hook reduced-motion subscription for the Vue and Svelte adapters, which
+ * have no React store to read through. It joins the same fan-out the hook uses,
+ * so one media-query listener still serves the whole page, and fires once up
+ * front with the current value.
+ */
+export function subscribeReducedMotion(onChange: (reduced: boolean) => void): () => void {
+  const listener: Listener = () => onChange(getReducedMotion());
+  const unsubscribe = subscribe(listener);
+  onChange(getReducedMotion());
+  return unsubscribe;
+}
+
+/**
  * Live reduced-motion flag. It re-renders when the user flips the OS setting
  * while the page is open, which a one-time read at mount cannot do.
  */

@@ -1,6 +1,12 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { TypewriterDemo } from "@/components/demos";
+import {
+  TypewriterDemo,
+  TypewriterFeelDemo,
+  TypewriterOnceDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Typewriter" };
 
@@ -8,30 +14,27 @@ export default function TypewriterPage() {
   return (
     <>
       <h1>Typewriter</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         Types a phrase — or loops through several — one grapheme at a time, with
         rhythm presets and a caret you can turn off.
       </p>
 
       <TypewriterDemo />
+      <TypewriterOnceDemo />
+      <TypewriterFeelDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Typewriter } from "swash";'>
-        <span className="tok-k">import</span>
-        {" { Typewriter } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Typewriter } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={["First.", "Second.", "Third."]}\n  feel="snappy"\n  onLoopDone={(phrase) => console.log(phrase)}\n/>`}
-      >
-        {"<"}
-        <span className="tok-t">Typewriter</span>{" "}
-        <span className="tok-a">text</span>
-        {"="}<span className="tok-s">"One phrase, typed once."</span>
-        {"/>"}
-      </CodeBlock>
+      <p>Drop the component into any client component — no provider, no config:</p>
+      <CodeTabs
+        js={`<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={["First.", "Second.", "Third."]}\n  feel="snappy"\n  onLoopDone={(phrase) => console.log(phrase)}\n/>`}
+        ts={`import { Typewriter, type TypewriterProps } from "swash";\n\nconst loop: TypewriterProps["loop"] = ["First.", "Second.", "Third."];\n\n<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={loop}\n  feel="snappy"\n  onLoopDone={(phrase, index) => console.log(phrase, index)}\n/>`}
+      />
 
       <h2>Props</h2>
       <PropsTable

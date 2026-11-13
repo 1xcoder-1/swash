@@ -1,6 +1,13 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { CounterDemo } from "@/components/demos";
+import {
+  AmountDemo,
+  CounterDemo,
+  CounterFromDemo,
+  TypeDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Counter" };
 
@@ -8,45 +15,41 @@ export default function CounterPage() {
   return (
     <>
       <h1>Counter</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         Counts a number up when it scrolls into view, with prefixes, suffixes
         and your own formatting.
       </p>
 
       <CounterDemo />
+      <CounterFromDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Counter } from "swash";'>
-        <span className="tok-k">import</span> {" { Counter } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Place-value numbers</h2>
+      <p>
+        A number that changes to another number should stay a number. With the{" "}
+        <code className="inline-code">Morph</code> component, <code className="inline-code">$1,204 &rarr; $1,318</code>{" "}
+        moves only the digits that changed and leaves the rest still — and as
+        you type, the line rewrites itself without a layout jump.
+      </p>
+      <AmountDemo />
+      <TypeDemo />
+
+      <CodeTabs
+        js={`import { Morph } from "swash";\n\n// A number that changes stays a number — only changed digits move:\n<Morph values={["1,204", "1,318", "1,999"]} loop={false} step={i} duration={600} />\n\n// Rewrites as you type — the box holds the widest value so nothing jumps.\n<Morph values={[previous, next]} loop={false} step={1} duration={400} />`}
+        ts={`import { Morph, type MorphProps } from "swash";\n\nconst values: MorphProps["values"] = ["1,204", "1,318", "1,999"];\n\n<Morph values={values} loop={false} step={i} duration={600} />`}
+      />
+
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Counter } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<Counter\n  to={12450}\n  prefix="$"\n  duration={1800}\n  startOnView\n  once\n/>\n\n<Counter to={98} suffix="%" format={(n) => n.toFixed(1)} />`}
-      >
-        {"<"}
-        <span className="tok-t">Counter</span>
-        <br />
-        {"  "}
-        <span className="tok-a">to</span>={"{"}
-        <span className="tok-n">12450</span>
-        {"}"}
-        <br />
-        {"  "}
-        <span className="tok-a">prefix</span>
-        {"="}<span className="tok-s">"$"</span>
-        <br />
-        {"  "}
-        <span className="tok-a">duration</span>={"{"}
-        <span className="tok-n">1800</span>
-        {"}"}
-        <br />
-        {"  "}
-        <span className="tok-a">startOnView</span> <span className="tok-a">once</span>
-        <br />
-        {"/>"}
-      </CodeBlock>
+      <p>Set the number to land on — it counts up on view:</p>
+      <CodeTabs
+        js={`<Counter\n  to={12450}\n  prefix="$"\n  duration={1800}\n  startOnView\n  once\n/>\n\n<Counter to={98} suffix="%" format={(n) => n.toFixed(1)} />`}
+        ts={`import { Counter, type CounterProps } from "swash";\n\nconst format: CounterProps["format"] = (n) => n.toFixed(1);\n\n<Counter to={12450} prefix="$" duration={1800} startOnView once />\n\n<Counter to={98} suffix="%" format={format} />`}
+      />
 
       <h2>Props</h2>
       <PropsTable

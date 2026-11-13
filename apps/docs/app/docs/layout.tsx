@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DocsPager } from "@/components/docs-pager";
 
 const GROUPS = [
   {
@@ -7,6 +8,12 @@ const GROUPS = [
     links: [
       { href: "/docs/quickstart", label: "Quickstart" },
       { href: "/docs/accessibility", label: "Accessibility" },
+    ],
+  },
+  {
+    title: "Explore",
+    links: [
+      { href: "/docs/examples", label: "Examples" },
     ],
   },
   {
@@ -19,6 +26,13 @@ const GROUPS = [
       { href: "/docs/morph", label: "Morph" },
       { href: "/docs/counter", label: "Counter" },
       { href: "/docs/marker", label: "Marker" },
+      { href: "/docs/ticker", label: "Ticker" },
+      { href: "/docs/shimmer", label: "Shimmer" },
+      { href: "/docs/blur-reveal", label: "Blur Reveal" },
+      { href: "/docs/flip-words", label: "Flip Words" },
+      { href: "/docs/glitch", label: "Glitch" },
+      { href: "/docs/curved-text", label: "Curved Text" },
+      { href: "/docs/wave", label: "Wave" },
     ],
   },
 ];
@@ -38,7 +52,10 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           </div>
         ))}
       </aside>
-      <div className="doc">{children}</div>
+      <div className="doc">
+        {children}
+        <DocsPager />
+      </div>
     </div>
   );
 }

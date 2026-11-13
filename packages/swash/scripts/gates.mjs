@@ -19,6 +19,13 @@ const COMPONENTS = [
   "morph",
   "counter",
   "marker",
+  "ticker",
+  "shimmer",
+  "blur-reveal",
+  "flip-words",
+  "glitch",
+  "curved-text",
+  "wave",
 ];
 
 let violations = 0;

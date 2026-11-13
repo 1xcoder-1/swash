@@ -203,6 +203,76 @@ describe("Morph", () => {
     expect(line.width()).toBe("");
   });
 
+  it("lays the incoming word over the seam, not beside it", async () => {
+    // The bug this guards: with no shared prefix the two tails used to sit end to
+    // end, so the clipped box hid the incoming word for the whole swap and it only
+    // looked like it snapped in at the last frame. The outgoing tail must be
+    // lifted out of the flow so the incoming one holds the seam's own space.
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
+      return { width: (this.textContent ?? "").length * 10 } as DOMRect;
+    });
+    const line = await renderMorphing({ values: ["ab", "cdef"], duration: 200 });
+    const body = line.container.querySelector("[data-swash-morph]") as HTMLElement;
+    const [outEl, inEl] = [...body.children] as HTMLElement[];
+    expect(outEl!.textContent).toBe("ab");
+    expect(inEl!.textContent).toBe("cdef");
+    // Out of the flow, pinned at the seam (0 here, since nothing is shared).
+    expect(outEl!.style.position).toBe("absolute");
+    expect(outEl!.style.insetInlineStart).toBe("0px");
+    // In the flow, so it defines the line and is the word the reader sees land.
+    expect(inEl!.style.position).toBe("");
+    expect(body.style.position).toBe("relative");
+  });
+
+  it("draws both tails from the inline edge the text runs along", async () => {
+    // Right-to-left text enters and leaves from the opposite edge. The squeeze
+    // origins have to flip with it or the cross-fade grows out of the wrong side.
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
+      return { width: (this.textContent ?? "").length * 10 } as DOMRect;
+    });
+    vi.spyOn(window, "getComputedStyle").mockReturnValue({
+      direction: "rtl",
+    } as CSSStyleDeclaration);
+    const line = await renderMorphing({ values: ["ab", "cdef"], duration: 200 });
+    const body = line.container.querySelector("[data-swash-morph]") as HTMLElement;
+    const [outEl, inEl] = [...body.children] as HTMLElement[];
+    expect(outEl!.style.transformOrigin).toBe("right center");
+    expect(inEl!.style.transformOrigin).toBe("right center");
+    // The seam is still measured from the same edge it is pinned to.
+    expect(outEl!.style.insetInlineStart).toBe("0px");
+  });
+
+  it("keeps the box a bounded width through the swap, so neighbours never jump", async () => {
+    // Cumulative layout shift is the other way a morph breaks: if the clipped box
+    // snapped to the incoming width up front, or opened to auto mid-way, the words
+    // around it would leap. The width must ease between the two real widths and be
+    // clipped the whole time.
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (
+      this: Element,
+    ) {
+      return { width: (this.textContent ?? "").length * 10 } as DOMRect;
+    });
+    const line = await renderMorphing({ values: ["ab", "cdef"], duration: 200 });
+    const body = line.container.querySelector("[data-swash-morph]") as HTMLElement;
+    expect(body.style.overflow).toBe("hidden");
+    const widths: number[] = [];
+    for (let i = 0; i < 12; i++) {
+      await line.advance(20);
+      const px = parseFloat(body.style.width);
+      if (!Number.isNaN(px)) widths.push(px);
+    }
+    // ab measures 20px, cdef 40px: every sampled frame stays inside that band.
+    expect(widths.length).toBeGreaterThan(3);
+    expect(Math.min(...widths)).toBeGreaterThanOrEqual(20);
+    expect(Math.max(...widths)).toBeLessThanOrEqual(40);
+    // At rest the box lets go of the fixed width again.
+    expect(line.width()).toBe("");
+  });
+
   it("never shows half an emoji", async () => {
     const line = await renderMorphing({
       values: ["🚀x", "🎉y"],

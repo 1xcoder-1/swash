@@ -24,7 +24,7 @@ export default function RootLayout({
         <div className="banner">
           <span className="pill">New</span>
           <Link href="/docs/quickstart">
-            swash v1 is out — seven components, zero dependencies →
+            swash v1 is out — fourteen components, zero dependencies →
           </Link>
         </div>
         <div className="sheet-page">

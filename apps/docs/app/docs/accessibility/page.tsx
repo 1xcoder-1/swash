@@ -73,20 +73,11 @@ export default function AccessibilityPage() {
       </p>
 
       <h2>Testing it yourself</h2>
-      <CodeBlock copy="@media (prefers-reduced-motion: reduce) {\n  /* the OS toggle your components should already handle */\n}">
-        <span className="tok-c">
-          {"// Force the static path locally, without touching OS settings:"}
-        </span>
-        <br />
-        <span className="tok-k">@media</span> (
-        <span className="tok-a">prefers-reduced-motion</span>:{" "}
-        <span className="tok-s">reduce</span>) {"{"}
-        <br />
-        {"  "}
-        <span className="tok-c">{"/* every swash component renders its final state */"}</span>
-        <br />
-        {"}"}
-      </CodeBlock>
+      <CodeBlock
+        lang="CSS"
+        highlight="css"
+        copy="/* Force the static path locally, without touching OS settings: */\n@media (prefers-reduced-motion: reduce) {\n  /* every swash component renders its final state */\n}"
+      />
       <p>
         Chrome DevTools can emulate the media feature under Rendering → Emulate
         prefers-reduced-motion, which is the fastest way to check the table

@@ -4,17 +4,18 @@ import { observeInview } from "../shared/inview";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
-import { tween } from "../shared/tween";
-import type { TweenController } from "../shared/tween";
+import {
+  createCounter,
+  defaultFormat,
+  type CounterController,
+} from "../core/counter";
 import type { CounterProps } from "./types";
-
-const defaultFormat = (n: number) => Math.round(n).toLocaleString("en-US");
 
 /**
  * Counts from `from` to `to` without handing the number to React once per
- * frame. The tween lives in a ref and writes through another ref, so a parent
- * that re-renders while the count is running changes nothing, which is the
- * failure people hit with the popular counter components.
+ * frame. The count lives in the framework-free `createCounter`, which writes
+ * straight to the element, so a parent that re-renders while the count is
+ * running changes nothing — the failure people hit with popular counters.
  */
 export function Counter(props: CounterProps) {
   const {
@@ -32,11 +33,7 @@ export function Counter(props: CounterProps) {
 
   const root = useRef<HTMLSpanElement>(null);
   const valueEl = useRef<HTMLSpanElement>(null);
-  const ctrl = useRef<TweenController | null>(null);
-  /** Where the count stands, so a pause resumes from the shown value. */
-  const value = useRef(from);
-  /** `delay` belongs to the first count only, not to every resume or replay. */
-  const started = useRef(false);
+  const ctrl = useRef<CounterController | null>(null);
   const latest = useRef(props);
 
   // A negative duration would leave the number stuck wherever the first frame
@@ -53,52 +50,58 @@ export function Counter(props: CounterProps) {
   const [background, setBackground] = useState(
     () => typeof document !== "undefined" && document.hidden,
   );
+  /** With `once` off, the next entry counts from the beginning, not a resume. */
+  const restart = useRef(false);
 
-  // Keeps the running tween pointed at the current `format` and `onDone`
+  // Keeps the running count pointed at the current `format` and `onDone`
   // without listing them as effect dependencies.
   useIsomorphicLayoutEffect(() => {
     latest.current = props;
   });
 
   useIsomorphicLayoutEffect(() => {
-    const write = (n: number) => {
-      const el = valueEl.current;
-      if (el) el.textContent = (latest.current.format ?? defaultFormat)(n);
+    const el = valueEl.current;
+    if (!el) return;
+    const controller = createCounter(el);
+    ctrl.current = controller;
+    return () => {
+      controller.dispose();
+      if (ctrl.current === controller) ctrl.current = null;
     };
-    const settle = (n: number) => {
-      value.current = n;
-      write(n);
-    };
+  }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    const controller = ctrl.current;
+    if (!controller) return;
     // Reduced motion wants the answer without the journey, and the journey is
-    // over the moment the answer is on screen, so the caller hears about it.
+    // over the moment the answer is on screen, so it settles even off-view.
     if (reduced) {
-      settle(to);
-      latest.current.onDone?.();
+      controller.run({
+        from,
+        to,
+        duration: take,
+        delay: wait,
+        reduced,
+        format: latest.current.format,
+        onDone: latest.current.onDone,
+      });
       return;
     }
-    if (!run || background || value.current === to) return;
-
-    ctrl.current = tween({
-      from: value.current,
+    if (!run || background) return;
+    controller.run({
+      from,
       to,
       duration: take,
-      delay: started.current ? 0 : wait,
-      onUpdate: (n) => {
-        value.current = n;
-        write(n);
-      },
-      onComplete: () => {
-        settle(to);
-        ctrl.current = null;
-        latest.current.onDone?.();
-      },
+      delay: wait,
+      reduced,
+      restart: restart.current,
+      format: latest.current.format,
+      onDone: latest.current.onDone,
     });
-    started.current = true;
-
-    return () => {
-      ctrl.current?.cancel();
-      ctrl.current = null;
-    };
+    restart.current = false;
+    return () => controller.dispose();
+    // `from` is read through the controller's own resume, not as a trigger: a
+    // parent changing it mid-count must not send the number back to a new low.
   }, [visits, run, background, reduced, to, take, wait]);
 
   useEffect(() => {
@@ -106,7 +109,7 @@ export function Counter(props: CounterProps) {
     return observeInview(root.current, { once, ratio: 0.3 }, () => {
       // With `once` off, coming back into view means counting again from the
       // beginning rather than picking up where the last pass stopped.
-      if (!once) value.current = from;
+      if (!once) restart.current = true;
       setVisits((n) => n + 1);
     });
   }, [startOnView, once, from]);

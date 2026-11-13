@@ -2,7 +2,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { installMatchMediaMock } from "../helpers/match-media-mock";
 import { installResizeMock } from "../helpers/resize-mock";
-import { animateCallCount, installWaapiMock } from "../helpers/waapi-mock";
+import { animateCallCount, animationAt, installWaapiMock } from "../helpers/waapi-mock";
 import { Frame } from "../../src/frame/Frame";
 import type { FrameProps } from "../../src/frame/types";
 
@@ -133,6 +133,65 @@ describe("Frame", () => {
     expect(badge.style.background.toLowerCase()).toBe("currentcolor");
     expect(ink.style.color).not.toBe("");
     expect(ink.style.color).not.toBe(badge.style.background);
+  });
+
+  it("sweeps the outline, never the box the badge overflows", async () => {
+    // The badge sits on the corner, half outside the layer's box. A clip-path
+    // on the layer would cut that overhang for the whole sweep and then snap
+    // it whole when the pass settled — the visible glitch. So the fade rides
+    // the layer and the clip rides the outline, which the badge is a sibling
+    // of rather than a child of.
+    const { layer } = renderFramed({ ...shown, label: "selected", duration: 500 });
+    const outline = layer.querySelector("[data-swash-frame-outline]") as HTMLElement;
+    const badge = layer.querySelector("[data-swash-frame-label]") as HTMLElement;
+
+    // The badge is not inside the element that carries the clip.
+    expect(outline.contains(badge)).toBe(false);
+
+    // The layer's pass is a fade with no clip; the outline's pass is the clip.
+    const layerKeys = animationAt(layer, 0)?.keys as Array<Record<string, string>>;
+    expect(layerKeys.some((k) => "clipPath" in k)).toBe(false);
+    expect(layerKeys.some((k) => "opacity" in k)).toBe(true);
+    const outlineKeys = animationAt(outline, 0)?.keys as Array<Record<string, string>>;
+    expect(outlineKeys.some((k) => "clipPath" in k)).toBe(true);
+
+    // Once the pass settles, the held frame leaves the badge unclipped: the
+    // clip is cleared on the outline, and the layer never carried one.
+    await advance(500);
+    expect(outline.style.clipPath).toBe("none");
+    expect(layer.style.clipPath).toBe("");
+  });
+
+  it("keeps the badge out until the border has finished drawing", async () => {
+    // The badge used to ride in with the layer's fade, so it sat on a corner
+    // the outline had not reached yet. It now gets its own animation, one that
+    // waits the whole sweep out before it starts fading.
+    const { layer } = renderFramed({ ...shown, label: "selected", duration: 500 });
+    const badge = layer.querySelector("[data-swash-frame-label]") as HTMLElement;
+
+    expect(badge.style.opacity).toBe("0");
+    await advance(200);
+    expect(badge.style.opacity).toBe("0");
+
+    const reveal = animationAt(badge, 0);
+    expect(reveal).toBeTruthy();
+    // The wait is the sweep: the badge may only start when the border closes.
+    expect(reveal!.options.delay).toBe(500);
+    const keys = reveal!.keys as Array<Record<string, number | string>>;
+    expect(keys[0]?.opacity).toBe(0);
+    expect(keys[1]?.opacity).toBe(1);
+
+    // Once the pass settles, the badge is written in for good.
+    await advance(300);
+    expect(badge.style.opacity).toBe("1");
+  });
+
+  it("shows the badge at once when motion is reduced", () => {
+    media.set(true);
+    const { layer } = renderFramed({ ...shown, label: "selected", duration: 500 });
+    const badge = layer.querySelector("[data-swash-frame-label]") as HTMLElement;
+    expect(animateCallCount(badge)).toBe(0);
+    expect(badge.style.opacity).toBe("1");
   });
 
   it("measures when the content changes, not on every render", () => {

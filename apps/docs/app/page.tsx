@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { HeroStage } from "@/components/hero-stage";
-import { CopyButton } from "@/components/copy-button";
+import { InstallTabs } from "@/components/install-tabs";
 import { BentoGrid, BentoCard } from "@/components/bento";
 
 const PRINCIPLES = [
@@ -53,7 +53,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 53 KB of ESM for all seven, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 83 KB of ESM for all fourteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -115,6 +115,48 @@ const COMPONENTS = [
     href: "/docs/marker",
     desc: "Hand-drawn emphasis — highlight, underline, strike, circle, box — that wraps lines and needs no Tailwind.",
     span: 2 as const,
+  },
+  {
+    name: "Ticker",
+    href: "/docs/ticker",
+    desc: "Odometer digits that roll to the new value with tabular-num columns, so a price change never nudges the row.",
+    span: 1 as const,
+  },
+  {
+    name: "Shimmer",
+    href: "/docs/shimmer",
+    desc: "An iridescent beam that sweeps across text and pauses itself when the element scrolls off-screen.",
+    span: 1 as const,
+  },
+  {
+    name: "Blur Reveal",
+    href: "/docs/blur-reveal",
+    desc: "Depth-of-field entrance — words come into focus one after another with a stagger, no JavaScript per frame.",
+    span: 1 as const,
+  },
+  {
+    name: "Flip Words",
+    href: "/docs/flip-words",
+    desc: "A 3D cycler between rotating words that reserves the widest word's box so nothing around it shifts.",
+    span: 1 as const,
+  },
+  {
+    name: "Glitch",
+    href: "/docs/glitch",
+    desc: "Chromatic-aberration glitch painted through ::before and ::after, so copy/paste and screen readers see one clean phrase.",
+    span: 1 as const,
+  },
+  {
+    name: "Curved Text",
+    href: "/docs/curved-text",
+    desc: "Text on a circular path via native SVG <textPath>, with a compositor-driven rotation — no per-letter trigonometry.",
+    span: 1 as const,
+  },
+  {
+    name: "Wave",
+    href: "/docs/wave",
+    desc: "Kinetic sine-wave letters that hover, scroll or loop — one keyframe plus a per-letter negative delay, no per-frame JS.",
+    span: 1 as const,
   },
 ];
 
@@ -178,10 +220,7 @@ export default function Home() {
           fallback.
         </p>
         <div className="hero-actions">
-          <span className="install">
-            <span className="cmd">npm i swash</span>
-            <CopyButton text="npm i swash" />
-          </span>
+          <InstallTabs />
           <Link href="/docs/quickstart" className="btn btn-primary">
             Read the docs
           </Link>
@@ -215,11 +254,12 @@ export default function Home() {
           <div className="pr-body">
             <div className="pr-file">npm i swash</div>
             <div className="pr-finding">
-              <span className="pr-rule">7 components</span>
+              <span className="pr-rule">14 components</span>
               <span className="pr-sev">&bull; 4.2 kB</span>
             </div>
             <div className="pr-fix">
-              Typewriter, Scramble, Morph, Reveal, Counter, Frame and Marker
+              Typewriter, Scramble, Morph, Reveal, Counter, Frame, Marker, Ticker,
+              Shimmer, Blur Reveal, Flip Words, Glitch, Curved Text and Wave
               &mdash; each tree-shaken to just what you import.
             </div>
           </div>
@@ -270,7 +310,7 @@ export default function Home() {
       <section className="section wrap" id="components">
         <div className="section-head">
           <p className="eyebrow">The catalogue</p>
-          <h2>Seven components, one engine</h2>
+          <h2>Fourteen components, one engine</h2>
           <p>
             Each one solves a text problem developers keep re-solving badly.
             Open any row for the full API.
@@ -347,7 +387,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, seven components, zero dependencies.</p>
+        <p>One install, fourteen components, zero dependencies.</p>
         <div className="hero-actions">
           <Link href="/docs/quickstart" className="btn btn-primary">
             Start with the quickstart

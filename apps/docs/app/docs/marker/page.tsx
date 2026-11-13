@@ -1,6 +1,12 @@
 import { CodeBlock } from "@/components/code-block";
+import { CodeTabs } from "@/components/code-tabs";
+import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { MarkerDemo } from "@/components/demos";
+import {
+  MarkerHighlightDemo,
+  MarkerShapeDemo,
+  MarkerUnderlineDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Marker" };
 
@@ -8,37 +14,27 @@ export default function MarkerPage() {
   return (
     <>
       <h1>Marker</h1>
+
+      <h2>Overview</h2>
       <p className="lead">
         Hand-drawn emphasis over real text — highlight, underline, strike,
         circle or box — that wraps lines and needs no CSS framework.
       </p>
 
-      <MarkerDemo />
+      <MarkerHighlightDemo />
+      <MarkerUnderlineDemo />
+      <MarkerShapeDemo />
 
-      <h2>Install & import</h2>
-      <CodeBlock copy='import { Marker } from "swash";'>
-        <span className="tok-k">import</span> {" { Marker } "}
-        <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
-      </CodeBlock>
+      <h2>Installation</h2>
+      <InstallTabs />
+      <CodeBlock copy='import { Marker } from "swash";' />
 
       <h2>Usage</h2>
-      <CodeBlock
-        copy={`<p>\n  The launch was <Marker action="highlight" color="amber">a success</Marker> for\n  everyone involved.\n</p>`}
-      >
-        {"<"}
-        <span className="tok-t">p</span>{">"}
-        <br />
-        {"  The launch was <"}
-        <span className="tok-t">Marker</span>{" "}
-        <span className="tok-a">action</span>
-        {"="}<span className="tok-s">"highlight"</span>{" "}
-        <span className="tok-a">color</span>
-        {"="}<span className="tok-s">"amber"</span>{">a success</"}
-        <span className="tok-t">Marker</span>{">>"}
-        <br />
-        {"  for everyone.\n</"}
-        <span className="tok-t">p</span>{">"}
-      </CodeBlock>
+      <p>Wrap the words you want to emphasise — the mark draws itself:</p>
+      <CodeTabs
+        js={`<p>\n  The launch was <Marker action="highlight" color="amber">a success</Marker> for\n  everyone involved.\n</p>`}
+        ts={`import { Marker, type MarkerAction, type MarkerColor } from "swash";\n\nconst action: MarkerAction = "highlight";\nconst color: MarkerColor = "amber";\n\n<p>\n  The launch was <Marker action={action} color={color}>a success</Marker> for\n  everyone involved.\n</p>`}
+      />
 
       <h2>Props</h2>
       <PropsTable
