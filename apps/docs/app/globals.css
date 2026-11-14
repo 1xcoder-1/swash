@@ -271,12 +271,48 @@
     border-color 0.15s var(--ease-out);
 }
 .btn-primary {
+  --pixel-glow: #fff;
+  isolation: isolate;
+  overflow: hidden;
   color: #fff;
-  background: var(--color-accent-bottom);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  /* Aceternity pixel-prompt blue, verbatim */
+  background: #2b5cfd;
+  text-shadow: color-mix(color-mix(rgb(43, 92, 253) 45%, black) 35%, transparent)
+    0 1px 1px;
+  box-shadow:
+    rgba(255, 255, 255, 0.35) 0px 1px 0px 0px inset,
+    color-mix(color-mix(rgb(43, 92, 253) 45%, black) 35%, transparent) 0px -1px
+      0px 0px inset,
+    color-mix(rgb(43, 92, 253) 68%, black) 0px 0px 0px 1px,
+    color-mix(rgb(43, 92, 253) 55%, transparent) 0px 6px 16px -6px,
+    color-mix(color-mix(rgb(43, 92, 253) 68%, black) 30%, transparent) 0px 1px 2px;
 }
-.btn-primary:hover {
-  background: #0f9bff;
+/* Aceternity's overlay: top sheen to bottom shade, verbatim */
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.12),
+    transparent 45%,
+    color-mix(color-mix(rgb(43, 92, 253) 45%, black) 18%, transparent)
+  );
+}
+.btn-primary canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.btn-primary:focus-visible {
+  outline: 3px solid color-mix(in oklab, #2b5cfd 40%, transparent);
+  outline-offset: 2px;
 }
 .btn-ghost {
   color: var(--color-fg);

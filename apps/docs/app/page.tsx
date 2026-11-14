@@ -2,6 +2,7 @@ import Link from "next/link";
 import { HeroStage } from "@/components/hero-stage";
 import { InstallTabs } from "@/components/install-tabs";
 import { BentoGrid, BentoCard } from "@/components/bento";
+import { PromptButton } from "@/components/prompt-button";
 
 const PRINCIPLES = [
   {
@@ -239,21 +240,14 @@ export default function Home() {
         </p>
         <div className="hero-actions">
           <InstallTabs />
-          <Link href="/docs/quickstart" className="btn btn-primary">
-            Read the docs
-          </Link>
+          <PromptButton href="/docs/quickstart">Read the docs</PromptButton>
         </div>
 
         <HeroStage />
         <div className="stage-cta">
-          <a
-            href="https://github.com/1xcoder-1/swash"
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-primary"
-          >
+          <PromptButton href="https://github.com/1xcoder-1/swash" external>
             Try it on your codebase
-          </a>
+          </PromptButton>
         </div>
       </section>
 
@@ -407,9 +401,9 @@ export default function Home() {
         <h2>Ship the effect, not the yak shave</h2>
         <p>One install, eighteen components, zero dependencies.</p>
         <div className="hero-actions">
-          <Link href="/docs/quickstart" className="btn btn-primary">
+          <PromptButton href="/docs/quickstart">
             Start with the quickstart
-          </Link>
+          </PromptButton>
           <a
             className="btn btn-ghost"
             href="https://github.com/1xcoder-1/swash"
