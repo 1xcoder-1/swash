@@ -18,7 +18,6 @@ import {
   Wave,
   Neon,
   Echo,
-  Liquid,
   Slice,
   Marquee,
   SplitFlap,
@@ -336,7 +335,6 @@ const BODIES: Record<string, () => ReactNode> = {
   wave: WaveBody,
   neon: NeonBody,
   "split-flap": SplitFlapBody,
-  liquid: LiquidBody,
   echo: EchoBody,
   slice: SliceBody,
   marquee: MarqueeBody,
@@ -412,16 +410,6 @@ function SplitFlapBody() {
       >
         Next status
       </button>
-    </div>
-  );
-}
-
-function LiquidBody() {
-  return (
-    <div style={{ fontSize: 40, fontWeight: 800 }}>
-      <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
-        REFILL
-      </Liquid>
     </div>
   );
 }

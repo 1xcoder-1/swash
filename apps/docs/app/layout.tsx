@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s — swash",
   },
   description:
-    "Twenty ready-made, dependency-free text effect components for React. Grapheme-safe, reduced-motion aware, SSR friendly.",
+    "Nineteen ready-made, dependency-free text effect components for React. Grapheme-safe, reduced-motion aware, SSR friendly.",
 };
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
         <div className="banner">
           <span className="pill">New</span>
           <Link href="/docs/quickstart">
-            swash v1.1 is out — twenty components, zero dependencies →
+            swash v1.1 is out — nineteen components, zero dependencies →
           </Link>
         </div>
         <div className="sheet-page">

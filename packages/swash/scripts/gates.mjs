@@ -28,7 +28,6 @@ const COMPONENTS = [
   "wave",
   "neon",
   "echo",
-  "liquid",
   "slice",
   "marquee",
   "split-flap",

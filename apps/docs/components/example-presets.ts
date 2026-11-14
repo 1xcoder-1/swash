@@ -347,18 +347,6 @@ return (
 );`,
   },
   {
-    id: "liquid",
-    title: "Liquid pour",
-    blurb: "A waterline inside the glyphs that rises, bobs, drains and pours again.",
-    code: `return (
-  <div style={{ fontSize: 40, fontWeight: 800 }}>
-    <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
-      REFILL
-    </Liquid>
-  </div>
-);`,
-  },
-  {
     id: "echo",
     title: "Echo pulse",
     blurb: "Copies expand out from under still text and fade, one travelling pulse.",

@@ -24,7 +24,6 @@ const ORDER = [
   { href: "/docs/wave", title: "Wave" },
   { href: "/docs/neon", title: "Neon" },
   { href: "/docs/echo", title: "Echo" },
-  { href: "/docs/liquid", title: "Liquid" },
   { href: "/docs/slice", title: "Slice" },
   { href: "/docs/marquee", title: "Marquee" },
   { href: "/docs/split-flap", title: "Split Flap" },

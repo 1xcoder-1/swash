@@ -24,7 +24,6 @@ const NAMES = [
   "CurvedText",
   "Neon",
   "Echo",
-  "Liquid",
   "Slice",
   "Marquee",
   "SplitFlap",

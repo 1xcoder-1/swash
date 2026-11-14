@@ -18,7 +18,6 @@ import {
   Wave,
   Neon,
   Echo,
-  Liquid,
   Slice,
   Marquee,
   SplitFlap,
@@ -880,7 +879,7 @@ export function WaveViewDemo() {
 }
 
 /* --------------------------------------------------------------------------
- * The second wave of components: Neon, Echo, Liquid, Slice, Marquee,
+ * The second wave of components: Neon, Echo, Slice, Marquee,
  * SplitFlap. Same contract as the ones above — a live panel, a label the
  * demo-code table can answer, and real text in the markup.
  * ------------------------------------------------------------------------ */
@@ -934,37 +933,6 @@ export function EchoHoverDemo() {
     <Preview label="Echo — pulses on hover">
       <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
         <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
-      </div>
-    </Preview>
-  );
-}
-
-/** Liquid: the loop pours, holds and drains. */
-export function LiquidDemo() {
-  return (
-    <Preview label="Liquid — pour, hold, drain">
-      <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
-        <span style={{ fontSize: "2.4rem", fontWeight: 800 }}>
-          <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
-            REFILL
-          </Liquid>
-        </span>
-        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
-          A waterline inside the glyphs, still bobbing after the pour.
-        </span>
-      </div>
-    </Preview>
-  );
-}
-
-/** Liquid: rises once when it scrolls into view. */
-export function LiquidViewDemo() {
-  return (
-    <Preview label="Liquid — rises on view">
-      <div style={{ fontSize: "1.8rem", fontWeight: 700 }}>
-        <Liquid trigger="view" color="#34d399" level={0.72}>
-          72% left
-        </Liquid>
       </div>
     </Preview>
   );

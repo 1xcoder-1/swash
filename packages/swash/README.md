@@ -36,7 +36,6 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [Wave](#wave) | Bounces letters on a travelling sine wave |
 | [Neon](#neon) | Lights a neon tube with layered glow and a flicker that spares the letters |
 | [SplitFlap](#splitflap) | Lands an airport board on a new line, cell by cell |
-| [Liquid](#liquid) | Pours a liquid surface inside the glyphs and lets it bob |
 | [Echo](#echo) | Trails copies out from under still text, one travelling pulse |
 | [Slice](#slice) | Cuts a phrase along its middle and slides the halves apart |
 | [Marquee](#marquee) | Runs an endless belt of text, pausing on hover |
@@ -300,16 +299,6 @@ through tiles and lands on its character, left to right. The tiles are
 uncontrolled after mount, so a parent re-render can never land the board
 instantly.
 
-## Liquid
-
-```tsx
-<Liquid trigger="loop" color="#38bdf8">REFILL</Liquid>
-```
-
-A liquid surface rises inside the glyphs and keeps bobbing. The level lives
-in a registered custom property, so the rise is one transition and the bob is
-one keyframe — no JavaScript frames.
-
 ## Echo
 
 ```tsx
@@ -390,7 +379,7 @@ Other things worth knowing:
 
 Zero runtime dependencies. React is a peer dependency, which means your app's copy of React is the only one on the page.
 
-The whole package is about 110 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
+The whole package is about 105 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
 
 ```bash
 npm install swash

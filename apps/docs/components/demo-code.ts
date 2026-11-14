@@ -316,14 +316,6 @@ const [landed, setLanded] = useState(true);
   "Echo — pulses on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
   <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
 </div>`,
-  "Liquid — pour, hold, drain": `<span style={{ fontSize: "2.4rem", fontWeight: 800 }}>
-  <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
-    REFILL
-  </Liquid>
-</span>`,
-  "Liquid — rises on view": `<span style={{ fontSize: "1.8rem", fontWeight: 700 }}>
-  <Liquid trigger="view" color="#34d399" level={0.72}>72% left</Liquid>
-</span>`,
   "Slice — the seam opens and closes": `<div style={{ fontSize: "2rem", fontWeight: 700 }}>
   <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
 </div>`,

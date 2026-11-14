@@ -1373,7 +1373,7 @@
   display: block;
   margin: clamp(24px, 4vw, 48px) auto -0.19em;
   font-weight: 500;
-  font-size: clamp(160px, 40vw, 480px);
+  font-size: clamp(96px, 22vw, 480px);
   line-height: 1;
   letter-spacing: -0.01em;
   text-align: center;
@@ -1914,17 +1914,60 @@
   }
   .docs-layout {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 0;
+    padding-top: 0;
   }
+  /* On a narrow screen the groups collapse into one sticky strip of pills
+     that scrolls sideways, instead of a wrapped column that pushes the
+     whole document below a wall of links. */
   .sidebar {
-    position: static;
+    position: sticky;
+    top: 67px;
+    z-index: 40;
     max-height: none;
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: 16px;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--color-sheet) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .sidebar-group {
+    display: contents;
+  }
+  .sidebar-group h4 {
+    display: none;
+  }
+  .sidebar-group a {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 5px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  .doc {
+    padding-top: 24px;
   }
   .footer-top {
     grid-template-columns: 1fr 1fr;
+    gap: 40px 24px;
+    padding: 56px 16px 0;
+  }
+  .footer-logo {
+    grid-column: 1 / -1;
+    width: 48px;
+    height: 48px;
+  }
+  .footer-logo svg {
+    width: 48px;
+    height: 48px;
   }
 }
 @media (max-width: 600px) {
@@ -1936,6 +1979,11 @@
   }
   .footer-top {
     grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 16px 0;
+  }
+  .footer-mark {
+    font-size: clamp(80px, 24vw, 160px);
   }
 }
 

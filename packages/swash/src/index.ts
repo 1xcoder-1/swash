@@ -12,8 +12,6 @@ export { Glitch } from "./glitch/Glitch";
 export type { GlitchProps } from "./glitch/types";
 export { Echo } from "./echo/Echo";
 export type { EchoProps, EchoTrigger } from "./echo/types";
-export { Liquid } from "./liquid/Liquid";
-export type { LiquidProps, LiquidTrigger } from "./liquid/types";
 export { Marquee } from "./marquee/Marquee";
 export type { MarqueeProps } from "./marquee/types";
 export { Neon } from "./neon/Neon";

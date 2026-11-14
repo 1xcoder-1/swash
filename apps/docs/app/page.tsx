@@ -53,7 +53,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 110 KB of ESM for all twenty, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 105 KB of ESM for all nineteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -168,12 +168,6 @@ const COMPONENTS = [
     name: "Split Flap",
     href: "/docs/split-flap",
     desc: "An airport departures board: every cell flips through tiles onto the new character, left to right, as the line changes.",
-    span: 1 as const,
-  },
-  {
-    name: "Liquid",
-    href: "/docs/liquid",
-    desc: "Text as a glass: a liquid surface rises inside the glyphs and keeps bobbing, animated on registered custom properties.",
     span: 1 as const,
   },
   {
@@ -346,7 +340,7 @@ export default function Home() {
       <section className="section wrap" id="components">
         <div className="section-head">
           <p className="eyebrow">The catalogue</p>
-          <h2>Twenty components, one engine</h2>
+          <h2>Nineteen components, one engine</h2>
           <p>
             Each one solves a text problem developers keep re-solving badly.
             Open any row for the full API.
@@ -423,7 +417,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, twenty components, zero dependencies.</p>
+        <p>One install, nineteen components, zero dependencies.</p>
         <div className="hero-actions">
           <Link href="/docs/quickstart" className="btn btn-primary">
             Start with the quickstart
