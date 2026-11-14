@@ -304,4 +304,47 @@ const [landed, setLanded] = useState(true);
   "Wave — rises on view": `<Wave trigger="view" amplitude={12} interval={110}>
   Good morning ☀️
 </Wave>`,
+  "Neon — tube and flicker": `<span style={{ fontSize: "2.2rem", fontWeight: 700 }}>
+  <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+</span>`,
+  "Neon — lights on hover": `<span style={{ fontSize: "1.8rem", fontWeight: 600 }}>
+  <Neon text="VACANCY" color="amber" flicker="none" trigger="hover" />
+</span>`,
+  "Echo — a trail under the text": `<div style={{ fontSize: "1.9rem", fontWeight: 600 }}>
+  <Echo count={4} delay={420} trigger="always">Signal</Echo>
+</div>`,
+  "Echo — pulses on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
+  <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
+</div>`,
+  "Liquid — pour, hold, drain": `<span style={{ fontSize: "2.4rem", fontWeight: 800 }}>
+  <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
+    REFILL
+  </Liquid>
+</span>`,
+  "Liquid — rises on view": `<span style={{ fontSize: "1.8rem", fontWeight: 700 }}>
+  <Liquid trigger="view" color="#34d399" level={0.72}>72% left</Liquid>
+</span>`,
+  "Slice — the seam opens and closes": `<div style={{ fontSize: "2rem", fontWeight: 700 }}>
+  <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
+</div>`,
+  "Slice — parts on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
+  <Slice text="Bisect" trigger="hover" amount={12} />
+</div>`,
+  "Marquee — endless belt": `<div style={{ width: "min(560px, 100%)", fontSize: "1.15rem", fontWeight: 500 }}>
+  <Marquee duration={9000} gap={40}>
+    <span>Free shipping worldwide</span>
+    <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
+    <span>Ships in 24 hours</span>
+    <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
+    <span>30-day returns</span>
+  </Marquee>
+</div>`,
+  "Marquee — reversed, no fade": `<div style={{ width: "min(560px, 100%)", fontSize: "1.05rem", color: "var(--color-muted)" }}>
+  <Marquee duration={7000} gap={28} reverse fade={false}>
+<span>now boarding ·</span> <span>now boarding ·</span> <span>now boarding ·</span> <span>now boarding ·</span>
+  </Marquee>
+</div>`,
+  "Split Flap — the board turns over": `<span style={{ fontFamily: "var(--font-mono)", fontSize: "1.9rem", fontWeight: 700, letterSpacing: "0.06em" }}>
+  <SplitFlap text={status} interval={90} />
+</span>`
 };

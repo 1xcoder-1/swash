@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import type { GlitchProps } from "./types";
 
 /**
@@ -77,7 +77,13 @@ export function Glitch(props: GlitchProps) {
     if (trigger !== "scroll") return;
     const root = rootRef.current;
     if (!root) return;
-    return observeInview(root, { once: false, ratio: 0.25 }, () => setInview(true));
+    // Both edges, so a glitch that has scrolled past stops drawing.
+    return observeInview(
+      root,
+      { once: false, ratio: 0.25 },
+      () => setInview(true),
+      () => setInview(false),
+    );
   }, [trigger]);
 
   const playing = !reduced && (trigger === "always" || (trigger === "hover" && hovering) || (trigger === "scroll" && inview));
@@ -105,11 +111,9 @@ export function Glitch(props: GlitchProps) {
       style={{ ...vars, ...style }}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
-      onFocus={() => trigger === "hover" && setHovering(true)}
-      onBlur={() => trigger === "hover" && setHovering(false)}
-      aria-label={text}
     >
-      {text}
+      <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
+      <span aria-hidden="true">{text}</span>
     </span>
   );
 }

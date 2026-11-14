@@ -26,6 +26,12 @@ const COMPONENTS = [
   "glitch",
   "curved-text",
   "wave",
+  "neon",
+  "echo",
+  "liquid",
+  "slice",
+  "marquee",
+  "split-flap",
 ];
 
 let violations = 0;

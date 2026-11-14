@@ -22,6 +22,12 @@ const NAMES = [
   "FlipWords",
   "Glitch",
   "CurvedText",
+  "Neon",
+  "Echo",
+  "Liquid",
+  "Slice",
+  "Marquee",
+  "SplitFlap",
   "Wave",
 ];
 
@@ -71,7 +77,7 @@ const [esmKb, cjsKb] = [kb(esmPath), kb(cjsPath)];
 // The spec sets no budget, so this is a tripwire rather than a target: a bundle
 // that grows past this has probably grown a dependency or a second copy of
 // something, and that is worth a look before it ships.
-const LIMIT_KB = 90;
+const LIMIT_KB = 160;
 if (esmKb > LIMIT_KB) report(`esm dist is ${esmKb} KB, over the ${LIMIT_KB} KB tripwire`);
 
 if (problems > 0) {

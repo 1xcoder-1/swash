@@ -5,7 +5,7 @@ import { splitGraphemes, splitWordTokens } from "../shared/grapheme";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
 import { ms, pixels } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import type { BlurRevealProps } from "./types";
 
 /**
@@ -110,15 +110,18 @@ export function BlurReveal(props: BlurRevealProps) {
     ["--swash-blur-duration" as string]: `${take}ms`,
   } as React.CSSProperties;
 
-  const mergedStyle = { ...vars, ...style };
+  const mergedStyle = {
+    ...vars,
+    ...style,
+    // HTML collapses a newline into a space, which would make "line" mode
+    // read as word mode: the breaks the tokens were split on have to survive
+    // into the layout, or the granularity is a lie.
+    whiteSpace: by === "line" ? ("pre-line" as const) : undefined,
+  } as React.CSSProperties;
 
   return (
-    <span
-      ref={rootRef}
-      className={rootCls}
-      style={mergedStyle}
-      aria-label={children}
-    >
+    <span ref={rootRef} className={rootCls} style={mergedStyle}>
+      <span data-swash-sr="" style={srOnlyStyle}>{children}</span>
       {pieces.map((p, i) => {
         if (p.space) {
           // Bare text between animated pieces would still be read by a

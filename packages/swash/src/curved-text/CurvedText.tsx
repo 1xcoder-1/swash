@@ -2,7 +2,8 @@
 import { useId } from "react";
 import { useReducedMotion } from "../shared/motion";
 import { pixels } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
+import { warnOnce } from "../shared/warn";
 import type { CurvedTextProps } from "./types";
 
 /**
@@ -41,6 +42,16 @@ export function CurvedText(props: CurvedTextProps) {
 
   const r = pixels(radius, 60, "radius", "CurvedText");
   const ls = pixels(spacing, 0, "spacing", "CurvedText");
+  // A revolution in negative time is not a faster one: an invalid duration is
+  // thrown away by the browser and the ring would sit still with nothing said.
+  const spin = speed;
+  if (!(Number.isFinite(spin) && spin > 0)) {
+    warnOnce(
+      "curved-text:speed",
+      `CurvedText speed wants a positive number of seconds, got ${speed}. Using 12.`,
+    );
+  }
+  const speedS = Number.isFinite(spin) && spin > 0 ? spin : 12;
   const reduced = useReducedMotion();
   useStyle("swash-curved-text", CURVED_TEXT_CSS);
 
@@ -49,8 +60,8 @@ export function CurvedText(props: CurvedTextProps) {
   const uid = useId();
   const pathId = `swash-curved-path-${uid.replace(/:/g, "")}`;
 
-  // A circle drawn as a single arc so textPath can flow along it.
-  // Starts at (0, -r) top and sweeps the full circumference clockwise.
+  // A circle drawn as a single arc so textPath can flow along it. Starts at
+  // (r, 0) — three o'clock — and sweeps the full circumference clockwise.
   const size = r * 2;
   const d = [
     `M ${r} 0`,
@@ -59,7 +70,7 @@ export function CurvedText(props: CurvedTextProps) {
   ].join(" ");
 
   const vars = {
-    ["--swash-curved-speed" as string]: `${speed}s`,
+    ["--swash-curved-speed" as string]: `${speedS}s`,
   } as React.CSSProperties;
 
   const cls = [

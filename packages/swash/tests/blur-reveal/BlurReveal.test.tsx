@@ -40,7 +40,8 @@ describe("BlurReveal", () => {
       <BlurReveal by="word">Hello world</BlurReveal>,
     );
     const root = container.firstChild as HTMLElement;
-    expect(root.getAttribute("aria-label")).toBe("Hello world");
+    expect(root.querySelector("[data-swash-sr]")?.textContent).toBe("Hello world");
+    expect(root.getAttribute("aria-label")).toBeNull();
     for (const piece of root.querySelectorAll(".swash-blur-piece")) {
       expect(piece.getAttribute("aria-hidden")).toBe("true");
     }

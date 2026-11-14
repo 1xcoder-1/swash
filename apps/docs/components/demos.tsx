@@ -16,6 +16,12 @@ import {
   Glitch,
   CurvedText,
   Wave,
+  Neon,
+  Echo,
+  Liquid,
+  Slice,
+  Marquee,
+  SplitFlap,
 } from "swash";
 import { Preview } from "./preview";
 import { PixelButton } from "./pixel-button";
@@ -868,6 +874,180 @@ export function WaveViewDemo() {
         <Wave trigger="view" amplitude={12} interval={110}>
           Good morning ☀️
         </Wave>
+      </div>
+    </Preview>
+  );
+}
+
+/* --------------------------------------------------------------------------
+ * The second wave of components: Neon, Echo, Liquid, Slice, Marquee,
+ * SplitFlap. Same contract as the ones above — a live panel, a label the
+ * demo-code table can answer, and real text in the markup.
+ * ------------------------------------------------------------------------ */
+
+/** Neon: a lit tube with its soft flicker. */
+export function NeonDemo() {
+  return (
+    <Preview label="Neon — tube and flicker">
+      <div style={{ display: "grid", gap: 16, justifyItems: "center" }}>
+        <span style={{ fontSize: "2.2rem", fontWeight: 700 }}>
+          <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+        </span>
+        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
+          The glow flickers; the letters hold steady.
+        </span>
+      </div>
+    </Preview>
+  );
+}
+
+/** Neon: a sign that hums only while the pointer is on it. */
+export function NeonHoverDemo() {
+  return (
+    <Preview label="Neon — lights on hover">
+      <div style={{ display: "grid", gap: 16, justifyItems: "center" }}>
+        <span style={{ fontSize: "1.8rem", fontWeight: 600 }}>
+          <Neon text="VACANCY" color="amber" flicker="none" trigger="hover" />
+        </span>
+        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
+          Hover the sign to switch it on.
+        </span>
+      </div>
+    </Preview>
+  );
+}
+
+/** Echo: a travelling pulse under still text. */
+export function EchoDemo() {
+  return (
+    <Preview label="Echo — a trail under the text">
+      <div style={{ fontSize: "1.9rem", fontWeight: 600 }}>
+        <Echo count={4} delay={420} trigger="always">Signal</Echo>
+      </div>
+    </Preview>
+  );
+}
+
+/** Echo: keyed to the pointer instead of running forever. */
+export function EchoHoverDemo() {
+  return (
+    <Preview label="Echo — pulses on hover">
+      <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
+        <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
+      </div>
+    </Preview>
+  );
+}
+
+/** Liquid: the loop pours, holds and drains. */
+export function LiquidDemo() {
+  return (
+    <Preview label="Liquid — pour, hold, drain">
+      <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
+        <span style={{ fontSize: "2.4rem", fontWeight: 800 }}>
+          <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
+            REFILL
+          </Liquid>
+        </span>
+        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
+          A waterline inside the glyphs, still bobbing after the pour.
+        </span>
+      </div>
+    </Preview>
+  );
+}
+
+/** Liquid: rises once when it scrolls into view. */
+export function LiquidViewDemo() {
+  return (
+    <Preview label="Liquid — rises on view">
+      <div style={{ fontSize: "1.8rem", fontWeight: 700 }}>
+        <Liquid trigger="view" color="#34d399" level={0.72}>
+          72% left
+        </Liquid>
+      </div>
+    </Preview>
+  );
+}
+
+/** Slice: the loop parts the halves and closes them. */
+export function SliceDemo() {
+  return (
+    <Preview label="Slice — the seam opens and closes">
+      <div style={{ fontSize: "2rem", fontWeight: 700 }}>
+        <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
+      </div>
+    </Preview>
+  );
+}
+
+/** Slice: parts under the pointer, closes when it leaves. */
+export function SliceHoverDemo() {
+  return (
+    <Preview label="Slice — parts on hover">
+      <div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
+        <Slice text="Bisect" trigger="hover" amount={12} />
+      </div>
+    </Preview>
+  );
+}
+
+/** Marquee: an endless belt with a separator. */
+export function MarqueeDemo() {
+  return (
+    <Preview label="Marquee — endless belt">
+      <div style={{ width: "min(560px, 100%)", fontSize: "1.15rem", fontWeight: 500 }}>
+        <Marquee duration={9000} gap={40}>
+          <span>Free shipping worldwide</span>
+          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
+          <span>Ships in 24 hours</span>
+          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
+          <span>30-day returns</span>
+          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
+        </Marquee>
+      </div>
+    </Preview>
+  );
+}
+
+/** Marquee: the other direction. */
+export function MarqueeReverseDemo() {
+  return (
+    <Preview label="Marquee — reversed, no fade">
+      <div style={{ width: "min(560px, 100%)", fontSize: "1.05rem", color: "var(--color-muted)" }}>
+        <Marquee duration={7000} gap={28} reverse fade={false}>
+          <span>now boarding ·</span>
+          <span>now boarding ·</span>
+          <span>now boarding ·</span>
+          <span>now boarding ·</span>
+        </Marquee>
+      </div>
+    </Preview>
+  );
+}
+
+const FLIGHTS = ["DELAYED", "BOARDING", "DEPARTED", "ON TIME"];
+
+/** Split Flap: a departures board landing on each status. */
+export function SplitFlapDemo() {
+  const reduced = useReducedMotion();
+  const i = useCycle(FLIGHTS.length, 2600, !reduced);
+  return (
+    <Preview label="Split Flap — the board turns over">
+      <div style={{ display: "grid", gap: 12, justifyItems: "center" }}>
+        <span
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "1.9rem",
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+          }}
+        >
+          <SplitFlap text={FLIGHTS[i]} interval={90} />
+        </span>
+        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
+          Every differing cell flips onto its character, left to right.
+        </span>
       </div>
     </Preview>
   );

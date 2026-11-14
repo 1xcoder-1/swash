@@ -23,7 +23,10 @@ async function renderScrambled(props: ScrambleProps) {
   vi.resetModules();
   const { Scramble } = await import("../../src/scramble/Scramble");
   const view = render(<Scramble {...props} />);
-  const textEl = view.container.querySelector("span > span") as HTMLElement;
+  // The first span is the screen-reader copy; the churn happens in the second.
+  const textEl = view.container.querySelector(
+    'span > span[aria-hidden="true"]',
+  ) as HTMLElement;
   return {
     ...view,
     root: view.container.firstChild as HTMLElement,

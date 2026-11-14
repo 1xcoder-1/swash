@@ -56,7 +56,7 @@ describe("Wave", () => {
       </Wave>,
     );
     const root = container.firstChild as HTMLElement;
-    expect(root.getAttribute("aria-label")).toBe("Hello");
+    expect(root.querySelector("[data-swash-sr]")?.textContent).toBe("Hello");
     for (const piece of root.querySelectorAll(".swash-wave-piece")) {
       expect(piece.getAttribute("aria-hidden")).toBe("true");
     }

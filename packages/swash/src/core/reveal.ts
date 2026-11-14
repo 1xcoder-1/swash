@@ -66,7 +66,7 @@ function lineSteps(elements: HTMLElement[]): number[] {
 /**
  * The framework-free reveal engine. It finds the pieces the host markup already
  * rendered, animates them in with the Web Animations API, and hands back a
- * disposer that cancels whatever is mid-flight — so React, Vue and Svelte each
+ * disposer that cancels whatever is mid-flight — so any framework binding each
  * just render the pieces and call this on mount.
  */
 export function runReveal(root: HTMLElement, cfg: RevealRun): () => void {

@@ -62,8 +62,8 @@ export interface FrameControllerArgs {
  * asked about the box itself, and only when the frame is at rest: a state
  * update per frame of the sweep would be a re-render per frame, and the
  * animation is the only reason not to have one. Everything it touches is a DOM
- * element reached through the getters above, so the same engine drives React,
- * Vue and Svelte bindings.
+ * element reached through the getters above, so the same engine drives any
+ * framework binding.
  */
 export function createFrameController({
   getRoot,

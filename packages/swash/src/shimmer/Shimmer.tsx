@@ -6,10 +6,11 @@ import { useStyle } from "../shared/style";
 import type { ShimmerProps } from "./types";
 
 /**
- * Sweeps a highlight across the child text. The beam itself lives in a
- * pseudo-element painted with `background-clip: text`, and the animation
- * shifts only `transform: translate3d` on that layer, so the browser keeps it
- * on the compositor and does not re-rasterise the glyphs each frame.
+ * Sweeps a highlight across the child text. The beam is its own layer painted
+ * with `background-clip: text` and animated on `background-position`, so a
+ * frame of the sweep repaints only that layer's gradient — the base copy of
+ * the text underneath is never touched. Text stays one semantic copy per
+ * layer, and the DOM carries no per-letter nodes at all.
  *
  * Selection colour is restored through an explicit `::selection` rule; without
  * it, `color: transparent` makes the highlight invisible on macOS.

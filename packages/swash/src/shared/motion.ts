@@ -30,7 +30,7 @@ function subscribe(listener: Listener): () => void {
 }
 
 /**
- * Non-hook reduced-motion subscription for the Vue and Svelte adapters, which
+ * Non-hook reduced-motion subscription for other framework adapters, which
  * have no React store to read through. It joins the same fan-out the hook uses,
  * so one media-query listener still serves the whole page, and fires once up
  * front with the current value.

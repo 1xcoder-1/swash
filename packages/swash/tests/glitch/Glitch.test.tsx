@@ -19,21 +19,25 @@ afterEach(() => {
 });
 
 describe("Glitch", () => {
-  it("keeps one real text node in the DOM", async () => {
+  it("keeps one real text node the reader sees, plus one for readers out loud", async () => {
     const { Glitch } = await import("../../src/glitch/Glitch");
     const { container } = render(<Glitch text="SYSTEM REBOOT" trigger="always" />);
-    // Only one child text — the pseudo-element copies live in CSS, not in markup.
+    // The visible text is one aria-hidden node; the screen-reader copy is a
+    // real node styled out of sight. The pseudo-element copies live in CSS.
     const root = container.firstChild as HTMLElement;
-    expect(root.childNodes).toHaveLength(1);
-    expect(root.textContent).toBe("SYSTEM REBOOT");
+    const sr = root.querySelector("[data-swash-sr]");
+    const visible = root.querySelector('span[aria-hidden="true"]');
+    expect(sr?.textContent).toBe("SYSTEM REBOOT");
+    expect(visible?.textContent).toBe("SYSTEM REBOOT");
     expect(root.getAttribute("data-text")).toBe("SYSTEM REBOOT");
   });
 
-  it("is announced exactly once via aria-label", async () => {
+  it("announces once through the hidden copy, not a bare aria-label", async () => {
     const { Glitch } = await import("../../src/glitch/Glitch");
     const { container } = render(<Glitch text="Error 404" trigger="hover" />);
     const root = container.firstChild as HTMLElement;
-    expect(root.getAttribute("aria-label")).toBe("Error 404");
+    expect(root.querySelector("[data-swash-sr]")?.textContent).toBe("Error 404");
+    expect(root.getAttribute("aria-label")).toBeNull();
   });
 
   it("drops the animation when reduced motion is on", async () => {

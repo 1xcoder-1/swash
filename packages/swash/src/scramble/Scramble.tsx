@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { useIsomorphicLayoutEffect } from "../shared/client";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
+import { srOnlyStyle } from "../shared/style";
 import {
   createScrambler,
   DEFAULT_CHARSET,
@@ -18,7 +19,7 @@ import type { ScrambleProps } from "./types";
  * same number of graphemes.
  *
  * The churn itself lives in the framework-free `createScrambler`; this file is
- * only the React binding, so the same engine can drive Vue and Svelte too.
+ * only the React binding, so the same engine can drive other bindings too.
  */
 export function Scramble(props: ScrambleProps) {
   const {
@@ -100,7 +101,8 @@ export function Scramble(props: ScrambleProps) {
   }, [trigger]);
 
   return (
-    <span ref={rootRef} className={className} style={style} aria-label={text}>
+    <span ref={rootRef} className={className} style={style}>
+      <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
       <span ref={textRef} aria-hidden="true">
         {text}
       </span>

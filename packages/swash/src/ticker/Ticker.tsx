@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import type { TickerProps } from "./types";
 
 /**
@@ -135,7 +135,11 @@ export function Ticker(props: TickerProps) {
   const rendered = tokens.map((t, i) => {
     if (!t.isDigit) {
       return (
-        <span key={i} className="swash-ticker-static">
+        // The key carries the kind as well as the position: when the digit
+        // count changes (999 -> 1,000), a static token and a column can land
+        // on the same index. Sharing a key would reuse a strip as a comma and
+        // mount a fresh wheel where an old one should have rolled.
+        <span key={`${i}-static`} className="swash-ticker-static">
           {t.text}
         </span>
       );
@@ -144,7 +148,7 @@ export function Ticker(props: TickerProps) {
     const current = digitIndex;
     const digit = Number(t.text);
     return (
-      <span key={i} className="swash-ticker-col">
+      <span key={`${i}-digit`} className="swash-ticker-col">
         <span
           className={reduced ? "swash-ticker-strip reduced" : "swash-ticker-strip"}
           style={{
@@ -187,7 +191,7 @@ export function Ticker(props: TickerProps) {
     >
       {/* Hidden text so screen readers get the whole number in one pass and
           assistive tech is not reading ten separate digits one by one. */}
-      <span className="swash-sr-only" style={{ position: "absolute", width: 1, height: 1, padding: 0, margin: -1, overflow: "hidden", clip: "rect(0,0,0,0)", whiteSpace: "nowrap", border: 0 }}>
+      <span data-swash-sr="" style={srOnlyStyle}>
         {serverText}
       </span>
       {/* The columns are decorative once we've announced the number. */}

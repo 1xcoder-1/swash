@@ -53,7 +53,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 83 KB of ESM for all fourteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 110 KB of ESM for all twenty, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -156,6 +156,42 @@ const COMPONENTS = [
     name: "Wave",
     href: "/docs/wave",
     desc: "Kinetic sine-wave letters that hover, scroll or loop — one keyframe plus a per-letter negative delay, no per-frame JS.",
+    span: 1 as const,
+  },
+  {
+    name: "Neon",
+    href: "/docs/neon",
+    desc: "A neon tube: layered glow derived from one ink, with a steps() flicker that only the light loses — the letters hold.",
+    span: 1 as const,
+  },
+  {
+    name: "Split Flap",
+    href: "/docs/split-flap",
+    desc: "An airport departures board: every cell flips through tiles onto the new character, left to right, as the line changes.",
+    span: 1 as const,
+  },
+  {
+    name: "Liquid",
+    href: "/docs/liquid",
+    desc: "Text as a glass: a liquid surface rises inside the glyphs and keeps bobbing, animated on registered custom properties.",
+    span: 1 as const,
+  },
+  {
+    name: "Echo",
+    href: "/docs/echo",
+    desc: "A trail of copies that expands out from under still text and fades, staggered so it reads as one travelling pulse.",
+    span: 1 as const,
+  },
+  {
+    name: "Slice",
+    href: "/docs/slice",
+    desc: "The phrase cut along its middle; the halves slide apart on cue and come back, with no seam to measure.",
+    span: 1 as const,
+  },
+  {
+    name: "Marquee",
+    href: "/docs/marquee",
+    desc: "An endless belt of text: two copies on one track, half a width per loop, pausing on hover and fading at the edges.",
     span: 1 as const,
   },
 ];
@@ -310,7 +346,7 @@ export default function Home() {
       <section className="section wrap" id="components">
         <div className="section-head">
           <p className="eyebrow">The catalogue</p>
-          <h2>Fourteen components, one engine</h2>
+          <h2>Twenty components, one engine</h2>
           <p>
             Each one solves a text problem developers keep re-solving badly.
             Open any row for the full API.
@@ -387,7 +423,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, fourteen components, zero dependencies.</p>
+        <p>One install, twenty components, zero dependencies.</p>
         <div className="hero-actions">
           <Link href="/docs/quickstart" className="btn btn-primary">
             Start with the quickstart

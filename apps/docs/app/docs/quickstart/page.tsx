@@ -15,7 +15,7 @@ export default function Quickstart() {
       <InstallTabs />
       <p>
         swash is a single ESM + CJS package with React 18+ as its only peer
-        dependency. It weighs about 83 KB for all fourteen components before
+        dependency. It weighs about 110 KB for all twenty components before
         gzip, and each one tree-shakes alone.
       </p>
 

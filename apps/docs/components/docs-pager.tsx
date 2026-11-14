@@ -22,6 +22,12 @@ const ORDER = [
   { href: "/docs/glitch", title: "Glitch" },
   { href: "/docs/curved-text", title: "Curved Text" },
   { href: "/docs/wave", title: "Wave" },
+  { href: "/docs/neon", title: "Neon" },
+  { href: "/docs/echo", title: "Echo" },
+  { href: "/docs/liquid", title: "Liquid" },
+  { href: "/docs/slice", title: "Slice" },
+  { href: "/docs/marquee", title: "Marquee" },
+  { href: "/docs/split-flap", title: "Split Flap" },
 ];
 
 /**

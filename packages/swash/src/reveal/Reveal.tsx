@@ -4,7 +4,7 @@ import { useIsomorphicLayoutEffect } from "../shared/client";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import {
   REVEAL_CSS,
@@ -21,7 +21,7 @@ import type { RevealProps } from "./types";
  * hydration never sees a difference and the reader never sees a flash.
  *
  * The animating lives in the framework-free `runReveal`; this file only renders
- * the pieces and drives it, so the same engine can drive Vue and Svelte too.
+ * the pieces and drives it, so the same engine can drive other bindings too.
  */
 export function Reveal(props: RevealProps) {
   const {
@@ -105,16 +105,10 @@ export function Reveal(props: RevealProps) {
   }, [startOnView, once]);
 
   return (
-    <span
-      ref={rootRef}
-      className={className}
-      style={style}
-      // The split pieces are visual only. Reading them one at a time makes a
-      // screen reader spell a heading out letter by letter, so the whole line is
-      // announced once from here and every piece is hidden from assistive tech —
-      // the same contract Typewriter and Scramble keep.
-      aria-label={text ?? undefined}
-    >
+    <span ref={rootRef} className={className} style={style}>
+      {/* A real node carries the line for assistive tech; the split pieces are
+          hidden from it, so a heading is announced once, never spelled out. */}
+      {text !== null ? <span data-swash-sr="" style={srOnlyStyle}>{text}</span> : null}
       {pieces.map((piece, i) =>
         piece.animated ? (
           <span key={i} data-swash-reveal="" aria-hidden="true">

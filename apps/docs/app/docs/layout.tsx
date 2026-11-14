@@ -33,6 +33,12 @@ const GROUPS = [
       { href: "/docs/glitch", label: "Glitch" },
       { href: "/docs/curved-text", label: "Curved Text" },
       { href: "/docs/wave", label: "Wave" },
+      { href: "/docs/neon", label: "Neon" },
+      { href: "/docs/echo", label: "Echo" },
+      { href: "/docs/liquid", label: "Liquid" },
+      { href: "/docs/slice", label: "Slice" },
+      { href: "/docs/marquee", label: "Marquee" },
+      { href: "/docs/split-flap", label: "Split Flap" },
     ],
   },
 ];

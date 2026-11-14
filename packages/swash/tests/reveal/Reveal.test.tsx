@@ -21,6 +21,13 @@ async function advance(ms: number) {
   });
 }
 
+/** Text the reader sees: the screen-reader copy carries the same line, so it
+ *  is taken back out before the assertion. */
+function visibleText(container: HTMLElement) {
+  const sr = container.querySelector("[data-swash-sr]");
+  return (container.textContent ?? "").replace(sr?.textContent ?? "", "");
+}
+
 function pieceEls(container: HTMLElement) {
   return [...container.querySelectorAll<HTMLElement>("[data-swash-reveal]")];
 }
@@ -73,7 +80,7 @@ afterEach(() => {
 describe("Reveal", () => {
   it("sends the whole line in the markup and animates nothing until it arrives", async () => {
     const { container, pieces } = await renderRevealed({ children: "Ship it" });
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     const units = pieces();
     expect(units).toHaveLength(2);
     expect(units.map((el) => el.style.opacity)).toEqual(["", ""]);
@@ -87,7 +94,7 @@ describe("Reveal", () => {
     });
     arrive();
     const units = pieces();
-    expect(container.textContent).toBe("Ship it out");
+    expect(visibleText(container)).toBe("Ship it out");
     expect(units).toHaveLength(3);
     expect(units.map((el) => animateCallCount(el))).toEqual([1, 1, 1]);
     expect(units.map((el) => animationAt(el, 0)?.options.delay)).toEqual([0, 40, 80]);
@@ -105,12 +112,13 @@ describe("Reveal", () => {
     const { container, pieces, root } = await renderRevealed({
       children: "Read me as one line",
     });
-    expect(root.getAttribute("aria-label")).toBe("Read me as one line");
+    const sr = root.querySelector("[data-swash-sr]");
+    expect(sr?.textContent).toBe("Read me as one line");
     const units = pieces();
     expect(units.length).toBeGreaterThan(1);
     expect(units.every((el) => el.getAttribute("aria-hidden") === "true")).toBe(true);
     // The visible text is unchanged, so nothing is lost without a reader.
-    expect(container.textContent).toBe("Read me as one line");
+    expect(visibleText(container)).toBe("Read me as one line");
   });
 
   it("reveals again when once is off and the line comes back", async () => {
@@ -165,7 +173,7 @@ describe("Reveal", () => {
     });
     arrive();
     expect(pieces()).toHaveLength(1);
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     expect(animateCallCount(pieces()[0]!)).toBe(1);
   });
 
@@ -174,7 +182,7 @@ describe("Reveal", () => {
     const { arrive, container, pieces } = await renderRevealed({ children: "Ship it" });
     arrive();
     expect(pieces().map((el) => animateCallCount(el))).toEqual([0, 0]);
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
   });
 
   it("does not restart when a parent re-renders around it", async () => {
@@ -199,7 +207,7 @@ describe("Reveal", () => {
       children: <em>Ship it</em>,
     });
     arrive();
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     expect(pieces()).toHaveLength(0);
     expect(warn.mock.calls.filter((call) => String(call[0]).includes("string"))).toHaveLength(1);
   });

@@ -16,6 +16,12 @@ import {
   Ticker,
   Typewriter,
   Wave,
+  Neon,
+  Echo,
+  Liquid,
+  Slice,
+  Marquee,
+  SplitFlap,
 } from "swash";
 import { CopyButton } from "./copy-button";
 import { Highlighted } from "./highlight";
@@ -328,6 +334,12 @@ const BODIES: Record<string, () => ReactNode> = {
   glitch: GlitchBody,
   "curved-text": CurvedTextBody,
   wave: WaveBody,
+  neon: NeonBody,
+  "split-flap": SplitFlapBody,
+  liquid: LiquidBody,
+  echo: EchoBody,
+  slice: SliceBody,
+  marquee: MarqueeBody,
 };
 
 function ExampleCard({ id }: { id: string }) {
@@ -372,6 +384,73 @@ export function ExampleGallery() {
       {PRESETS.map((p) => (
         <ExampleCard key={p.id} id={p.id} />
       ))}
+    </div>
+  );
+}
+
+
+function NeonBody() {
+  return (
+    <div style={{ fontSize: 34, fontWeight: 700 }}>
+      <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+    </div>
+  );
+}
+
+function SplitFlapBody() {
+  const flights = ["DELAYED", "BOARDING", "DEPARTED", "ON TIME"];
+  const [i, setI] = useState(0);
+  return (
+    <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
+      <span style={{ fontFamily: "var(--font-mono)", fontSize: 28, fontWeight: 700, letterSpacing: "0.06em" }}>
+        <SplitFlap text={flights[i]} interval={90} />
+      </span>
+      <button
+        type="button"
+        className="preview-replay"
+        onClick={() => setI((n) => (n + 1) % flights.length)}
+      >
+        Next status
+      </button>
+    </div>
+  );
+}
+
+function LiquidBody() {
+  return (
+    <div style={{ fontSize: 40, fontWeight: 800 }}>
+      <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
+        REFILL
+      </Liquid>
+    </div>
+  );
+}
+
+function EchoBody() {
+  return (
+    <div style={{ fontSize: 32, fontWeight: 600 }}>
+      <Echo count={4} delay={420} trigger="always">Signal</Echo>
+    </div>
+  );
+}
+
+function SliceBody() {
+  return (
+    <div style={{ fontSize: 34, fontWeight: 700 }}>
+      <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
+    </div>
+  );
+}
+
+function MarqueeBody() {
+  return (
+    <div style={{ width: "min(480px, 100%)", fontSize: 18, fontWeight: 500 }}>
+      <Marquee duration={9000} gap={40}>
+        <span>Free shipping worldwide</span>
+        <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
+        <span>Ships in 24 hours</span>
+        <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
+      </Marquee>
     </div>
   );
 }

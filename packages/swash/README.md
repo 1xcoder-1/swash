@@ -27,6 +27,19 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [Morph](#morph) | Changes one word into another, moving only the part that differs |
 | [Counter](#counter) | Counts a number up when it scrolls into view |
 | [Marker](#marker) | Draws a hand-drawn highlight, underline, strike, ring or box over a phrase |
+| [Ticker](#ticker) | Rolls odometer digits to a new value without shifting the row |
+| [Shimmer](#shimmer) | Sweeps an iridescent beam across a title or badge |
+| [BlurReveal](#blurreveal) | Brings words into focus from a blur, one after another |
+| [FlipWords](#flipwords) | Cycles phrases with a 3D flip, holding the widest word's box |
+| [Glitch](#glitch) | Splits a phrase into RGB channel copies with a clip-path jitter |
+| [CurvedText](#curvedtext) | Runs text around a circle on a native SVG textPath |
+| [Wave](#wave) | Bounces letters on a travelling sine wave |
+| [Neon](#neon) | Lights a neon tube with layered glow and a flicker that spares the letters |
+| [SplitFlap](#splitflap) | Lands an airport board on a new line, cell by cell |
+| [Liquid](#liquid) | Pours a liquid surface inside the glyphs and lets it bob |
+| [Echo](#echo) | Trails copies out from under still text, one travelling pulse |
+| [Slice](#slice) | Cuts a phrase along its middle and slides the halves apart |
+| [Marquee](#marquee) | Runs an endless belt of text, pausing on hover |
 
 Every example below is copy-pasteable. Import the names you use from `swash`:
 
@@ -200,6 +213,137 @@ A phrase that wraps gets one stroke per line, fitted to the line boxes the brows
 
 No Tailwind, no CSS framework, no config. The named inks come with a dark-mode value each, through a stylesheet the component writes once per page.
 
+## Ticker
+
+```tsx
+<Ticker value={499.95} prefix="$" duration={600} />
+```
+
+Odometer digits on vertical strips, tabular-num locked so a change from
+"199" to "200" never shoves the row. Punctuation sits still; onDone fires
+when the last column lands.
+
+## Shimmer
+
+```tsx
+<Shimmer duration={2400} baseColor="#94a3b8">Paid plan</Shimmer>
+```
+
+An iridescent beam through `background-clip: text` on its own layer, so the
+base copy is never repainted. Pauses itself when it scrolls off-screen.
+
+## BlurReveal
+
+```tsx
+<BlurReveal by="word" stagger={60}>Comes into focus</BlurReveal>
+```
+
+A depth-of-field entrance: pieces start blurred and scaled up, then settle
+sharp with a stagger. One CSS transition per piece, no per-frame script.
+
+## FlipWords
+
+```tsx
+<FlipWords words={["ultra-fast", "bulletproof", "accessible"]} />
+```
+
+A 3D cycler that reserves the widest word's box so nothing around it shifts,
+and freezes when the tab is backgrounded instead of burst-flipping on return.
+
+## Glitch
+
+```tsx
+<Glitch text="SYSTEM REBOOT" trigger="hover" intensity="medium" />
+```
+
+Chromatic-aberration glitch drawn by ::before and ::after from `attr(data-text)`,
+so the DOM carries one clean text node — copy/paste and screen readers see the
+phrase once.
+
+## CurvedText
+
+```tsx
+<CurvedText text="AROUND WE GO • " radius={60} speed={12} />
+```
+
+Text on a circle through a native SVG `<textPath>`, rotated by one
+compositor keyframe. Glyph spacing and hinting stay the renderer's job.
+
+## Wave
+
+```tsx
+<Wave trigger="loop" amplitude={8} interval={80}>Hello there</Wave>
+```
+
+Each grapheme gets an index CSS variable and one shared keyframe runs with a
+per-letter negative delay — the offset is what makes the wave travel, with no
+per-frame JavaScript.
+
+## Neon
+
+```tsx
+<Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+```
+
+A neon tube: two text-shadow glow layers derived from one ink through
+`color-mix()`, and a steps() flicker that only the light loses — the letters
+hold steady. Reduced motion keeps the glow, drops the flicker.
+
+## SplitFlap
+
+```tsx
+<SplitFlap text={status} interval={90} />
+```
+
+An airport departures board: every cell that differs from the new line spins
+through tiles and lands on its character, left to right. The tiles are
+uncontrolled after mount, so a parent re-render can never land the board
+instantly.
+
+## Liquid
+
+```tsx
+<Liquid trigger="loop" color="#38bdf8">REFILL</Liquid>
+```
+
+A liquid surface rises inside the glyphs and keeps bobbing. The level lives
+in a registered custom property, so the rise is one transition and the bob is
+one keyframe — no JavaScript frames.
+
+## Echo
+
+```tsx
+<Echo count={4} delay={420}>Signal</Echo>
+```
+
+Copies of the text expand out from under it and fade, staggered with negative
+delays so the trail reads as one travelling pulse. The reader's text stays
+one selectable, readable phrase.
+
+## Slice
+
+```tsx
+<Slice text="DIVIDED" trigger="hover" amount={14} />
+```
+
+The phrase cut along its middle: two copies clipped with `clip-path: inset`
+stacked exactly over one another, so the seam never has to be measured. The
+halves part on cue and come back.
+
+## Marquee
+
+```tsx
+<Marquee duration={9000} gap={40}>
+  <span>Free shipping worldwide</span>
+  <span aria-hidden>✦</span>
+  <span>Ships in 24 hours</span>
+</Marquee>
+```
+
+Two copies of the content on one track that slides exactly half its width
+before snapping back — invisible, because the second copy is standing where
+the first was. One keyframe, on the compositor.
+
 ## Why this exists
 
 The effects in this space are mostly copy-pasted files and packages that stopped being maintained. The bugs below are the ones developers kept reporting against them, and each one is a test in this repo:
@@ -246,7 +390,7 @@ Other things worth knowing:
 
 Zero runtime dependencies. React is a peer dependency, which means your app's copy of React is the only one on the page.
 
-The whole package is about 53 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
+The whole package is about 110 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
 
 ```bash
 npm install swash

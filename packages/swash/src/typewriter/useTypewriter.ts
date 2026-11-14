@@ -10,8 +10,7 @@ import type { TypewriterView, UseTypewriterOptions } from "./types";
  * `../core/typewriter`. It owns only what React needs to own: the state to
  * publish into, the per-grapheme element registry the machine blurs through,
  * and the decision of when to start or stop a run. The typing itself, and the
- * timing that made it breakable elsewhere, live in the shared engine so Vue and
- * Svelte drive the exact same machine.
+ * timing that made it breakable elsewhere, live in the shared engine so other bindings drive the exact same machine.
  */
 export function useTypewriter(o: UseTypewriterOptions): TypewriterView {
   const feel = resolveFeel(o.feel);

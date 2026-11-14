@@ -93,7 +93,7 @@ export interface MarkerControllerArgs {
  * the layer once, as an empty svg, and never arranges the paths inside it: a
  * re-render that left the mark alone should not redraw it. Every element the
  * engine touches comes through the getters above, so the same machine drives
- * React, Vue and Svelte bindings.
+ * any framework binding.
  */
 export function createMarkerController({
   getRoot,
@@ -123,12 +123,15 @@ export function createMarkerController({
     last = null;
   };
 
-  /** The line boxes the words actually occupy, in the root's own space. */
+  /** The line boxes the words actually occupy, in the layer's own space. The
+   *  layer sits at the root's padding-box origin, so measuring against it —
+   *  not against the root's border box — keeps the strokes put even when a
+   *  consumer hangs a border on the root. */
   const lines = (): Box[] => {
-    const root = getRoot();
+    const layer = getLayer();
     const text = getText();
-    if (!root || !text) return [];
-    const origin = root.getBoundingClientRect();
+    if (!layer || !text) return [];
+    const origin = layer.getBoundingClientRect();
     const range = document.createRange();
     range.selectNodeContents(text);
     const found: Box[] = [];

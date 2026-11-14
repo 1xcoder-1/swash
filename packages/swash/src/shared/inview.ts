@@ -5,7 +5,9 @@ export interface InviewOptions {
 }
 
 interface Sub {
-  fn: () => void;
+  onEnter: () => void;
+  /** Fired when the element scrolls out again. Omitted for enter-only use. */
+  onLeave?: () => void;
   once: boolean;
 }
 
@@ -22,14 +24,29 @@ interface Entry {
  */
 const registry = new Map<string, Entry>();
 
+/**
+ * An environment with no IntersectionObserver (an old engine, or a crawler
+ * that runs scripts without a layout engine) cannot promise when a component
+ * is on screen. Rather than throw on mount — which took the whole page down
+ * over a decoration — the enter callback runs straight away and no leave ever
+ * fires: the reader sees the finished state, which is the honest answer.
+ */
+function observeWithoutIo(el: Element, sub: Sub): () => void {
+  sub.onEnter();
+  return () => {};
+}
+
 export function observeInview(
   el: Element,
   opts: InviewOptions,
   onEnter: () => void,
+  onLeave?: () => void,
 ): () => void {
+  const sub: Sub = { onEnter, onLeave, once: opts.once ?? false };
+  if (typeof IntersectionObserver === "undefined") return observeWithoutIo(el, sub);
+
   const ratio = opts.ratio ?? 0;
   const rootMargin = opts.rootMargin ?? "0px";
-  const once = opts.once ?? false;
   const key = `${ratio}|${rootMargin}`;
 
   let entry = registry.get(key);
@@ -37,16 +54,21 @@ export function observeInview(
     const subs = new Map<Element, Set<Sub>>();
     const observer: IntersectionObserver = new IntersectionObserver((records) => {
       for (const record of records) {
-        if (!record.isIntersecting) continue;
         const set = subs.get(record.target);
         if (!set) continue;
-        for (const sub of [...set]) {
-          sub.fn();
-          if (sub.once) set.delete(sub);
-        }
-        if (set.size === 0) {
-          subs.delete(record.target);
-          observer.unobserve(record.target);
+        if (record.isIntersecting) {
+          for (const sub of [...set]) {
+            sub.onEnter();
+            if (sub.once) set.delete(sub);
+          }
+          if (set.size === 0) {
+            subs.delete(record.target);
+            observer.unobserve(record.target);
+          }
+        } else {
+          // Leave never unsubscribes: an element that comes back has to be
+          // reported again, whatever `once` said about its enter.
+          for (const sub of [...set]) sub.onLeave?.();
         }
       }
     }, { threshold: ratio, rootMargin });
@@ -55,7 +77,6 @@ export function observeInview(
   }
 
   const active = entry;
-  const sub: Sub = { fn: onEnter, once };
   const existing = active.subs.get(el);
   if (existing) existing.add(sub);
   else {

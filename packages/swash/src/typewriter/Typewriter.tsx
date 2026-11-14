@@ -6,6 +6,7 @@ import { useReducedMotion } from "../shared/motion";
 import { useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import { CARET_CSS } from "../core/typewriter";
+import { srOnlyStyle } from "../shared/style";
 import { useTypewriter } from "./useTypewriter";
 import type { TypewriterProps } from "./types";
 
@@ -56,7 +57,11 @@ export function Typewriter(props: TypewriterProps) {
   });
 
   return (
-    <span ref={root} className={className} style={{ display: "inline", ...style }} aria-label={typed.phrase}>
+    <span ref={root} className={className} style={{ display: "inline", ...style }}>
+      {/* The whole phrase, readable: the per-grapheme spans are hidden from
+          assistive tech, and a bare aria-label would be dropped for lack of
+          a role. */}
+      <span data-swash-sr="" style={srOnlyStyle}>{typed.phrase}</span>
       {typed.graphemes.map((char, index) => (
         <span
           key={index}

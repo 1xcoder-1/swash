@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import type { FlipWordsProps } from "./types";
 
 /**
@@ -199,7 +199,8 @@ export function FlipWords(props: FlipWordsProps) {
     .join(" ");
 
   return (
-    <span className={rootCls} style={{ ...vars, ...style }} aria-label={current}>
+    <span className={rootCls} style={{ ...vars, ...style }}>
+      <span data-swash-sr="" style={srOnlyStyle}>{current}</span>
       {preserveSpace ? (
         <span ref={measureRef} className="swash-flip-measure" aria-hidden="true">
           {safeWords.map((w, i) => (

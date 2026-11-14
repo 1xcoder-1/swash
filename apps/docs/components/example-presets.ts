@@ -320,4 +320,77 @@ return (
   </h3>
 );`,
   },
+  {
+    id: "neon",
+    title: "Neon sign",
+    blurb: "A tube and its glow from one ink; the flicker never touches the letters.",
+    code: `return (
+  <div style={{ fontSize: 34, fontWeight: 700 }}>
+    <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+  </div>
+);`,
+  },
+  {
+    id: "split-flap",
+    title: "Split Flap board",
+    blurb: "Every differing cell flips onto its character, left to right.",
+    code: `const flights = ["DELAYED", "BOARDING", "DEPARTED", "ON TIME"];
+const [i, setI] = useState(0);
+
+return (
+  <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
+    <SplitFlap text={flights[i]} interval={90} />
+    <button className="preview-replay" onClick={() => setI((n) => (n + 1) % flights.length)}>
+      Next status
+    </button>
+  </div>
+);`,
+  },
+  {
+    id: "liquid",
+    title: "Liquid pour",
+    blurb: "A waterline inside the glyphs that rises, bobs, drains and pours again.",
+    code: `return (
+  <div style={{ fontSize: 40, fontWeight: 800 }}>
+    <Liquid trigger="loop" color="#38bdf8" duration={1400} hold={1800}>
+      REFILL
+    </Liquid>
+  </div>
+);`,
+  },
+  {
+    id: "echo",
+    title: "Echo pulse",
+    blurb: "Copies expand out from under still text and fade, one travelling pulse.",
+    code: `return (
+  <div style={{ fontSize: 32, fontWeight: 600 }}>
+    <Echo count={4} delay={420} trigger="always">Signal</Echo>
+  </div>
+);`,
+  },
+  {
+    id: "slice",
+    title: "Slice",
+    blurb: "The phrase cut along its middle; the halves part and come back.",
+    code: `return (
+  <div style={{ fontSize: 34, fontWeight: 700 }}>
+    <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
+  </div>
+);`,
+  },
+  {
+    id: "marquee",
+    title: "Marquee belt",
+    blurb: "An endless belt: two copies, one track, pausing on hover.",
+    code: `return (
+  <div style={{ width: "min(480px, 100%)", fontSize: 18, fontWeight: 500 }}>
+    <Marquee duration={9000} gap={40}>
+      <span>Free shipping worldwide</span>
+      <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
+      <span>Ships in 24 hours</span>
+      <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
+    </Marquee>
+  </div>
+);`,
+  },
 ];
