@@ -1,206 +1,124 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import {
   Counter,
-  CurvedText,
-  Echo,
-  FlipWords,
-  Frame,
-  Glitch,
   Marker,
-  Morph,
   Neon,
   Reveal,
   Scramble,
-  Shimmer,
-  Slice,
-  SplitFlap,
-  Ticker,
-  Typewriter,
-  Wave,
 } from "swash";
 
 export interface CatalogItem {
   name: string;
   href: string;
-  desc: string;
 }
 
 /**
- * Mount the preview once the card is near the viewport. Before that the
- * stage holds the component name only, so a page load never starts
- * seventeen animations at once; after it, the effect keeps looping like
- * every other ambient motion on the page.
+ * The catalogue as a type-specimen sheet, after the foundries: each card
+ * carries nothing but the component's own name, set in that component's
+ * effect, on the page's own palette. The type is the demo — no stages,
+ * no paragraphs. Entrance effects (Reveal, Scramble, Counter) fire once
+ * off their own view observers; ambient effects are pure CSS and cost
+ * almost nothing; reduced motion gets every effect frozen mid-state.
  */
-function useNearViewport<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  const [near, setNear] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || near) return;
-    if (typeof IntersectionObserver !== "function") {
-      setNear(true);
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          setNear(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: "480px 0px" },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [near]);
-  return { ref, near };
-}
-
-/** Cycle an index while the preview is alive. */
-function useCycle(length: number, ms: number): number {
-  const [i, setI] = useState(0);
-  useEffect(() => {
-    const t = setInterval(() => setI((n) => (n + 1) % length), ms);
-    return () => clearInterval(t);
-  }, [length, ms]);
-  return i;
-}
-
-/* One tiny stage per component: the component itself, quiet and small,
-   running on the page's own palette. Hover-triggered effects stay still
-   until the pointer arrives — the card invites the interaction. */
-const STAGES: Record<string, React.ComponentType> = {
-  Typewriter: () => (
-    <Typewriter loop={["Types itself.", "Grapheme-safe."]} feel="snappy" />
+const SPECIMENS: Record<string, ReactNode> = {
+  Typewriter: (
+    <>
+      Typewriter<span className="cp-caret" />
+    </>
   ),
-  Frame: () => (
-    <Frame show label="sel" duration={900}>
-      <span className="cp-chip">selected</span>
-    </Frame>
-  ),
-  Reveal: () => (
-    <Reveal by="word" stagger={70} duration={520}>
-      Rises into place.
-    </Reveal>
-  ),
-  Scramble: () => <Scramble text="Decodes in, settles." />,
-  Morph: () => (
-    <Morph values={["Direct", "Processing", "Done"]} hold={1000} duration={600} loop />
-  ),
-  Counter: () => (
-    <Counter to={98.4} suffix="%" format={(n) => n.toFixed(1)} duration={1400} />
-  ),
-  Marker: () => (
-    <span className="cp-sentence">
-      Ship it <Marker action="highlight" color="amber" show>today</Marker>
+  Frame: <span className="cp-frame">Frame</span>,
+  Reveal: <Reveal by="letter" stagger={26} duration={520}>Reveal</Reveal>,
+  Scramble: <Scramble text="Scramble" trigger="view" />,
+  Morph: (
+    <span className="cp-morph">
+      M
+      <span className="cp-roll">
+        <span>o</span>
+        <span>a</span>
+      </span>
+      rph
     </span>
   ),
-  Ticker: () => <TickerStage />,
-  Shimmer: () => (
-    <Shimmer spread={150} duration={2600} color="rgba(255,255,255,0.9)" baseColor="#7a7a94">
-      Iridescent beam
-    </Shimmer>
+  Counter: <Counter to={17} format={(n) => String(n).padStart(2, "0")} duration={1200} />,
+  Marker: (
+    <Marker action="highlight" color="amber" show>
+      Marker
+    </Marker>
   ),
-  "Flip Words": () => (
-    <span className="cp-sentence">
-      Make it{" "}
-      <FlipWords
-        words={["fast", "bulletproof", "accessible"]}
-        duration={2000}
-        direction="vertical"
-      />
+  Ticker: (
+    <span className="cp-ticker">
+      <span className="cp-roll">
+        <span>2</span>
+        <span>7</span>
+      </span>
     </span>
   ),
-  Glitch: () => (
-    <Glitch
-      text="REBOOT"
-      trigger="hover"
-      intensity="medium"
-      colors={["#00ffff", "#ff00ff"]}
-    />
+  Shimmer: <span className="cp-shimmer">Shimmer</span>,
+  "Flip Words": (
+    <span className="cp-flip-words">
+      Flip&nbsp;<span className="cp-flip-word">Words</span>
+    </span>
   ),
-  "Curved Text": () => (
-    <CurvedText text="EXPLORE • SWASH • SCROLL • " radius={40} speed={14} />
+  Glitch: <span className="cp-glitch">Glitch</span>,
+  "Curved Text": (
+    <svg className="cp-curved" viewBox="0 0 80 80" width="76" height="76" aria-hidden>
+      <defs>
+        <path id="cp-arc" d="M 40 12 A 28 28 0 1 1 39.99 12" />
+      </defs>
+      <g className="cp-curved-spin">
+        <text>
+          <textPath href="#cp-arc" startOffset="0">
+            Curved Text • Curved Text •
+          </textPath>
+        </text>
+      </g>
+    </svg>
   ),
-  Wave: () => (
-    <Wave amplitude={9} interval={90} trigger="hover">
-      Catch the wave
-    </Wave>
+  Wave: (
+    <span className="cp-wave" aria-hidden>
+      <span style={{ "--dy": "-5px" } as React.CSSProperties}>W</span>
+      <span style={{ "--dy": "4px" } as React.CSSProperties}>a</span>
+      <span style={{ "--dy": "-3px" } as React.CSSProperties}>v</span>
+      <span style={{ "--dy": "5px" } as React.CSSProperties}>e</span>
+    </span>
   ),
-  Neon: () => (
+  Neon: (
     <span className="cp-neon">
-      <Neon text="OPEN" color="cyan" flicker="soft" />
+      <Neon text="Neon" color="cyan" flicker="soft" />
     </span>
   ),
-  "Split Flap": () => <SplitFlapStage />,
-  Echo: () => (
-    <Echo count={3} delay={340} trigger="hover">
-      Signal
-    </Echo>
+  "Split Flap": (
+    <span className="cp-flap" aria-hidden>
+      {"Split Flap".split("").map((ch, i) =>
+        ch === " " ? (
+          <span key={i} className="cp-flap-gap" />
+        ) : (
+          <span key={i} className="cp-tile">
+            {ch}
+          </span>
+        ),
+      )}
+    </span>
   ),
-  Slice: () => <Slice text="Divided" trigger="loop" hold={1300} amount={12} />,
+  Echo: <span className="cp-echo">Echo</span>,
+  Slice: (
+    <span className="cp-slice" data-text="Slice">
+      Slice
+    </span>
+  ),
 };
-
-const TICKER_VALUES = [1299, 27500, 499.95, 99.9];
-
-function TickerStage() {
-  const i = useCycle(TICKER_VALUES.length, 2000);
-  return (
-    <span className="cp-amount">
-      <Ticker
-        value={TICKER_VALUES[i]}
-        prefix="$"
-        duration={600}
-        stagger={40}
-        decimals={i === 2 || i === 3 ? 2 : 0}
-        separator=","
-      />
-    </span>
-  );
-}
-
-const FLIGHTS = ["BOARDING", "DELAYED", "DEPARTED"];
-
-function SplitFlapStage() {
-  const i = useCycle(FLIGHTS.length, 2400);
-  return (
-    <span className="cp-flap">
-      <SplitFlap text={FLIGHTS[i]} interval={80} />
-    </span>
-  );
-}
 
 export function Catalog({ items }: { items: CatalogItem[] }) {
   return (
     <div className="catalog-grid">
       {items.map((c, i) => (
-        <Card key={c.name} item={c} index={i} />
-      ))}
-    </div>
-  );
-}
-
-function Card({ item, index }: { item: CatalogItem; index: number }) {
-  const { ref, near } = useNearViewport<HTMLAnchorElement>();
-  const Stage = STAGES[item.name];
-  return (
-    <Link ref={ref} className="catalog-card" href={item.href}>
-      <span className="catalog-stage" aria-hidden>
-        {near && Stage ? <Stage /> : null}
-      </span>
-      <span className="catalog-body">
-        <span className="catalog-card-top">
-          <span className="catalog-name">
-            <span className="catalog-idx">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            {item.name}
-          </span>
+        <Link key={c.name} className="catalog-card" href={c.href}>
+          <span className="catalog-idx">{String(i + 1).padStart(2, "0")}</span>
           <span className="catalog-docs">
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
               <path
                 d="M5 11 11 5M6 5h5v5"
                 stroke="currentColor"
@@ -210,9 +128,9 @@ function Card({ item, index }: { item: CatalogItem; index: number }) {
               />
             </svg>
           </span>
-        </span>
-        <span className="catalog-desc">{item.desc}</span>
-      </span>
-    </Link>
+          <span className="catalog-specimen">{SPECIMENS[c.name]}</span>
+        </Link>
+      ))}
+    </div>
   );
 }

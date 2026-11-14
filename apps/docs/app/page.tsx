@@ -79,103 +79,86 @@ const COMPONENTS = [
   {
     name: "Typewriter",
     href: "/docs/typewriter",
-    desc: "Types phrases one grapheme at a time, with rhythm presets and a caret that never lies about the character count.",
     span: 2 as const,
   },
   {
     name: "Frame",
     href: "/docs/frame",
-    desc: "A selection frame that sweeps itself around any element, with a corner badge and imperative control.",
     span: 1 as const,
   },
   {
     name: "Reveal",
     href: "/docs/reveal",
-    desc: "Words, letters or lines that rise into place on scroll, using kerning-safe ranges so nothing jumps.",
     span: 1 as const,
   },
   {
     name: "Scramble",
     href: "/docs/scramble",
-    desc: "Decode-in text that churns through a charset and settles glyph by glyph, stable under every re-render.",
     span: 1 as const,
   },
   {
     name: "Morph",
     href: "/docs/morph",
-    desc: "One word becomes the next with whole-grapheme transitions and width compensation mid-swap.",
     span: 1 as const,
   },
   {
     name: "Counter",
     href: "/docs/counter",
-    desc: "Counts a number up when it scrolls into view. A parent re-rendering mid-count changes nothing.",
     span: 1 as const,
   },
   {
     name: "Marker",
     href: "/docs/marker",
-    desc: "Hand-drawn emphasis — highlight, underline, strike, circle, box — that wraps lines and needs no Tailwind.",
     span: 2 as const,
   },
   {
     name: "Ticker",
     href: "/docs/ticker",
-    desc: "Odometer digits that roll to the new value with tabular-num columns, so a price change never nudges the row.",
     span: 1 as const,
   },
   {
     name: "Shimmer",
     href: "/docs/shimmer",
-    desc: "An iridescent beam that sweeps across text and pauses itself when the element scrolls off-screen.",
     span: 1 as const,
   },
   {
     name: "Flip Words",
     href: "/docs/flip-words",
-    desc: "A 3D cycler between rotating words that reserves the widest word's box so nothing around it shifts.",
     span: 1 as const,
   },
   {
     name: "Glitch",
     href: "/docs/glitch",
-    desc: "Chromatic-aberration glitch painted through ::before and ::after, so copy/paste and screen readers see one clean phrase.",
     span: 1 as const,
   },
   {
     name: "Curved Text",
     href: "/docs/curved-text",
-    desc: "Text on a circular path via native SVG <textPath>, with a compositor-driven rotation — no per-letter trigonometry.",
     span: 1 as const,
   },
   {
     name: "Wave",
     href: "/docs/wave",
-    desc: "Kinetic sine-wave letters that hover, scroll or loop — one keyframe plus a per-letter negative delay, no per-frame JS.",
     span: 1 as const,
   },
   {
     name: "Neon",
     href: "/docs/neon",
-    desc: "A neon tube: layered glow derived from one ink, with a steps() flicker that only the light loses — the letters hold.",
     span: 1 as const,
   },
   {
     name: "Split Flap",
     href: "/docs/split-flap",
-    desc: "An airport departures board: every cell flips through tiles onto the new character, left to right, as the line changes.",
     span: 1 as const,
   },
   {
     name: "Echo",
     href: "/docs/echo",
-    desc: "A trail of copies that expands out from under still text and fades, staggered so it reads as one travelling pulse.",
     span: 1 as const,
   },
   {
     name: "Slice",
     href: "/docs/slice",
-    desc: "The phrase cut along its middle; the halves slide apart on cue and come back, with no seam to measure.",
     span: 1 as const,
   },
 ];
@@ -325,8 +308,8 @@ export default function Home() {
           <p className="eyebrow">The catalogue</p>
           <h2>Seventeen components, one engine</h2>
           <p>
-            Each one solves a text problem developers keep re-solving badly.
-            Every card runs the real component — hover what invites it.
+            Each name is set in its own effect. No stages, no paragraphs —
+            the type is the demo.
           </p>
         </div>
         <Catalog items={COMPONENTS as CatalogItem[]} />
