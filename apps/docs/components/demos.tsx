@@ -11,7 +11,6 @@ import {
   Typewriter,
   Ticker,
   Shimmer,
-  BlurReveal,
   FlipWords,
   Glitch,
   CurvedText,
@@ -19,7 +18,6 @@ import {
   Neon,
   Echo,
   Slice,
-  Marquee,
   SplitFlap,
 } from "swash";
 import { Preview } from "./preview";
@@ -530,14 +528,14 @@ export function ShimmerDemo() {
   );
 }
 
-/** BlurReveal: cinematic depth of field. */
-export function BlurRevealDemo() {
+/** Reveal: the blur entrance — pieces pull into focus. */
+export function RevealBlurDemo() {
   return (
-    <Preview label="Blur Reveal — word-safe grouping, no kerning loss">
+    <Preview label="Reveal — blur into focus">
       <div style={{ fontSize: "1.25rem", lineHeight: 1.6 }}>
-        <BlurReveal by="word" blur={10} stagger={60} duration={500}>
+        <Reveal by="word" effect="blur" blur={10} stagger={60} duration={500}>
           Intelligence designed for every scale.
-        </BlurReveal>
+        </Reveal>
       </div>
     </Preview>
   );
@@ -725,15 +723,15 @@ export function ShimmerBadgeDemo() {
   );
 }
 
-/** Blur Reveal: by line, for hero copy that arrives like titles. */
-export function BlurRevealLineDemo() {
+/** Reveal: by line with the blur entrance, for hero copy that arrives like titles. */
+export function RevealBlurLineDemo() {
   const [run, setRun] = useState(0);
   return (
-    <Preview label="Blur Reveal — by line, hero copy">
+    <Preview label="Reveal — blur, by line">
       <h3 key={run} style={{ margin: 0, fontSize: "1.6rem", lineHeight: 1.35, textAlign: "center" }}>
-        <BlurReveal by="line" blur={14} stagger={140} duration={700} startOnView={false}>
+        <Reveal key={run} by="line" effect="blur" blur={14} stagger={140} duration={700} startOnView={false}>
           {"Motion that means something.\nEvery line finds its place."}
-        </BlurReveal>
+        </Reveal>
       </h3>
       <button type="button" className="preview-replay" onClick={() => setRun((n) => n + 1)}>
         Replay lines
@@ -742,15 +740,15 @@ export function BlurRevealLineDemo() {
   );
 }
 
-/** Blur Reveal: by char for a short display phrase. */
-export function BlurRevealCharDemo() {
+/** Reveal: by letter with the blur entrance, for a short display phrase. */
+export function RevealBlurCharDemo() {
   const [run, setRun] = useState(0);
   return (
-    <Preview label="Blur Reveal — by char, short title">
+    <Preview label="Reveal — blur, by letter">
       <p key={run} style={{ margin: 0, fontSize: "1.8rem", fontWeight: 600 }}>
-        <BlurReveal by="char" blur={8} stagger={28} duration={450} startOnView={false}>
+        <Reveal key={run} by="letter" effect="blur" blur={8} stagger={28} duration={450} startOnView={false}>
           Set in motion.
-        </BlurReveal>
+        </Reveal>
       </p>
       <button type="button" className="preview-replay" onClick={() => setRun((n) => n + 1)}>
         Replay letters
@@ -879,7 +877,7 @@ export function WaveViewDemo() {
 }
 
 /* --------------------------------------------------------------------------
- * The second wave of components: Neon, Echo, Slice, Marquee,
+ * The second wave of components: Neon, Echo, Slice,
  * SplitFlap. Same contract as the ones above — a live panel, a label the
  * demo-code table can answer, and real text in the markup.
  * ------------------------------------------------------------------------ */
@@ -955,40 +953,6 @@ export function SliceHoverDemo() {
     <Preview label="Slice — parts on hover">
       <div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
         <Slice text="Bisect" trigger="hover" amount={12} />
-      </div>
-    </Preview>
-  );
-}
-
-/** Marquee: an endless belt with a separator. */
-export function MarqueeDemo() {
-  return (
-    <Preview label="Marquee — endless belt">
-      <div style={{ width: "min(560px, 100%)", fontSize: "1.15rem", fontWeight: 500 }}>
-        <Marquee duration={9000} gap={40}>
-          <span>Free shipping worldwide</span>
-          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
-          <span>Ships in 24 hours</span>
-          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
-          <span>30-day returns</span>
-          <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
-        </Marquee>
-      </div>
-    </Preview>
-  );
-}
-
-/** Marquee: the other direction. */
-export function MarqueeReverseDemo() {
-  return (
-    <Preview label="Marquee — reversed, no fade">
-      <div style={{ width: "min(560px, 100%)", fontSize: "1.05rem", color: "var(--color-muted)" }}>
-        <Marquee duration={7000} gap={28} reverse fade={false}>
-          <span>now boarding ·</span>
-          <span>now boarding ·</span>
-          <span>now boarding ·</span>
-          <span>now boarding ·</span>
-        </Marquee>
       </div>
     </Preview>
   );

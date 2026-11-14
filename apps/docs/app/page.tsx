@@ -53,7 +53,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 105 KB of ESM for all nineteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 98 KB of ESM for all eighteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -129,12 +129,6 @@ const COMPONENTS = [
     span: 1 as const,
   },
   {
-    name: "Blur Reveal",
-    href: "/docs/blur-reveal",
-    desc: "Depth-of-field entrance — words come into focus one after another with a stagger, no JavaScript per frame.",
-    span: 1 as const,
-  },
-  {
     name: "Flip Words",
     href: "/docs/flip-words",
     desc: "A 3D cycler between rotating words that reserves the widest word's box so nothing around it shifts.",
@@ -180,12 +174,6 @@ const COMPONENTS = [
     name: "Slice",
     href: "/docs/slice",
     desc: "The phrase cut along its middle; the halves slide apart on cue and come back, with no seam to measure.",
-    span: 1 as const,
-  },
-  {
-    name: "Marquee",
-    href: "/docs/marquee",
-    desc: "An endless belt of text: two copies on one track, half a width per loop, pausing on hover and fading at the edges.",
     span: 1 as const,
   },
 ];
@@ -417,7 +405,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, nineteen components, zero dependencies.</p>
+        <p>One install, eighteen components, zero dependencies.</p>
         <div className="hero-actions">
           <Link href="/docs/quickstart" className="btn btn-primary">
             Start with the quickstart

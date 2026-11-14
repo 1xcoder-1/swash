@@ -1,5 +1,3 @@
-export { BlurReveal } from "./blur-reveal/BlurReveal";
-export type { BlurRevealProps } from "./blur-reveal/types";
 export { Counter } from "./counter/Counter";
 export type { CounterProps } from "./counter/types";
 export { CurvedText } from "./curved-text/CurvedText";
@@ -12,8 +10,6 @@ export { Glitch } from "./glitch/Glitch";
 export type { GlitchProps } from "./glitch/types";
 export { Echo } from "./echo/Echo";
 export type { EchoProps, EchoTrigger } from "./echo/types";
-export { Marquee } from "./marquee/Marquee";
-export type { MarqueeProps } from "./marquee/types";
 export { Neon } from "./neon/Neon";
 export type { NeonProps, NeonTrigger } from "./neon/types";
 export { SplitFlap } from "./split-flap/SplitFlap";

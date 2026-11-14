@@ -28,6 +28,12 @@ function visibleText(container: HTMLElement) {
   return (container.textContent ?? "").replace(sr?.textContent ?? "", "");
 }
 
+/** The starting filter of the first keyframe this piece was handed. */
+function filterOf(el: Element): string {
+  const key = animationAt(el, 0)!.keys[0] as { filter?: string };
+  return String(key.filter);
+}
+
 function pieceEls(container: HTMLElement) {
   return [...container.querySelectorAll<HTMLElement>("[data-swash-reveal]")];
 }
@@ -249,5 +255,29 @@ describe("Reveal", () => {
     falling.arrive();
     expect(transformOf(falling.pieces()[0]!)).toBe("translateY(-20px)");
     warn.mockRestore();
+  });
+
+  it("pulls pieces into focus when the blur effect is asked for", async () => {
+    const { arrive, pieces, root } = await renderRevealed({
+      children: "Focus on cue",
+      effect: "blur",
+      blur: 12,
+      by: "word",
+    });
+    arrive();
+    const units = pieces();
+    expect(units).toHaveLength(3);
+    expect(filterOf(units[0]!)).toBe("blur(12px)");
+    // The blur entrance scales instead of rising.
+    expect(transformOf(units[0]!)).toBe("scale(1.04)");
+    expect(animateCallCount(units[0]!)).toBe(1);
+  });
+
+  it("rises without a filter when the rise effect is asked for", async () => {
+    const { arrive, pieces } = await renderRevealed({ children: "Ship it", effect: "rise" });
+    arrive();
+    const unit = pieces()[0]!;
+    expect(transformOf(unit)).toMatch(/translateY/);
+    expect(filterOf(unit)).toBe("undefined");
   });
 });

@@ -21,7 +21,6 @@ const COMPONENTS = [
   "marker",
   "ticker",
   "shimmer",
-  "blur-reveal",
   "flip-words",
   "glitch",
   "curved-text",
@@ -29,7 +28,6 @@ const COMPONENTS = [
   "neon",
   "echo",
   "slice",
-  "marquee",
   "split-flap",
 ];
 

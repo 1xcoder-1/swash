@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import {
-  BlurReveal,
   Counter,
   CurvedText,
   FlipWords,
@@ -19,7 +18,6 @@ import {
   Neon,
   Echo,
   Slice,
-  Marquee,
   SplitFlap,
 } from "swash";
 import { CopyButton } from "./copy-button";
@@ -246,20 +244,14 @@ function ShimmerBody() {
   );
 }
 
-function BlurRevealBody() {
+function RevealBlurBody() {
   const [run, setRun] = useState(0);
   return (
     <div style={{ display: "grid", gap: 18, justifyItems: "center" }}>
       <h3 key={run} style={{ margin: 0, fontSize: 30 }}>
-        <BlurReveal
-          by="word"
-          blur={12}
-          stagger={70}
-          duration={600}
-          startOnView={false}
-        >
+        <Reveal key={run} by="word" effect="blur" blur={12} stagger={70} duration={600} startOnView={false}>
           Focus, on cue.
-        </BlurReveal>
+        </Reveal>
       </h3>
       <button
         type="button"
@@ -327,8 +319,7 @@ const BODIES: Record<string, () => ReactNode> = {
   frame: FrameBody,
   "hero-ticket": TicketBody,
   ticker: TickerBody,
-  shimmer: ShimmerBody,
-  "blur-reveal": BlurRevealBody,
+  shimmer: ShimmerBody,  "reveal-blur": RevealBlurBody,
   "flip-words": FlipWordsBody,
   glitch: GlitchBody,
   "curved-text": CurvedTextBody,
@@ -337,7 +328,6 @@ const BODIES: Record<string, () => ReactNode> = {
   "split-flap": SplitFlapBody,
   echo: EchoBody,
   slice: SliceBody,
-  marquee: MarqueeBody,
 };
 
 function ExampleCard({ id }: { id: string }) {
@@ -426,19 +416,6 @@ function SliceBody() {
   return (
     <div style={{ fontSize: 34, fontWeight: 700 }}>
       <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
-    </div>
-  );
-}
-
-function MarqueeBody() {
-  return (
-    <div style={{ width: "min(480px, 100%)", fontSize: 18, fontWeight: 500 }}>
-      <Marquee duration={9000} gap={40}>
-        <span>Free shipping worldwide</span>
-        <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
-        <span>Ships in 24 hours</span>
-        <span aria-hidden="true" style={{ color: "var(--color-faint)" }}>✦</span>
-      </Marquee>
     </div>
   );
 }

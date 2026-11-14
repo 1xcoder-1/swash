@@ -249,19 +249,19 @@ return (
 );`,
   },
   {
-    id: "blur-reveal",
-    title: "Blur Reveal headline",
+    id: "reveal-blur",
+    title: "Reveal, blurred",
     blurb: "Words pull into focus out of a Gaussian blur, one beat apart.",
     code: `const [run, setRun] = useState(0);
 
 return (
   <div style={{ display: "grid", gap: 18, justifyItems: "center" }}>
     <h3 key={run} style={{ margin: 0, fontSize: 30 }}>
-      <BlurReveal by="word" blur={12} stagger={70} duration={600} startOnView={false}>
+      <Reveal by="word" effect="blur" blur={12} stagger={70} duration={600} startOnView={false}>
         Focus, on cue.
-      </BlurReveal>
+      </Reveal>
     </h3>
-    <button className="preview-replay" onClick={() => setRun((n) => n + 1)}>
+    <button className="preview-replay" onClick={() => setRun((n) => (n + 1) % 1)}>
       Replay reveal
     </button>
   </div>
@@ -363,21 +363,6 @@ return (
     code: `return (
   <div style={{ fontSize: 34, fontWeight: 700 }}>
     <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
-  </div>
-);`,
-  },
-  {
-    id: "marquee",
-    title: "Marquee belt",
-    blurb: "An endless belt: two copies, one track, pausing on hover.",
-    code: `return (
-  <div style={{ width: "min(480px, 100%)", fontSize: 18, fontWeight: 500 }}>
-    <Marquee duration={9000} gap={40}>
-      <span>Free shipping worldwide</span>
-      <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
-      <span>Ships in 24 hours</span>
-      <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
-    </Marquee>
   </div>
 );`,
   },

@@ -29,7 +29,6 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [Marker](#marker) | Draws a hand-drawn highlight, underline, strike, ring or box over a phrase |
 | [Ticker](#ticker) | Rolls odometer digits to a new value without shifting the row |
 | [Shimmer](#shimmer) | Sweeps an iridescent beam across a title or badge |
-| [BlurReveal](#blurreveal) | Brings words into focus from a blur, one after another |
 | [FlipWords](#flipwords) | Cycles phrases with a 3D flip, holding the widest word's box |
 | [Glitch](#glitch) | Splits a phrase into RGB channel copies with a clip-path jitter |
 | [CurvedText](#curvedtext) | Runs text around a circle on a native SVG textPath |
@@ -38,7 +37,6 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [SplitFlap](#splitflap) | Lands an airport board on a new line, cell by cell |
 | [Echo](#echo) | Trails copies out from under still text, one travelling pulse |
 | [Slice](#slice) | Cuts a phrase along its middle and slides the halves apart |
-| [Marquee](#marquee) | Runs an endless belt of text, pausing on hover |
 
 Every example below is copy-pasteable. Import the names you use from `swash`:
 
@@ -100,6 +98,9 @@ The outline sweeps around the child's border box and the chip's letter-spacing a
   The paragraph or heading you want to arrive.
 </Reveal>
 ```
+
+With `effect="blur"` each piece pulls into focus out of a Gaussian
+blur instead of rising — the depth-of-field entrance, on the same engine.
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
@@ -231,15 +232,6 @@ when the last column lands.
 An iridescent beam through `background-clip: text` on its own layer, so the
 base copy is never repainted. Pauses itself when it scrolls off-screen.
 
-## BlurReveal
-
-```tsx
-<BlurReveal by="word" stagger={60}>Comes into focus</BlurReveal>
-```
-
-A depth-of-field entrance: pieces start blurred and scaled up, then settle
-sharp with a stagger. One CSS transition per piece, no per-frame script.
-
 ## FlipWords
 
 ```tsx
@@ -319,20 +311,6 @@ The phrase cut along its middle: two copies clipped with `clip-path: inset`
 stacked exactly over one another, so the seam never has to be measured. The
 halves part on cue and come back.
 
-## Marquee
-
-```tsx
-<Marquee duration={9000} gap={40}>
-  <span>Free shipping worldwide</span>
-  <span aria-hidden>✦</span>
-  <span>Ships in 24 hours</span>
-</Marquee>
-```
-
-Two copies of the content on one track that slides exactly half its width
-before snapping back — invisible, because the second copy is standing where
-the first was. One keyframe, on the compositor.
-
 ## Why this exists
 
 The effects in this space are mostly copy-pasted files and packages that stopped being maintained. The bugs below are the ones developers kept reporting against them, and each one is a test in this repo:
@@ -379,7 +357,7 @@ Other things worth knowing:
 
 Zero runtime dependencies. React is a peer dependency, which means your app's copy of React is the only one on the page.
 
-The whole package is about 105 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
+The whole package is about 98 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
 
 ```bash
 npm install swash

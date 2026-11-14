@@ -171,11 +171,6 @@ const onChange = (next: string) => setPair((p) => ({ prev: p.next, next }));
     Powered by next-gen AI
   </Shimmer>
 </div>`,
-  "Blur Reveal — word-safe grouping, no kerning loss": `<div style={{ fontSize: "1.25rem", lineHeight: 1.6 }}>
-  <BlurReveal by="word" blur={10} stagger={60} duration={500}>
-    Intelligence designed for every scale.
-  </BlurReveal>
-</div>`,
   "Flip Words — 3D flip with reserved box": `<div style={{ fontSize: "1.5rem" }}>
   Make it{" "}
   <FlipWords
@@ -249,18 +244,6 @@ const [landed, setLanded] = useState(true);
     ✦ Premium tier
   </Shimmer>
 </span>`,
-  "Blur Reveal — by line, hero copy": `<h3 key={run}>
-  <BlurReveal by="line" blur={14} stagger={140} duration={700} startOnView={false}>
-    {"Motion that means something.\\nEvery line finds its place."}
-  </BlurReveal>
-</h3>
-<button onClick={() => setRun((n) => n + 1)}>Replay lines</button>`,
-  "Blur Reveal — by char, short title": `<p key={run} style={{ fontSize: "1.8rem", fontWeight: 600 }}>
-  <BlurReveal by="char" blur={8} stagger={28} duration={450} startOnView={false}>
-    Set in motion.
-  </BlurReveal>
-</p>
-<button onClick={() => setRun((n) => n + 1)}>Replay letters</button>`,
   "Flip Words — horizontal, breathing width": `<div style={{ fontSize: "1.5rem" }}>
   A cache of <em>some</em> size — actually{" "}
   <FlipWords
@@ -321,20 +304,6 @@ const [landed, setLanded] = useState(true);
 </div>`,
   "Slice — parts on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
   <Slice text="Bisect" trigger="hover" amount={12} />
-</div>`,
-  "Marquee — endless belt": `<div style={{ width: "min(560px, 100%)", fontSize: "1.15rem", fontWeight: 500 }}>
-  <Marquee duration={9000} gap={40}>
-    <span>Free shipping worldwide</span>
-    <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
-    <span>Ships in 24 hours</span>
-    <span aria-hidden style={{ color: "var(--color-faint)" }}>✦</span>
-    <span>30-day returns</span>
-  </Marquee>
-</div>`,
-  "Marquee — reversed, no fade": `<div style={{ width: "min(560px, 100%)", fontSize: "1.05rem", color: "var(--color-muted)" }}>
-  <Marquee duration={7000} gap={28} reverse fade={false}>
-<span>now boarding ·</span> <span>now boarding ·</span> <span>now boarding ·</span> <span>now boarding ·</span>
-  </Marquee>
 </div>`,
   "Split Flap — the board turns over": `<span style={{ fontFamily: "var(--font-mono)", fontSize: "1.9rem", fontWeight: 700, letterSpacing: "0.06em" }}>
   <SplitFlap text={status} interval={90} />

@@ -1,7 +1,7 @@
 import { EASE_CSS } from "../shared/bezier";
 import { splitGraphemes, splitWordTokens } from "../shared/grapheme";
 import { offset } from "../shared/number";
-import type { RevealBy } from "../reveal/types";
+import type { RevealBy, RevealEffect } from "../reveal/types";
 
 /** The line is subordinate to the scroll that brings it, so it asks for less of the viewport than it takes. */
 export const REVEAL_RATIO = 0.2;
@@ -28,9 +28,14 @@ export interface RevealPiece {
 
 export interface RevealRun {
   by: RevealBy;
+  /** "rise" moves each piece up from below; "blur" pulls it into focus from
+   *  a Gaussian blur and a slight scale, the depth-of-field entrance. */
+  effect: RevealEffect;
   duration: number;
   stagger: number;
   y?: number;
+  /** Blur radius the blur effect starts from, in px. */
+  blur?: number;
   reduced: boolean;
 }
 
@@ -80,14 +85,21 @@ export function runReveal(root: HTMLElement, cfg: RevealRun): () => void {
   // string, and one invalid property throws the whole keyframe away: the
   // pieces would fade in place instead of rising, with nothing said about it.
   const rise = offset(cfg.y, Math.round(fontSize * 0.35), "y", "Reveal");
+  // A blur radius the caller never asked for would still be read here, and
+  // clamped so a typo cannot hand the filter an unusable number.
+  const blur = Math.max(0, cfg.blur ?? 10);
+
+  const from: Keyframe =
+    cfg.effect === "blur"
+      ? { opacity: 0, filter: `blur(${blur}px)`, transform: "scale(1.04)" }
+      : { opacity: 0, transform: `translateY(${rise}px)` };
+  const to: Keyframe = { opacity: 1, filter: "blur(0px)", transform: "none" };
 
   const animations = elements.map((el, i) => {
-    el.style.willChange = "opacity, transform";
+    el.style.willChange =
+      cfg.effect === "blur" ? "opacity, transform, filter" : "opacity, transform";
     return el.animate(
-      [
-        { opacity: 0, transform: `translateY(${rise}px)` },
-        { opacity: 1, transform: "none" },
-      ],
+      [from, to],
       {
         duration: cfg.duration,
         delay: steps[i]! * cfg.stagger,
