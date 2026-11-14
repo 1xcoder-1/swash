@@ -54,7 +54,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 98 KB of ESM for all eighteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 98 KB of ESM for all seventeen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -322,38 +322,33 @@ export default function Home() {
       <section className="section wrap" id="components">
         <div className="section-head">
           <p className="eyebrow">The catalogue</p>
-          <h2>Nineteen components, one engine</h2>
+          <h2>Seventeen components, one engine</h2>
           <p>
             Each one solves a text problem developers keep re-solving badly.
-            Open any row for the full API.
+            Open any card for the full API.
           </p>
         </div>
-        <div className="catalog">
-          <div className="catalog-head" aria-hidden>
-            <span>Component</span>
-            <span>What it does</span>
-            <span>Docs</span>
-          </div>
+        <div className="catalog-grid">
           {COMPONENTS.map((c, i) => (
-            <Link className="catalog-row" href={c.href} key={c.name}>
-              <span className="catalog-name">
+            <Link className="catalog-card" href={c.href} key={c.name}>
+              <span className="catalog-card-top">
                 <span className="catalog-idx">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                {c.name}
+                <span className="catalog-docs">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
+                    <path
+                      d="M5 11 11 5M6 5h5v5"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
               </span>
+              <span className="catalog-name">{c.name}</span>
               <span className="catalog-desc">{c.desc}</span>
-              <span className="catalog-docs">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-                  <path
-                    d="M5 11 11 5M6 5h5v5"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
             </Link>
           ))}
         </div>
@@ -399,7 +394,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, eighteen components, zero dependencies.</p>
+        <p>One install, seventeen components, zero dependencies.</p>
         <div className="hero-actions">
           <PromptButton href="/docs/quickstart">
             Start with the quickstart
