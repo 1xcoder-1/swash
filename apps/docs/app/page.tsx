@@ -3,6 +3,7 @@ import { HeroStage } from "@/components/hero-stage";
 import { InstallTabs } from "@/components/install-tabs";
 import { BentoGrid, BentoCard } from "@/components/bento";
 import { PromptButton } from "@/components/prompt-button";
+import { Catalog, type CatalogItem } from "@/components/catalog";
 
 const PRINCIPLES = [
   {
@@ -325,33 +326,10 @@ export default function Home() {
           <h2>Seventeen components, one engine</h2>
           <p>
             Each one solves a text problem developers keep re-solving badly.
-            Open any card for the full API.
+            Every card runs the real component — hover what invites it.
           </p>
         </div>
-        <div className="catalog-grid">
-          {COMPONENTS.map((c, i) => (
-            <Link className="catalog-card" href={c.href} key={c.name}>
-              <span className="catalog-card-top">
-                <span className="catalog-idx">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="catalog-docs">
-                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden>
-                    <path
-                      d="M5 11 11 5M6 5h5v5"
-                      stroke="currentColor"
-                      strokeWidth="1.4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </span>
-              <span className="catalog-name">{c.name}</span>
-              <span className="catalog-desc">{c.desc}</span>
-            </Link>
-          ))}
-        </div>
+        <Catalog items={COMPONENTS as CatalogItem[]} />
       </section>
 
       <section className="section wrap" id="praise">
