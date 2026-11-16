@@ -1,5 +1,5 @@
 /* swash docs — react.doctor design language, Tailwind v4 (original work) */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap");
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------ tokens */
@@ -24,6 +24,9 @@
     Roboto, Arial, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "Cascadia Code",
     "SF Mono", Menlo, Consolas, monospace;
+  /* Handwriting face for the Marker demos: annotations read as pen on paper,
+     not as UI text with shapes drawn over a title. */
+  --font-hand: "Caveat", "Segoe Script", "Bradley Hand", cursive;
 
   --radius-btn: 7px;
   --radius-card: 8px;
@@ -365,6 +368,111 @@
   gap: 12px;
   margin-bottom: 48px;
 }
+
+/* ------------------------------------------- direction-aware selection */
+/* Aceternity's Direction Aware Selection, values measured from the live
+   demo: frame border rgb(48,116,254) 2px, four 8px corner handles at -5px
+   filled with the page background, a #3074FE size tag with rolling odometer
+   digits, and the word filling bright from the edge the pointer enters. */
+.ds {
+  position: relative;
+  display: block;
+}
+.ds-word {
+  position: relative;
+  display: inline-block;
+  /* Base text keeps the surrounding color (bright hero copy); the hover
+     fill sweeps in pure white so the direction-aware reveal still reads. */
+  color: inherit;
+  outline: none;
+  border-radius: 3px;
+}
+.ds-word-fill {
+  position: absolute;
+  inset: 0;
+  display: inline-block;
+  color: #fff;
+  clip-path: inset(0 100% 0 0);
+  pointer-events: none;
+  transition: clip-path 0.28s var(--ease-out);
+}
+.ds-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  border: 2px solid #3074fe;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-out);
+  z-index: 3;
+}
+.ds-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid #3074fe;
+  background: var(--color-sheet);
+}
+.ds-handle-tl {
+  top: -5px;
+  left: -5px;
+}
+.ds-handle-tr {
+  top: -5px;
+  right: -5px;
+}
+.ds-handle-br {
+  bottom: -5px;
+  right: -5px;
+}
+.ds-handle-bl {
+  bottom: -5px;
+  left: -5px;
+}
+.ds-tag {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #3074fe;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ds-digit-col {
+  display: inline-block;
+  height: 12px;
+  width: 1ch;
+  overflow: hidden;
+  vertical-align: top;
+}
+.ds-digit-roll {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s var(--ease-out);
+}
+.ds-digit {
+  height: 12px;
+  line-height: 12px;
+  text-align: center;
+}
+.ds-times {
+  padding: 0 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-word-fill,
+  .ds-digit-roll {
+    transition: none;
+  }
+}
 .install {
   display: inline-flex;
   align-items: center;
@@ -420,6 +528,23 @@
 .ai-prompt-bar:hover {
   border-color: rgba(255, 255, 255, 0.22);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* In the hero, the blue pixel-prompt button is the only "lit" element.
+   The install/prompt bars sit beside it as quiet ghost controls — a bright
+   bordered box next to the button kills the pixel-button feeling. */
+.hero-actions .install-command-bar,
+.hero-actions .ai-prompt-bar {
+  border-color: rgba(255, 255, 255, 0.07);
+  background: transparent;
+  box-shadow: none;
+}
+
+.hero-actions .install-command-bar:hover,
+.hero-actions .ai-prompt-bar:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
 }
 
 .cmd-main-btn,
@@ -1128,321 +1253,141 @@
 }
 
 /* --------------------------------------------------------- component catalog */
-/* A type-specimen sheet, after the foundries: each card is the component's
-   own name set in that component's effect. Nothing else. */
-.catalog-grid {
+/* A prism bento: rounded cells in mixed widths (even spans only, so the
+   6-column grid always packs without holes). Each cell carries its own hue
+   (--h, set per index in catalog.tsx) that washes in on hover — a ghost
+   index number, the name, and an arrow that slides in. */
+.cat-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  grid-auto-flow: dense;
 }
-.catalog-card {
+.cat-cell {
   position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 104px;
-  padding: 18px 20px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  grid-column: span 2;
+  min-height: 116px;
+  padding: 16px 18px;
+  border-radius: 16px;
   border: 1px solid var(--color-line);
-  border-radius: var(--radius-panel);
-  background: var(--color-card);
-  overflow: hidden;
-  transition: background 0.18s var(--ease-out), border-color 0.18s var(--ease-out);
-}
-.catalog-card::before {
-  content: "";
-  position: absolute;
-  left: -1px;
-  top: 14px;
-  bottom: 14px;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--color-accent);
-  transform: scaleY(0);
-  transition: transform 0.2s var(--ease-out);
-  z-index: 1;
-}
-.catalog-card:hover {
-  background: var(--color-inset);
-  border-color: color-mix(in srgb, var(--color-accent) 28%, var(--color-line));
-}
-.catalog-card:hover::before {
-  transform: scaleY(1);
-}
-.catalog-idx {
-  position: absolute;
-  top: 10px;
-  left: 12px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--color-faint);
-}
-.catalog-docs {
-  position: absolute;
-  top: 9px;
-  right: 10px;
-  color: var(--color-faint);
-  opacity: 0;
-  transform: translate(-2px, 2px);
-  transition: opacity 0.16s var(--ease-out), transform 0.16s var(--ease-out), color 0.16s var(--ease-out);
-}
-.catalog-card:hover .catalog-docs {
-  opacity: 1;
-  transform: none;
-  color: var(--color-accent);
-}
-.catalog-specimen {
-  font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--color-fg);
-  white-space: nowrap;
-}
-
-/* --- the seventeen specimen treatments, CSS only --- */
-
-/* Typewriter: the caret that never lies */
-.cp-caret {
-  display: inline-block;
-  width: 2px;
-  height: 1.05em;
-  margin-left: 3px;
-  background: var(--color-accent);
-  vertical-align: text-bottom;
-  animation: cp-blink 1.06s steps(1) infinite;
-}
-@keyframes cp-blink {
-  0%, 55% { opacity: 1; }
-  56%, 100% { opacity: 0; }
-}
-
-/* Frame: a selection with its corner badge */
-.cp-frame {
-  position: relative;
-  padding: 9px 16px;
-  border: 1px solid color-mix(in srgb, var(--color-fg) 34%, transparent);
-  border-radius: 7px;
-  transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
-}
-.cp-frame::after {
-  content: "";
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
-  background: var(--color-accent);
-}
-.catalog-card:hover .cp-frame {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* Scramble settles glyph by glyph: the component handles the run */
-
-/* Morph + Ticker share one rolling glyph column */
-.cp-roll {
-  position: relative;
-  display: inline-block;
-  width: 1ch;
-  height: 1.3em;
-  overflow: hidden;
-  vertical-align: text-bottom;
-}
-.cp-roll > span {
-  position: absolute;
-  left: 0;
-  display: block;
-  line-height: 1.3em;
-  animation: cp-roll 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-}
-.cp-roll > span:nth-child(2) {
-  top: 100%;
-  animation-name: cp-roll-next;
-}
-@keyframes cp-roll {
-  0%, 42% { transform: translateY(0); opacity: 1; }
-  58%, 92% { transform: translateY(-100%); opacity: 0.9; }
-  100% { transform: translateY(-100%); opacity: 0; }
-}
-@keyframes cp-roll-next {
-  0%, 42% { transform: translateY(0); opacity: 0; }
-  50%, 92% { transform: translateY(-100%); opacity: 1; }
-  100% { transform: translateY(-100%); opacity: 1; }
-}
-.cp-ticker {
-  font-size: 22px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-.cp-ticker::before {
-  content: "1";
-}
-
-/* Shimmer: the light beam lives in a background sweep */
-.cp-shimmer {
-  background: linear-gradient(
-    110deg,
-    var(--color-muted) 42%,
-    #fff 50%,
-    var(--color-muted) 58%
-  );
-  background-size: 240% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: cp-sweep 3.2s linear infinite;
-}
-@keyframes cp-sweep {
-  0% { background-position: 130% 0; }
-  100% { background-position: -130% 0; }
-}
-
-/* Flip Words: the last word hangs mid-flip until the pointer arrives */
-.cp-flip-word {
-  display: inline-block;
-  transform: rotateX(62deg) translateY(1px);
-  transform-origin: 50% 100%;
-  opacity: 0.5;
-  transition: transform 0.55s var(--ease-out), opacity 0.55s var(--ease-out);
-}
-.catalog-card:hover .cp-flip-word {
-  transform: rotateX(0) translateY(0);
-  opacity: 1;
-  color: var(--color-accent);
-}
-
-/* Glitch: chromatic aberration through shadows, jitter on hover */
-.cp-glitch {
-  text-shadow:
-    -2px 0 rgba(0, 255, 255, 0.55),
-    2px 0 rgba(255, 0, 255, 0.55);
-}
-.catalog-card:hover .cp-glitch {
-  animation: cp-glitch-jitter 0.42s steps(2) infinite;
-}
-@keyframes cp-glitch-jitter {
-  0% { transform: translate(0, 0); text-shadow: -2px 0 rgba(0,255,255,0.55), 2px 0 rgba(255,0,255,0.55); }
-  50% { transform: translate(1px, -1px); text-shadow: 2px 0 rgba(0,255,255,0.55), -2px 0 rgba(255,0,255,0.55); }
-  100% { transform: translate(-1px, 1px); text-shadow: -2px 0 rgba(0,255,255,0.55), 2px 0 rgba(255,0,255,0.55); }
-}
-
-/* Curved Text: the name rides a real textPath ring */
-.cp-curved text {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: 0.14em;
-  fill: var(--color-muted);
-  transition: fill 0.2s var(--ease-out);
-}
-.catalog-card:hover .cp-curved text {
-  fill: var(--color-accent);
-}
-.cp-curved-spin {
-  transform-origin: 40px 40px;
-  animation: cp-spin 16s linear infinite;
-}
-@keyframes cp-spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Wave: letters frozen on the sine; the pointer keeps them bobbing */
-.cp-wave > span {
-  display: inline-block;
-  transform: translateY(var(--dy));
-}
-.catalog-card:hover .cp-wave > span {
-  animation: cp-bob 0.9s ease-in-out infinite alternate;
-  animation-delay: calc(var(--i, 0) * 90ms);
-}
-.cp-wave > span:nth-child(1) { --i: 0; }
-.cp-wave > span:nth-child(2) { --i: 1; }
-.cp-wave > span:nth-child(3) { --i: 2; }
-.cp-wave > span:nth-child(4) { --i: 3; }
-@keyframes cp-bob {
-  from { transform: translateY(var(--dy)); }
-  to { transform: translateY(calc(var(--dy) * -0.8)); }
-}
-
-/* Split Flap: the departures board itself, tile by tile */
-.cp-flap {
-  display: inline-flex;
-  gap: 2px;
-}
-.cp-tile {
-  display: inline-grid;
-  place-items: center;
-  width: 1.35ch;
-  height: 1.9em;
-  font-size: 12.5px;
-  background:
-    linear-gradient(
-      to bottom,
-      transparent 0 calc(50% - 0.5px),
-      color-mix(in srgb, var(--color-fg) 22%, transparent) calc(50% - 0.5px) calc(50% + 0.5px),
-      transparent calc(50% + 0.5px)
-    ),
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 42%),
     var(--color-inset);
-  border: 1px solid var(--color-line);
-  border-radius: 3px;
-  color: var(--color-fg);
+  transition: transform 0.22s var(--ease-out), border-color 0.22s var(--ease-out),
+    box-shadow 0.22s var(--ease-out);
 }
-.cp-flap-gap {
-  width: 0.4ch;
-}
-
-/* Echo: the trail lives entirely in shadows */
-.cp-echo {
-  color: var(--color-fg);
-  text-shadow:
-    3px 3px 0 color-mix(in srgb, var(--color-accent) 26%, transparent),
-    6px 6px 0 color-mix(in srgb, var(--color-accent) 14%, transparent),
-    9px 9px 0 color-mix(in srgb, var(--color-accent) 7%, transparent);
-}
-
-/* Slice: the seam, cut through the name */
-.cp-slice {
-  position: relative;
-  color: transparent;
-}
-.cp-slice::before,
-.cp-slice::after {
-  content: attr(data-text);
+/* The hue wash — off until hover, so the resting grid stays quiet. */
+.cat-cell::before {
+  content: "";
   position: absolute;
   inset: 0;
+  background: radial-gradient(95% 130% at 88% -12%,
+      hsl(var(--h) 90% 55% / 0.16), transparent 58%);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out);
+  pointer-events: none;
+}
+.cat-cell:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--h) 80% 55% / 0.45);
+  box-shadow: 0 14px 34px -14px hsl(var(--h) 90% 50% / 0.28);
+}
+.cat-cell:hover::before {
+  opacity: 1;
+}
+.cat-cell:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+.cat-lg {
+  grid-column: span 4;
+}
+.cat-idx {
+  position: absolute;
+  top: 4px;
+  right: 14px;
+  font-family: var(--font-mono);
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.05);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.22s var(--ease-out);
+  pointer-events: none;
+}
+.cat-cell:hover .cat-idx {
+  color: hsl(var(--h) 85% 62% / 0.4);
+}
+.cat-name {
+  position: relative;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-fg);
+  transition: color 0.16s var(--ease-out);
 }
-.cp-slice::before {
-  clip-path: inset(0 0 46% 0);
-  transform: translateX(-3px);
-}
-.cp-slice::after {
-  clip-path: inset(54% 0 0 0);
-  transform: translateX(3px);
-}
-.catalog-card:hover .cp-slice::before {
-  transform: translateX(-6px);
-}
-.catalog-card:hover .cp-slice::after {
-  transform: translateX(6px);
-}
-
-/* Neon wrapper: the component draws its own glow */
-.cp-neon {
+.cat-lg .cat-name {
   font-size: 17px;
-  letter-spacing: 0.1em;
+}
+.cat-cell:hover .cat-name {
+  color: #fff;
+}
+.cat-arrow {
+  margin-left: auto;
+  align-self: center;
+  position: relative;
+  color: var(--color-faint);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out),
+    color 0.18s var(--ease-out);
+}
+.cat-cell:hover .cat-arrow {
+  opacity: 1;
+  transform: none;
+  color: hsl(var(--h) 85% 62%);
+}
+@media (max-width: 980px) {
+  .cat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .cat-lg {
+    grid-column: span 4;
+  }
+}
+@media (max-width: 680px) {
+  .cat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cat-cell,
+  .cat-lg {
+    grid-column: span 2;
+  }
+  .cat-cell {
+    min-height: 96px;
+  }
+}
+@media (max-width: 460px) {
+  .cat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat-cell,
+  .cat-cell::before,
+  .cat-idx,
+  .cat-name,
+  .cat-arrow {
+    transition: none;
+  }
+  .cat-cell:hover {
+    transform: none;
+  }
 }
 
-/* Reduced motion freezes every loop; the static effects carry the look */
-@media (prefers-reduced-motion: reduce) {
-  .cp-caret { animation: none; opacity: 1; }
-  .cp-roll > span { animation: none; }
-  .cp-roll > span:nth-child(2) { opacity: 0; }
-  .cp-shimmer { animation: none; background-position: 64% 0; }
-  .cp-curved-spin { animation: none; }
-  .catalog-card:hover .cp-glitch { animation: none; }
-  .catalog-card:hover .cp-wave > span { animation: none; }
-}
 /* --------------------------------------------------------------- testimonials */
 .tst-masonry {
   columns: 2;
@@ -1764,6 +1709,9 @@
 /* language tabs (JavaScript / TypeScript), like torph.lochie.me */
 .code-tabbar {
   display: flex;
+  /* without centering, the 28px copy button stretches the row and the
+     16px language logo pins to the top — they read as two different lines */
+  align-items: center;
   gap: 2px;
   padding: 6px 10px;
   border-bottom: 1px solid var(--color-line);
@@ -1910,6 +1858,41 @@
   border-color: #2a2d31;
 }
 
+/* In-panel demo controls: a quiet pill whose frame stays hidden until the
+   pointer arrives, so it reads as part of the widget, not as panel chrome. */
+.demo-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+.demo-btn:hover {
+  color: var(--color-fg);
+  border-color: var(--color-rule);
+  background: var(--color-panel);
+}
+.demo-btn:active {
+  transform: translateY(1px);
+}
+.demo-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.demo-btn.is-active {
+  color: var(--color-fg);
+  border-color: var(--color-rule);
+  background: var(--color-panel);
+}
+
 /* pixel button: a pill built from tiny lit pixels */
 .pixel-button {
   position: relative;
@@ -1951,6 +1934,22 @@
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+/* While a board is still flipping, the flip button is disabled until onDone
+   lands it: dim the pill and hold the resting surface so it reads as busy
+   without a separate status label next to it. */
+.pixel-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.pixel-button:disabled:hover {
+  background: var(--color-panel);
+}
+/* Selected toggle state (e.g. Ticker direction pills): a lit fill so the
+   chosen option reads as pressed-in without leaving the pixel design. */
+.pixel-button.is-active {
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-panel));
+  color: var(--color-fg);
+}
 
 /* copy button */
 .copy-btn {
@@ -1973,7 +1972,9 @@
 .demo-amount {
   display: inline-flex;
   align-items: baseline;
-  gap: 1px;
+  /* A thin space between the sign and the amount, the way the command bar
+     reads "$ pnpm …": same ink, but the sign is not welded to the digits. */
+  gap: 0.12em;
   font-family: var(--font-mono);
   font-size: 30px;
   font-weight: 500;
@@ -1981,11 +1982,14 @@
   color: var(--color-fg);
   font-variant-numeric: tabular-nums;
 }
+/* The sign shares the amount's ink; the breathing room is the flex gap above. */
 .demo-prefix {
-  color: var(--color-muted);
+  color: inherit;
 }
 .demo-bubble {
-  max-width: 340px;
+  /* A fixed width, not a max: the bubble is content-hug, so with max-width it
+     breathes with every tweened frame of the morph and the chrome itself jitters. */
+  width: 340px;
   padding: 14px 18px;
   border-radius: 14px;
   background: var(--color-inset);
@@ -1993,7 +1997,10 @@
   font-size: 15.5px;
   line-height: 1.55;
   color: var(--color-fg);
-  text-align: left;
+  /* The width is fixed so the morph never breathes; a short sentence pinned
+     left would then leave a dead gap on the right, so the line is centred
+     inside the stable box. */
+  text-align: center;
 }
 .demo-tone {
   display: inline-flex;
@@ -2022,8 +2029,11 @@
 }
 .demo-readout {
   font-family: var(--font-mono);
-  font-size: 26px;
+  /* Same voice as .counter-stat-value, so the typed readout reads as the
+     answer, not as a repeat of the small field above it. */
+  font-size: 34px;
   font-weight: 500;
+  letter-spacing: -0.02em;
   color: var(--color-fg);
   font-variant-numeric: tabular-nums;
   min-height: 1.4em;
@@ -2041,7 +2051,20 @@
   gap: 6px;
   justify-items: center;
 }
-.counter-stat > span {
+/* The number is Counter's own root <span>, so a bare ".counter-stat > span"
+   selector styled it like the label — 11.5px uppercase mono, which made every
+   stat read as caption text. Value and label are now named separately, and
+   the value rule stands on its own so a Counter outside .counter-stat (the
+   from/to demo) is sized by it too. */
+.counter-stat-value {
+  font-family: var(--font-mono);
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-fg);
+}
+.counter-stat > .counter-stat-label {
   font-family: var(--font-mono);
   font-size: 11.5px;
   letter-spacing: 0.08em;
@@ -2067,8 +2090,11 @@
   margin: 0;
   max-width: 430px;
   text-align: left;
-  font-size: 17px;
-  font-weight: 400;
+  /* Caveat is a small-x handwriting face, so it needs a larger point size
+     than Inter to read at the same weight on the page. */
+  font-family: var(--font-hand);
+  font-size: 24px;
+  font-weight: 500;
   line-height: 2.1;
   color: var(--color-fg);
 }
@@ -2082,6 +2108,19 @@
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--color-faint);
+}
+
+/* A trigger="click" line must look clickable, or it just reads as dead text: */
+.demo-scramble {
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-accent) 45%, transparent);
+  padding-bottom: 1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.demo-scramble:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 /* ------------------------------------------------------------- examples */

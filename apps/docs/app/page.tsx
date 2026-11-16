@@ -3,6 +3,7 @@ import { HeroStage } from "@/components/hero-stage";
 import { InstallTabs } from "@/components/install-tabs";
 import { BentoGrid, BentoCard } from "@/components/bento";
 import { PromptButton } from "@/components/prompt-button";
+import { HeroCopy } from "@/components/hero-copy";
 import { Catalog, type CatalogItem } from "@/components/catalog";
 
 const PRINCIPLES = [
@@ -55,7 +56,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 98 KB of ESM for all seventeen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 98 KB of ESM for all fourteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -75,92 +76,23 @@ const PRINCIPLES = [
   },
 ];
 
+// Four cells are wide ("lg"); the rest are normal — even spans only, so
+// the 6-column bento always packs without holes.
 const COMPONENTS = [
-  {
-    name: "Typewriter",
-    href: "/docs/typewriter",
-    span: 2 as const,
-  },
-  {
-    name: "Frame",
-    href: "/docs/frame",
-    span: 1 as const,
-  },
-  {
-    name: "Reveal",
-    href: "/docs/reveal",
-    span: 1 as const,
-  },
-  {
-    name: "Scramble",
-    href: "/docs/scramble",
-    span: 1 as const,
-  },
-  {
-    name: "Morph",
-    href: "/docs/morph",
-    span: 1 as const,
-  },
-  {
-    name: "Counter",
-    href: "/docs/counter",
-    span: 1 as const,
-  },
-  {
-    name: "Marker",
-    href: "/docs/marker",
-    span: 2 as const,
-  },
-  {
-    name: "Ticker",
-    href: "/docs/ticker",
-    span: 1 as const,
-  },
-  {
-    name: "Shimmer",
-    href: "/docs/shimmer",
-    span: 1 as const,
-  },
-  {
-    name: "Flip Words",
-    href: "/docs/flip-words",
-    span: 1 as const,
-  },
-  {
-    name: "Glitch",
-    href: "/docs/glitch",
-    span: 1 as const,
-  },
-  {
-    name: "Curved Text",
-    href: "/docs/curved-text",
-    span: 1 as const,
-  },
-  {
-    name: "Wave",
-    href: "/docs/wave",
-    span: 1 as const,
-  },
-  {
-    name: "Neon",
-    href: "/docs/neon",
-    span: 1 as const,
-  },
-  {
-    name: "Split Flap",
-    href: "/docs/split-flap",
-    span: 1 as const,
-  },
-  {
-    name: "Echo",
-    href: "/docs/echo",
-    span: 1 as const,
-  },
-  {
-    name: "Slice",
-    href: "/docs/slice",
-    span: 1 as const,
-  },
+  { name: "Typewriter", href: "/docs/typewriter", size: "lg" as const },
+  { name: "Frame", href: "/docs/frame" },
+  { name: "Reveal", href: "/docs/reveal" },
+  { name: "Scramble", href: "/docs/scramble" },
+  { name: "Morph", href: "/docs/morph" },
+  { name: "Counter", href: "/docs/counter" },
+  { name: "Marker", href: "/docs/marker", size: "lg" as const },
+  { name: "Ticker", href: "/docs/ticker" },
+  { name: "Glitch", href: "/docs/glitch", size: "lg" as const },
+  { name: "Wave", href: "/docs/wave" },
+  { name: "Neon", href: "/docs/neon", size: "lg" as const },
+  { name: "Split Flap", href: "/docs/split-flap" },
+  { name: "Echo", href: "/docs/echo" },
+  { name: "Slice", href: "/docs/slice" },
 ];
 
 const FAQ = [
@@ -217,11 +149,7 @@ export default function Home() {
   return (
     <>
       <section className="hero wrap">
-        <h1>Text that moves the way readers already do.</h1>
-        <p className="sub">
-          No animation library. No layout shift. Motion that always has a
-          fallback.
-        </p>
+        <HeroCopy />
         <div className="hero-actions">
           <InstallTabs />
           <PromptButton href="/docs/quickstart">Read the docs</PromptButton>
@@ -250,12 +178,12 @@ export default function Home() {
           <div className="pr-body">
             <div className="pr-file">npm i swash</div>
             <div className="pr-finding">
-              <span className="pr-rule">14 components</span>
+              <span className="pr-rule">11 components</span>
               <span className="pr-sev">&bull; 4.2 kB</span>
             </div>
             <div className="pr-fix">
               Typewriter, Scramble, Morph, Reveal, Counter, Frame, Marker, Ticker,
-              Shimmer, Blur Reveal, Flip Words, Glitch, Curved Text and Wave
+              Blur Reveal, Glitch,and Wave
               &mdash; each tree-shaken to just what you import.
             </div>
           </div>
@@ -308,8 +236,9 @@ export default function Home() {
           <p className="eyebrow">The catalogue</p>
           <h2>Seventeen components, one engine</h2>
           <p>
-            Each name is set in its own effect. No stages, no paragraphs —
-            the type is the demo.
+            Pick a name, open its docs — every page has live examples,
+            props and copy-paste code. One engine underneath: zero
+            dependencies, reduced motion built in.
           </p>
         </div>
         <Catalog items={COMPONENTS as CatalogItem[]} />
@@ -355,7 +284,7 @@ export default function Home() {
 
       <section className="cta wrap">
         <h2>Ship the effect, not the yak shave</h2>
-        <p>One install, seventeen components, zero dependencies.</p>
+        <p>One install, fourteen components, zero dependencies.</p>
         <div className="hero-actions">
           <PromptButton href="/docs/quickstart">
             Start with the quickstart
