@@ -28,6 +28,15 @@ const GLITCH_CSS = [
   "  inset:0;",
   "  pointer-events:none;",
   "  mix-blend-mode:screen;",
+  // The channel copies only exist while the glitch plays. Without this gate
+  // they render fully at rest: the screen-blend of cyan over magenta washes
+  // over the glyphs — nearly invisible on white, tinted everywhere — so the
+  // phrase stopped reading in its own colour whenever the glitch was off.
+  "  opacity:0;",
+  "}",
+  ".swash-glitch.playing::before,",
+  ".swash-glitch.playing::after{",
+  "  opacity:1;",
   "}",
   ".swash-glitch::before{color:var(--swash-glitch-a,#0ff);}",
   ".swash-glitch::after{color:var(--swash-glitch-b,#f0f);}",
@@ -111,6 +120,9 @@ export function Glitch(props: GlitchProps) {
       style={{ ...vars, ...style }}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
+      onPointerDown={() => trigger === "hover" && setHovering(true)}
+      onPointerUp={() => trigger === "hover" && setHovering(false)}
+      onPointerCancel={() => trigger === "hover" && setHovering(false)}
     >
       <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
       <span aria-hidden="true">{text}</span>
