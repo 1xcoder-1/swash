@@ -84,28 +84,44 @@ export function wobblyEllipse(w: number, h: number, seed: number): string {
 
 /**
  * A box around something, drawn as four sides with a few points along each so
- * no edge is dead straight. The corners stay within a pixel or two of the box,
- * because a box that misses its corners looks sloppier than a line that does.
+ * no edge is dead straight. The corners sit exactly on the box: a hand does
+ * miss a corner a little, but it is the missed corner that tilts the whole
+ * mark, because an edge drawn between two off-axis corners is a slope. The
+ * sloppiness lives inside the edges instead — each point wanders across its
+ * own side, so an edge waves like a pen trace while the box stays square.
  */
 export function wobblyBox(w: number, h: number, seed: number): string {
   const rand = rng(seed + 37);
   const width = Math.max(0, w);
   const height = Math.max(0, h);
   const drift = (scale: number) => (rand() * 2 - 1) * scale;
-  const corner = (x: number, y: number): [number, number] => [
-    x + drift(1.1),
-    y + drift(1.1),
-  ];
 
-  const points: Array<[number, number]> = [corner(0, 0)];
-  const sides: Array<[[number, number], [number, number]]> = [
-    [corner(width, 0), corner(width, height)],
-    [corner(0, height), corner(0, 0)],
+  const corners: Array<[number, number]> = [
+    [0, 0],
+    [width, 0],
+    [width, height],
+    [0, height],
   ];
-  for (const [from, to] of sides) {
-    for (let i = 1; i <= 2; i++) {
-      const t = i / 3;
-      points.push([from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t]);
+  const points: Array<[number, number]> = [corners[0]!];
+  for (let s = 0; s < corners.length; s++) {
+    const from = corners[s]!;
+    const to = corners[(s + 1) % corners.length]!;
+    const dx = to[0] - from[0];
+    const dy = to[1] - from[1];
+    const len = Math.hypot(dx, dy) || 1;
+    // Unit normal of this side. Measuring the wander across the stroke
+    // rather than along x/y is what makes a horizontal edge wave up and
+    // down instead of drifting off at an angle.
+    const nx = -dy / len;
+    const ny = dx / len;
+    const steps = 3;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / (steps + 1);
+      const across = drift(DRIFT);
+      points.push([
+        from[0] + dx * t + nx * across + drift(0.5),
+        from[1] + dy * t + ny * across + drift(0.5),
+      ]);
     }
     points.push(to);
   }

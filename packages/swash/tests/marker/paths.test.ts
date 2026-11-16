@@ -85,6 +85,16 @@ describe("wobblyBox", () => {
     expect(points[points.length - 1]![0]).toBeLessThan(2);
   });
 
+  it("lands every corner exactly on the box, so no edge is a slope", () => {
+    // The old builder jittered the corners on both axes, which tilted the
+    // whole mark: an edge drawn between two off-axis corners is a slope.
+    const d = wobblyBox(120, 40, 4);
+    const seen = new Set(pairs(d).map(([x, y]) => `${x},${y}`));
+    for (const corner of ["0,0", "120,0", "120,40", "0,40"]) {
+      expect(seen.has(corner)).toBe(true);
+    }
+  });
+
   it("draws the same box for the same seed", () => {
     expect(wobblyBox(80, 30, 6)).toBe(wobblyBox(80, 30, 6));
     expect(wobblyBox(80, 30, 6)).not.toBe(wobblyBox(80, 30, 8));
