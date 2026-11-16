@@ -10,10 +10,7 @@ import {
   Scramble,
   Typewriter,
   Ticker,
-  Shimmer,
-  FlipWords,
   Glitch,
-  CurvedText,
   Wave,
   Neon,
   Echo,
@@ -28,9 +25,9 @@ export function TypewriterDemo() {
     <Preview label="Typewriter loop + feel">
       <Typewriter
         loop={[
-          "The quick brown fox.",
-          "Graphemes, not code units. 🦊👩‍👩‍👧‍👦",
-          "Reduced motion prints it all at once.",
+          "Your Weekly Report Is Ready.",
+          "Graphemes, Not Code Units.",
+          "Reduced Motion Prints It All At Once.",
         ]}
         feel="snappy"
       />
@@ -42,7 +39,7 @@ export function FrameDemo() {
   return (
     <Preview label="Frame with label and sweep">
       <Frame show label="selected" duration={900}>
-        <span style={{ padding: "6px 14px" }}>Any element gets the frame.</span>
+        <span style={{ padding: "6px 14px" }}>Every Element Gets A Frame.</span>
       </Frame>
     </Preview>
   );
@@ -52,29 +49,25 @@ export function RevealDemo() {
   return (
     <Preview label="Reveal by word, then by letter">
       <Reveal by="word" stagger={70}>
-        Words arrive one after another.
+        Words Arrive One After Another.
       </Reveal>
       <Reveal by="letter" stagger={28} style={{ color: "var(--text-2)", fontSize: "0.8em" }}>
-        Letters can, too.
+        Letters Can, Too.
       </Reveal>
     </Preview>
   );
 }
 
-const SCRAMBLE_TARGETS = ["Decode this line.", "Then this one.", "And this."];
+const SCRAMBLE_TARGETS = ["Decode This Line.", "Then This One.", "And This One."];
 
 export function ScrambleDemo() {
   const [i, setI] = useState(0);
   return (
     <Preview label="Scramble trigger=prop">
       <Scramble text={SCRAMBLE_TARGETS[i]} trigger="prop" />
-      <button
-        type="button"
-        className="preview-replay"
-        onClick={() => setI((n) => (n + 1) % SCRAMBLE_TARGETS.length)}
-      >
-        Next line
-      </button>
+      <PixelButton onClick={() => setI((n) => (n + 1) % SCRAMBLE_TARGETS.length)}>
+        Next Line
+      </PixelButton>
     </Preview>
   );
 }
@@ -83,7 +76,7 @@ export function MorphDemo() {
   return (
     <Preview label="Morph — continuous cycling, width-compensated">
       <Morph
-        values={["Direct", "Transaction", "Processing", "Copy", "Be there soon"]}
+        values={["Direct", "Transaction", "Processing", "Copy", "Be There Soon"]}
         hold={1100}
         duration={700}
         loop
@@ -98,7 +91,7 @@ export function CounterDemo() {
       <div className="counter-stats">
         <div className="counter-stat">
           <Counter to={12450} prefix="$" duration={1800} startOnView={false} />
-          <span>Revenue this week</span>
+          <span>Revenue This Week</span>
         </div>
         <div className="counter-stat">
           <Counter
@@ -119,7 +112,7 @@ export function CounterDemo() {
             duration={1200}
             startOnView={false}
           />
-          <span>Avg. build</span>
+          <span>Avg. Build</span>
         </div>
       </div>
     </Preview>
@@ -135,15 +128,11 @@ export function CounterFromDemo() {
         from={base}
         startOnView={false}
         duration={1200}
-        style={{ fontSize: 30, fontWeight: 600 }}
+        style={{ fontSize: 30, fontWeight: 500 }}
       />
-      <button
-        type="button"
-        className="preview-replay"
-        onClick={() => setBase((b) => b + 640)}
-      >
-        Next quarter
-      </button>
+      <PixelButton onClick={() => setBase((b) => b + 640)}>
+        Next Quarter
+      </PixelButton>
     </Preview>
   );
 }
@@ -152,15 +141,15 @@ export function MarkerHighlightDemo() {
   return (
     <Preview label="Marker highlight, two inks">
       <p className="marker-sentence">
-        The launch was{" "}
+        The Launch Was{" "}
         <Marker action="highlight" color="amber" show>
-          a success
+          A Success
         </Marker>{" "}
-        and{" "}
+        And{" "}
         <Marker action="highlight" color="emerald" show delay={400}>
-          everyone came back
+          Everyone Came Back
         </Marker>{" "}
-        the next week.
+        The Next Week.
       </p>
     </Preview>
   );
@@ -172,13 +161,13 @@ export function MarkerUnderlineDemo() {
       <p className="marker-sentence">
         We{" "}
         <Marker action="underline" color="sky" show>
-          shipped on Friday
+          Shipped On Friday
         </Marker>{" "}
-        and{" "}
+        And{" "}
         <Marker action="strike" color="rose" show delay={400}>
-          dropped the cron job
+          Dropped The Cron Job
         </Marker>{" "}
-        right after.
+        Right After.
       </p>
     </Preview>
   );
@@ -188,13 +177,13 @@ export function MarkerShapeDemo() {
   return (
     <Preview label="Marker circle and box">
       <p className="marker-sentence">
-        Circle the{" "}
+        Circle The{" "}
         <Marker action="circle" color="violet" show>
-          deadline
+          Deadline
         </Marker>{" "}
-        and box the{" "}
+        And Box The{" "}
         <Marker action="box" color="primary" show delay={400}>
-          ship date
+          Ship Date
         </Marker>
         .
       </p>
@@ -234,9 +223,9 @@ function useCycle(length: number, ms: number, enabled: boolean): number {
 }
 
 const PHRASES = [
-  "Running late, be there soon.",
-  "Running a bit behind, see you soon.",
-  "Almost there, hold tight.",
+  "Running Late, Be There Soon.",
+  "Running A Bit Behind, See You Soon.",
+  "Almost There, Hold Tight.",
 ];
 
 /** Phrase — a sentence morphs by its shared characters. */
@@ -251,9 +240,9 @@ export function PhraseDemo() {
 }
 
 const TONES: Array<[string, string]> = [
-  ["Direct", "Running late, be there soon."],
-  ["Friendly", "Running a bit behind, I'll be there soon!"],
-  ["Formal", "I am running slightly behind; I will arrive shortly."],
+  ["Direct", "Running Late, Be There Soon."],
+  ["Friendly", "Running A Bit Behind, I'll Be There Soon!"],
+  ["Formal", "I Am Running Slightly Behind; I Will Arrive Shortly."],
 ];
 
 /** Tone — the same message rewritten; only changed words move. */
@@ -343,10 +332,10 @@ export function TypewriterOnceDemo() {
   return (
     <Preview label="Typewriter text + onDone">
       <Typewriter
-        text="One phrase, typed once."
+        text="One Phrase, Typed Once."
         onDone={() => setDone(true)}
       />
-      {done ? <span className="demo-hint">onDone fired</span> : null}
+      {done ? <span className="demo-hint">onDone Fired</span> : null}
     </Preview>
   );
 }
@@ -357,11 +346,11 @@ export function TypewriterFeelDemo() {
     <Preview label="Typewriter feel presets">
       <div className="tw-feel">
         <span className="tw-feel-label">cinematic</span>
-        <Typewriter loop={["The same line."]} feel="cinematic" />
+        <Typewriter loop={["The Same Line."]} feel="cinematic" />
         <span className="tw-feel-label">snappy</span>
-        <Typewriter loop={["The same line."]} feel="snappy" />
+        <Typewriter loop={["The Same Line."]} feel="snappy" />
         <span className="tw-feel-label">playful</span>
-        <Typewriter loop={["The same line."]} feel="playful" />
+        <Typewriter loop={["The Same Line."]} feel="playful" />
       </div>
     </Preview>
   );
@@ -373,10 +362,10 @@ export function FrameToggleDemo() {
   return (
     <Preview label="Frame controlled by show">
       <Frame show={show} label="selected" duration={700}>
-        <span style={{ padding: "6px 14px" }}>Toggles without remounting.</span>
+        <span style={{ padding: "6px 14px" }}>Toggles Without Remounting.</span>
       </Frame>
       <PixelButton onClick={() => setShow((v) => !v)}>
-        {show ? "Hide frame" : "Show frame"}
+        {show ? "Hide Frame" : "Show Frame"}
       </PixelButton>
     </Preview>
   );
@@ -388,10 +377,10 @@ export function FrameStyleDemo() {
     <Preview label="Frame color, radius and width">
       <div className="frame-row">
         <Frame show color="#e0b341" radius={16} duration={800}>
-          <span style={{ padding: "6px 14px" }}>Amber, round</span>
+          <span style={{ padding: "6px 14px" }}>Amber, Round</span>
         </Frame>
         <Frame show color="var(--color-accent)" width={3} radius={4} duration={800}>
-          <span style={{ padding: "6px 14px" }}>Blue, sharp</span>
+          <span style={{ padding: "6px 14px" }}>Blue, Sharp</span>
         </Frame>
       </div>
     </Preview>
@@ -406,10 +395,10 @@ export function RevealLineDemo() {
         by="line"
         stagger={160}
         duration={600}
-        style={{ textAlign: "left", maxWidth: 380, fontSize: "0.75em", fontWeight: 400 }}
+        style={{ textAlign: "left", maxWidth: 380, fontSize: "0.75em", fontWeight: 500 }}
       >
-        Lines rise one after another. Each full line is one piece of the
-        animation, wherever it wrapped.
+        Lines Rise One After Another. Each Full Line Is One Piece Of The
+        Animation, Wherever It Wrapped.
       </Reveal>
     </Preview>
   );
@@ -423,9 +412,9 @@ export function RevealFadeDemo() {
         by="fade"
         stagger={45}
         y={0}
-        style={{ maxWidth: 360, fontSize: "0.75em", fontWeight: 400 }}
+        style={{ maxWidth: 360, fontSize: "0.75em", fontWeight: 500 }}
       >
-        Words fade in where they stand — nothing moves up from below.
+        Words Fade In Where They Stand — Nothing Moves Up From Below.
       </Reveal>
     </Preview>
   );
@@ -435,7 +424,7 @@ export function RevealFadeDemo() {
 export function ScrambleClickDemo() {
   return (
     <Preview label="Scramble trigger=click">
-      <Scramble text="Click the line to re-decode it." trigger="click" />
+      <Scramble text="Click The Line To Re-Decode It." trigger="click" />
       <span className="demo-hint">trigger=&quot;click&quot;</span>
     </Preview>
   );
@@ -468,14 +457,14 @@ export function MorphStepDemo() {
       <Morph values={STEP_LABELS} loop={false} step={i} duration={600} />
       <div style={{ display: "flex", gap: 8 }}>
         {STEP_LABELS.map((s, n) => (
-          <button
+          <PixelButton
             key={s}
-            type="button"
-            className="preview-replay"
+            className={i === n ? "is-active" : undefined}
+            aria-pressed={i === n}
             onClick={() => setI(n)}
           >
             {s}
-          </button>
+          </PixelButton>
         ))}
       </div>
     </Preview>
@@ -489,7 +478,7 @@ export function TickerDemo() {
   const [i, setI] = useState(0);
   return (
     <Preview label="Ticker — rolling digits, static punctuation">
-      <div style={{ fontSize: "2rem", fontWeight: 600 }}>
+      <div style={{ fontSize: "2rem", fontWeight: 500 }}>
         <Ticker
           value={TICKER_VALUES[i]}
           prefix="$"
@@ -499,31 +488,9 @@ export function TickerDemo() {
           separator=","
         />
       </div>
-      <button
-        type="button"
-        className="preview-replay"
-        onClick={() => setI((n) => (n + 1) % TICKER_VALUES.length)}
-      >
-        Change value
-      </button>
-    </Preview>
-  );
-}
-
-/** Shimmer: iridescent light beam across text. */
-export function ShimmerDemo() {
-  return (
-    <Preview label="Shimmer — compositor-thread light beam">
-      <div style={{ background: "#0b0b12", padding: "24px 28px", borderRadius: 12 }}>
-        <Shimmer
-          spread={220}
-          duration={2400}
-          color="rgba(255,255,255,0.9)"
-          baseColor="#7a7a94"
-        >
-          Powered by next-gen AI
-        </Shimmer>
-      </div>
+      <PixelButton onClick={() => setI((n) => (n + 1) % TICKER_VALUES.length)}>
+        Change Value
+      </PixelButton>
     </Preview>
   );
 }
@@ -534,26 +501,8 @@ export function RevealBlurDemo() {
     <Preview label="Reveal — blur into focus">
       <div style={{ fontSize: "1.25rem", lineHeight: 1.6 }}>
         <Reveal by="word" effect="blur" blur={10} stagger={60} duration={500}>
-          Intelligence designed for every scale.
+          Intelligence Designed For Every Scale.
         </Reveal>
-      </div>
-    </Preview>
-  );
-}
-
-/** FlipWords: 3D card flip cycler. */
-export function FlipWordsDemo() {
-  return (
-    <Preview label="Flip Words — 3D flip with reserved box">
-      <div style={{ fontSize: "1.5rem" }}>
-        Make it{" "}
-        <FlipWords
-          words={["ultra-fast", "bulletproof", "accessible", "production-ready"]}
-          duration={2200}
-          preserveSpace
-          direction="vertical"
-        />
-        .
       </div>
     </Preview>
   );
@@ -563,27 +512,12 @@ export function FlipWordsDemo() {
 export function GlitchDemo() {
   return (
     <Preview label="Glitch — hover to fire, ::before / ::after only">
-      <div style={{ fontSize: "1.75rem", fontWeight: 700, letterSpacing: "0.06em" }}>
+      <div style={{ fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.06em" }}>
         <Glitch
           text="SYSTEM REBOOT"
           trigger="hover"
           intensity="medium"
           colors={["#00ffff", "#ff00ff"]}
-        />
-      </div>
-    </Preview>
-  );
-}
-
-/** CurvedText: circular spinning badge. */
-export function CurvedTextDemo() {
-  return (
-    <Preview label="Curved Text — SVG textPath, compositor rotate">
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <CurvedText
-          text="EXPLORE THE SYSTEM • SCROLL DOWN • 2026 • "
-          radius={72}
-          speed={12}
         />
       </div>
     </Preview>
@@ -596,7 +530,7 @@ export function WaveDemo() {
     <Preview label="Wave — grapheme-safe, per-letter CSS delay">
       <div style={{ fontSize: "1.5rem", fontWeight: 500 }}>
         <Wave amplitude={10} interval={90} trigger="hover">
-          Catch the momentum 👩‍👩‍👧‍👦
+          Catch The Momentum
         </Wave>
       </div>
     </Preview>
@@ -627,7 +561,7 @@ export function TickerStatsDemo() {
       <div style={{ display: "flex", gap: 28, flexWrap: "wrap", justifyContent: "center" }}>
         {cells.map((c) => (
           <div key={c.label} style={{ textAlign: "center" }}>
-            <div style={{ fontSize: "1.6rem", fontWeight: 650 }}>{c.value}</div>
+            <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>{c.value}</div>
             <div
               style={{
                 fontSize: 12,
@@ -652,22 +586,20 @@ export function TickerDoneDemo() {
   return (
     <Preview label="Ticker — onDone when the digits land">
       <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
-        <span style={{ fontSize: "2rem", fontWeight: 650 }}>
+        <span style={{ fontSize: "2rem", fontWeight: 500 }}>
           <Ticker value={value} duration={700} onDone={() => setLanded(true)} />
         </span>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <button
-            type="button"
-            className="preview-replay"
+          <PixelButton
             onClick={() => {
               setLanded(false);
               setValue(Math.round(Math.random() * 9000) + 500);
             }}
           >
-            Roll a new value
-          </button>
+            Roll A New Value
+          </PixelButton>
           <span aria-live="polite" style={{ fontSize: 13, color: "var(--color-muted)" }}>
-            {landed ? "landed" : "rolling…"}
+            {landed ? "Landed" : "Rolling…"}
           </span>
         </div>
       </div>
@@ -675,50 +607,39 @@ export function TickerDoneDemo() {
   );
 }
 
-/** Shimmer: loading lines, each lit by a wider beam. */
-export function ShimmerLinesDemo() {
-  const lines = [
-    "Fetching your weekly report…",
-    "Crunching 12,481 events",
-    "Almost there",
-  ];
+/** Ticker: the same roll seen from all three directions. */
+export function TickerDirectionDemo() {
+  const [value, setValue] = useState(4729);
   return (
-    <Preview label="Shimmer — loading lines">
-      <div style={{ display: "grid", gap: 8, justifyItems: "start" }}>
-        {lines.map((l, n) => (
-          <Shimmer
-            key={l}
-            baseColor="#3f3f55"
-            color="#9a9ac0"
-            spread={120 + n * 60}
-            duration={1400 + n * 400}
-          >
-            {l}
-          </Shimmer>
-        ))}
+    <Preview label="Ticker — up, down and auto">
+      <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
+        <div style={{ display: "flex", gap: 28, flexWrap: "wrap", justifyContent: "center" }}>
+          {([
+            ["up", "up"],
+            ["down", "down"],
+            ["auto", "auto"],
+          ] as const).map(([label, dir]) => (
+            <div key={label} style={{ textAlign: "center" }}>
+              <Ticker value={value} direction={dir} duration={700} />
+              <div
+                style={{
+                  fontSize: 12,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "var(--color-faint)",
+                }}
+              >
+                {label}
+              </div>
+            </div>
+          ))}
+        </div>
+        <PixelButton
+          onClick={() => setValue(Math.round(Math.random() * 9000) + 500)}
+        >
+          Roll A New Value
+        </PixelButton>
       </div>
-    </Preview>
-  );
-}
-
-/** Shimmer: a warm badge — the beam colour is fully yours to pick. */
-export function ShimmerBadgeDemo() {
-  return (
-    <Preview label="Shimmer — lit badge">
-      <span
-        style={{
-          display: "inline-block",
-          border: "1px solid var(--color-line)",
-          borderRadius: 999,
-          padding: "9px 20px",
-          fontSize: 15,
-          fontWeight: 600,
-        }}
-      >
-        <Shimmer spread={90} duration={1800} baseColor="#c9a227" color="#fff3b0">
-          ✦ Premium tier
-        </Shimmer>
-      </span>
     </Preview>
   );
 }
@@ -730,11 +651,11 @@ export function RevealBlurLineDemo() {
     <Preview label="Reveal — blur, by line">
       <h3 key={run} style={{ margin: 0, fontSize: "1.6rem", lineHeight: 1.35, textAlign: "center" }}>
         <Reveal key={run} by="line" effect="blur" blur={14} stagger={140} duration={700} startOnView={false}>
-          {"Motion that means something.\nEvery line finds its place."}
+          Motion That Means Something.\nEvery Line Finds Its Place.
         </Reveal>
       </h3>
       <button type="button" className="preview-replay" onClick={() => setRun((n) => n + 1)}>
-        Replay lines
+        Replay Lines
       </button>
     </Preview>
   );
@@ -745,49 +666,14 @@ export function RevealBlurCharDemo() {
   const [run, setRun] = useState(0);
   return (
     <Preview label="Reveal — blur, by letter">
-      <p key={run} style={{ margin: 0, fontSize: "1.8rem", fontWeight: 600 }}>
+      <p key={run} style={{ margin: 0, fontSize: "1.8rem", fontWeight: 500 }}>
         <Reveal key={run} by="letter" effect="blur" blur={8} stagger={28} duration={450} startOnView={false}>
-          Set in motion.
+          Set In Motion.
         </Reveal>
       </p>
       <button type="button" className="preview-replay" onClick={() => setRun((n) => n + 1)}>
-        Replay letters
+        Replay Letters
       </button>
-    </Preview>
-  );
-}
-
-/** Flip Words: the horizontal axis, width breathing with each word. */
-export function FlipWordsHorizontalDemo() {
-  return (
-    <Preview label="Flip Words — horizontal, breathing width">
-      <div style={{ fontSize: "1.5rem" }}>
-        A cache of <em>some</em> size — actually{" "}
-        <FlipWords
-          words={["tiny", "compact", "capacious", "enormous"]}
-          duration={2000}
-          preserveSpace={false}
-          direction="horizontal"
-        />
-        .
-      </div>
-    </Preview>
-  );
-}
-
-/** Flip Words: begin where you like, dwell as long as you like. */
-export function FlipWordsStartDemo() {
-  return (
-    <Preview label="Flip Words — start at your index">
-      <div style={{ fontSize: "1.4rem" }}>
-        Our promise:{" "}
-        <FlipWords
-          words={["quiet", "steady", "fast", "kind"]}
-          duration={3200}
-          startAtIndex={2}
-        />
-        .
-      </div>
     </Preview>
   );
 }
@@ -796,7 +682,7 @@ export function FlipWordsStartDemo() {
 export function GlitchAlwaysDemo() {
   return (
     <Preview label="Glitch — always on, subtle">
-      <div style={{ fontSize: "1.6rem", fontWeight: 700, letterSpacing: "0.1em" }}>
+      <div style={{ fontSize: "1.6rem", fontWeight: 500, letterSpacing: "0.1em" }}>
         <Glitch text="OUT OF ORDER" trigger="always" intensity="subtle" />
       </div>
     </Preview>
@@ -807,7 +693,7 @@ export function GlitchAlwaysDemo() {
 export function GlitchScrollDemo() {
   return (
     <Preview label="Glitch — fires on scroll">
-      <div style={{ fontSize: "1.6rem", fontWeight: 700 }}>
+      <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
         <Glitch
           text="SIGNAL LOST"
           trigger="scroll"
@@ -819,44 +705,13 @@ export function GlitchScrollDemo() {
   );
 }
 
-/** Curved Text: counter-clockwise, extra letter spacing along the path. */
-export function CurvedTextReverseDemo() {
-  return (
-    <Preview label="Curved Text — reverse, wide spacing">
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <CurvedText
-          text="AROUND WE GO • SLOWLY • "
-          radius={64}
-          speed={8}
-          reverse
-          spacing={2}
-        />
-      </div>
-    </Preview>
-  );
-}
-
-/** Curved Text: a compact sticker beside a label. */
-export function CurvedTextBadgeDemo() {
-  return (
-    <Preview label="Curved Text — compact sticker">
-      <div style={{ display: "flex", alignItems: "center", gap: 18, justifyContent: "center" }}>
-        <CurvedText text="NEW DROP • 2026 • " radius={34} speed={5} />
-        <span style={{ fontSize: 15, color: "var(--color-muted)" }}>
-          It spins on the compositor — one keyframe, no JavaScript per frame.
-        </span>
-      </div>
-    </Preview>
-  );
-}
-
 /** Wave: an endless loop, tighter than the hover default. */
 export function WaveLoopDemo() {
   return (
     <Preview label="Wave — endless loop">
       <div style={{ fontSize: "1.4rem", fontWeight: 500 }}>
         <Wave trigger="loop" amplitude={6} interval={70} duration={1000}>
-          Never standing still
+          Never Standing Still
         </Wave>
       </div>
     </Preview>
@@ -869,7 +724,7 @@ export function WaveViewDemo() {
     <Preview label="Wave — rises on view">
       <div style={{ fontSize: "1.4rem", fontWeight: 500 }}>
         <Wave trigger="view" amplitude={12} interval={110}>
-          Good morning ☀️
+          Good Morning
         </Wave>
       </div>
     </Preview>
@@ -886,12 +741,61 @@ export function WaveViewDemo() {
 export function NeonDemo() {
   return (
     <Preview label="Neon — tube and flicker">
-      <div style={{ display: "grid", gap: 16, justifyItems: "center" }}>
-        <span style={{ fontSize: "2.2rem", fontWeight: 700 }}>
-          <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+      <span style={{ fontSize: "2.2rem", fontWeight: 500 }}>
+        <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
+      </span>
+    </Preview>
+  );
+}
+
+/** Neon: the named tube inks, the same word lit in each. */
+export function NeonInkDemo() {
+  return (
+    <Preview label="Neon — tube inks">
+      <div
+        className="tw-feel"
+        style={{ rowGap: 8, gridTemplateColumns: "auto auto", justifyContent: "center", columnGap: 28 }}
+      >
+        <span className="tw-feel-label">cyan</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="LAST CALL" color="cyan" flicker="none" />
         </span>
-        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
-          The glow flickers; the letters hold steady.
+        <span className="tw-feel-label">magenta</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="LAST CALL" color="magenta" flicker="none" />
+        </span>
+        <span className="tw-feel-label">lime</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="LAST CALL" color="lime" flicker="none" />
+        </span>
+        <span className="tw-feel-label">amber</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="LAST CALL" color="amber" flicker="none" />
+        </span>
+      </div>
+    </Preview>
+  );
+}
+
+/** Neon: the three flicker presets side by side, same tube. */
+export function NeonFlickerDemo() {
+  return (
+    <Preview label="Neon — flicker presets">
+      <div
+        className="tw-feel"
+        style={{ rowGap: 8, gridTemplateColumns: "auto auto", justifyContent: "center", columnGap: 28 }}
+      >
+        <span className="tw-feel-label">none</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="NEON BAR" color="violet" flicker="none" />
+        </span>
+        <span className="tw-feel-label">soft</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="NEON BAR" color="violet" flicker="soft" />
+        </span>
+        <span className="tw-feel-label">hard</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Neon text="NEON BAR" color="violet" flicker="hard" />
         </span>
       </div>
     </Preview>
@@ -902,14 +806,9 @@ export function NeonDemo() {
 export function NeonHoverDemo() {
   return (
     <Preview label="Neon — lights on hover">
-      <div style={{ display: "grid", gap: 16, justifyItems: "center" }}>
-        <span style={{ fontSize: "1.8rem", fontWeight: 600 }}>
-          <Neon text="VACANCY" color="amber" flicker="none" trigger="hover" />
-        </span>
-        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
-          Hover the sign to switch it on.
-        </span>
-      </div>
+      <span style={{ fontSize: "1.8rem", fontWeight: 500 }}>
+        <Neon text="VACANCY" color="amber" flicker="none" trigger="hover" />
+      </span>
     </Preview>
   );
 }
@@ -918,8 +817,33 @@ export function NeonHoverDemo() {
 export function EchoDemo() {
   return (
     <Preview label="Echo — a trail under the text">
-      <div style={{ fontSize: "1.9rem", fontWeight: 600 }}>
-        <Echo count={4} delay={420} trigger="always">Signal</Echo>
+      <div style={{ fontSize: "1.9rem", fontWeight: 500 }}>
+        <Echo count={4} delay={420} spread={1.3} trigger="always">SIGNAL</Echo>
+      </div>
+    </Preview>
+  );
+}
+
+/** Echo: how deep the trail runs, one pulse per count preset. */
+export function EchoDepthDemo() {
+  return (
+    <Preview label="Echo — trail depth">
+      <div
+        className="tw-feel"
+        style={{ gridTemplateColumns: "auto auto", justifyContent: "center", columnGap: 28 }}
+      >
+        <span className="tw-feel-label">count=1</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Echo count={1} delay={600} trigger="always">Ping</Echo>
+        </span>
+        <span className="tw-feel-label">count=3</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Echo count={3} delay={420} trigger="always">Ping</Echo>
+        </span>
+        <span className="tw-feel-label">count=6</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Echo count={6} delay={300} trigger="always">Ping</Echo>
+        </span>
       </div>
     </Preview>
   );
@@ -930,7 +854,27 @@ export function EchoHoverDemo() {
   return (
     <Preview label="Echo — pulses on hover">
       <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
-        <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
+        <Echo count={3} delay={300} duration={1200} trigger="hover">Hover Me</Echo>
+      </div>
+    </Preview>
+  );
+}
+
+/** Echo: a wider ripple in the site's own accent, cued on view. */
+export function EchoStyleDemo() {
+  return (
+    <Preview label="Echo — wider ripple on view">
+      <div style={{ fontSize: "1.9rem", fontWeight: 500 }}>
+        <Echo
+          count={5}
+          delay={340}
+          duration={1400}
+          spread={1.5}
+          color="var(--color-accent)"
+          trigger="view"
+        >
+          You Have Mail
+        </Echo>
       </div>
     </Preview>
   );
@@ -940,8 +884,30 @@ export function EchoHoverDemo() {
 export function SliceDemo() {
   return (
     <Preview label="Slice — the seam opens and closes">
-      <div style={{ fontSize: "2rem", fontWeight: 700 }}>
+      <div style={{ fontSize: "2rem", fontWeight: 500 }}>
         <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
+      </div>
+    </Preview>
+  );
+}
+
+/** Slice: how far each half slides, one word per amount. */
+export function SliceAmountDemo() {
+  return (
+    <Preview label="Slice — slide distance">
+      <div className="tw-feel">
+        <span className="tw-feel-label">amount=6</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Slice text="Narrow" amount={6} />
+        </span>
+        <span className="tw-feel-label">amount=14</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Slice text="Middle" />
+        </span>
+        <span className="tw-feel-label">amount=32</span>
+        <span style={{ fontSize: "1.5rem", fontWeight: 500, textAlign: "center" }}>
+          <Slice text="Widest" amount={32} />
+        </span>
       </div>
     </Preview>
   );
@@ -951,8 +917,19 @@ export function SliceDemo() {
 export function SliceHoverDemo() {
   return (
     <Preview label="Slice — parts on hover">
-      <div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
+      <div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
         <Slice text="Bisect" trigger="hover" amount={12} />
+      </div>
+    </Preview>
+  );
+}
+
+/** Slice: a slower slide cued the moment the line comes into view. */
+export function SliceViewDemo() {
+  return (
+    <Preview label="Slice — parts on view">
+      <div style={{ fontSize: "2rem", fontWeight: 500 }}>
+        <Slice text="Sever" trigger="view" amount={26} duration={620} />
       </div>
     </Preview>
   );
@@ -966,20 +943,112 @@ export function SplitFlapDemo() {
   const i = useCycle(FLIGHTS.length, 2600, !reduced);
   return (
     <Preview label="Split Flap — the board turns over">
-      <div style={{ display: "grid", gap: 12, justifyItems: "center" }}>
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "1.9rem",
+          fontWeight: 500,
+          letterSpacing: "0.06em",
+        }}
+      >
+        <SplitFlap text={FLIGHTS[i]} interval={90} />
+      </span>
+    </Preview>
+  );
+}
+
+const DEPARTS = ["18:45", "19:30", "21:05", "23:40"];
+
+/** Split Flap: a clock of tiles churning only through digits. */
+export function SplitFlapTimeDemo() {
+  const reduced = useReducedMotion();
+  const i = useCycle(DEPARTS.length, 2600, !reduced);
+  return (
+    <Preview label="Split Flap — a clock of tiles">
+      <span
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "2.4rem",
+          fontWeight: 500,
+          letterSpacing: "0.06em",
+        }}
+      >
+        <SplitFlap text={DEPARTS[i]} charset="0123456789" interval={70} />
+      </span>
+    </Preview>
+  );
+}
+
+const GATES = ["GATE A12", "GATE B07"];
+
+/** Split Flap: the same call on two boards, each at its own flip speed. */
+export function SplitFlapSpeedDemo() {
+  const reduced = useReducedMotion();
+  const i = useCycle(GATES.length, 3200, !reduced);
+  const boards = [
+    { label: "fast", interval: 45 },
+    { label: "slow", interval: 160 },
+  ];
+  return (
+    <Preview label="Split Flap — flip speed">
+      <div style={{ display: "flex", gap: 28, flexWrap: "wrap", justifyContent: "center" }}>
+        {boards.map((b) => (
+          <div key={b.label} style={{ textAlign: "center" }}>
+            <span
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "1.6rem",
+                fontWeight: 500,
+                letterSpacing: "0.06em",
+              }}
+            >
+              <SplitFlap text={GATES[i]} interval={b.interval} />
+            </span>
+            <div
+              style={{
+                fontSize: 12,
+                letterSpacing: "0.12em",
+                textTransform: "uppercase",
+                color: "var(--color-faint)",
+              }}
+            >
+              {b.label}
+            </div>
+          </div>
+        ))}
+      </div>
+    </Preview>
+  );
+}
+
+const CALLS = ["NOW BOARDING", "GATE CLOSED"];
+
+/** Split Flap: onDone reports the moment the last tile has landed. */
+export function SplitFlapDoneDemo() {
+  const [i, setI] = useState(0);
+  const [settled, setSettled] = useState(true);
+  return (
+    <Preview label="Split Flap — onDone when the board settles">
+      <div style={{ display: "grid", gap: 14, justifyItems: "center" }}>
         <span
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "1.9rem",
-            fontWeight: 700,
+            fontSize: "1.8rem",
+            fontWeight: 500,
             letterSpacing: "0.06em",
           }}
         >
-          <SplitFlap text={FLIGHTS[i]} interval={90} />
+          <SplitFlap text={CALLS[i]} interval={80} onDone={() => setSettled(true)} />
         </span>
-        <span style={{ fontSize: 14, color: "var(--color-muted)" }}>
-          Every differing cell flips onto its character, left to right.
-        </span>
+        <PixelButton
+          disabled={!settled}
+          onClick={() => {
+            setSettled(false);
+            setI((n) => (n + 1) % CALLS.length);
+          }}
+        >
+          Flip A New Line
+        </PixelButton>
       </div>
     </Preview>
   );

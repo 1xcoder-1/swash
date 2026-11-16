@@ -2,7 +2,12 @@ import { CodeBlock } from "@/components/code-block";
 import { CodeTabs } from "@/components/code-tabs";
 import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { EchoDemo, EchoHoverDemo } from "@/components/demos";
+import {
+  EchoDemo,
+  EchoDepthDemo,
+  EchoHoverDemo,
+  EchoStyleDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Echo" };
 
@@ -19,7 +24,9 @@ export default function EchoPage() {
       </p>
 
       <EchoDemo />
+      <EchoDepthDemo />
       <EchoHoverDemo />
+      <EchoStyleDemo />
 
       <CodeTabs
         js={`import { Echo } from "swash";\n\n<Echo count={4} delay={420} trigger="always">\n  Signal\n</Echo>`}

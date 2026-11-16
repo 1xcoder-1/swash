@@ -6,8 +6,9 @@ import { useEffect, type RefObject } from "react";
 const CELL = 4;
 /** Fallback corner radius the pixel grid is masked to, in CSS px. */
 const FALLBACK_RADIUS = 12;
-/** How far the pointer's light reaches, in CSS px. */
-const REACH = 44;
+/** How far the pointer's light reaches, in CSS px. Matches Aceternity's
+ *  Pixel Prompt Button "Glow Radius" control, measured at 72. */
+const REACH = 72;
 /** How long a press ripple travels before it is gone. */
 const RIPPLE_MS = 700;
 /** The loop idles on for a beat after the last news, so decays finish on screen. */

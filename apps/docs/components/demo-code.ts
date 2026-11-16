@@ -6,49 +6,49 @@
 export const DEMO_CODE: Record<string, string> = {
   "Typewriter loop + feel": `<Typewriter
   loop={[
-    "The quick brown fox.",
-    "Graphemes, not code units. 🦊👩‍👩‍👧‍👦",
-    "Reduced motion prints it all at once.",
+    "Your Weekly Report Is Ready.",
+    "Graphemes, Not Code Units.",
+    "Reduced Motion Prints It All At Once.",
   ]}
   feel="snappy"
 />`,
   "Typewriter text + onDone": `<Typewriter
-  text="One phrase, typed once."
+  text="One Phrase, Typed Once."
   onDone={() => setDone(true)}
 />`,
-  "Typewriter feel presets": `<Typewriter loop={["The same line."]} feel="cinematic" />
-<Typewriter loop={["The same line."]} feel="snappy" />
-<Typewriter loop={["The same line."]} feel="playful" />`,
+  "Typewriter feel presets": `<Typewriter loop={["The Same Line."]} feel="cinematic" />
+<Typewriter loop={["The Same Line."]} feel="snappy" />
+<Typewriter loop={["The Same Line."]} feel="playful" />`,
   "Frame with label and sweep": `<Frame show label="selected" duration={900}>
-  <span>Any element gets the frame.</span>
+  <span>Every Element Gets A Frame.</span>
 </Frame>`,
   "Frame controlled by show": `<Frame show={show} label="selected" duration={700}>
-  <span>Toggles without remounting.</span>
+  <span>Toggles Without Remounting.</span>
 </Frame>`,
   "Frame color, radius and width": `<Frame show color="#e0b341" radius={16} duration={800}>
-  <span>Amber, round</span>
+  <span>Amber, Round</span>
 </Frame>
 <Frame show color="var(--color-accent)" width={3} radius={4} duration={800}>
-  <span>Blue, sharp</span>
+  <span>Blue, Sharp</span>
 </Frame>`,
   "Reveal by word, then by letter": `<Reveal by="word" stagger={70}>
-  Words arrive one after another.
+  Words Arrive One After Another.
 </Reveal>
-<Reveal by="letter" stagger={28}>Letters can, too.</Reveal>`,
+<Reveal by="letter" stagger={28}>Letters Can, Too.</Reveal>`,
   "Reveal by line": `<Reveal by="line" stagger={160} duration={600}>
-  Lines rise one after another. Each full line is one piece of the
-  animation, wherever it wrapped.
+  Lines Rise One After Another. Each Full Line Is One Piece Of The
+  Animation, Wherever It Wrapped.
 </Reveal>`,
   "Reveal fade, y=0": `<Reveal by="fade" stagger={45} y={0}>
-  Words fade in where they stand — nothing moves up from below.
+  Words Fade In Where They Stand — Nothing Moves Up From Below.
 </Reveal>`,
   "Scramble trigger=prop": `const [i, setI] = useState(0);
 
 <Scramble text={TARGETS[i]} trigger="prop" />
 <button onClick={() => setI((n) => (n + 1) % TARGETS.length)}>
-  Next line
+  Next Line
 </button>`,
-  "Scramble trigger=click": `<Scramble text="Click the line to re-decode it." trigger="click" />`,
+  "Scramble trigger=click": `<Scramble text="Click The Line To Re-Decode It." trigger="click" />`,
   "Scramble custom charset": `<Scramble
   text={GLYPH_LINES[i]}
   trigger="prop"
@@ -56,7 +56,7 @@ export const DEMO_CODE: Record<string, string> = {
   speed={2.2}
 />`,
   "Morph — continuous cycling, width-compensated": `<Morph
-  values={["Direct", "Transaction", "Processing", "Copy", "Be there soon"]}
+  values={["Direct", "Transaction", "Processing", "Copy", "Be There Soon"]}
   hold={1100}
   duration={700}
   loop
@@ -90,29 +90,29 @@ export const DEMO_CODE: Record<string, string> = {
   duration={1200}
 />`,
   "Marker highlight, two inks": `<p>
-  The launch was{" "}
-  <Marker action="highlight" color="amber" show>a success</Marker>{" "}
-  and{" "}
+  The Launch Was{" "}
+  <Marker action="highlight" color="amber" show>A Success</Marker>{" "}
+  And{" "}
   <Marker action="highlight" color="emerald" show delay={400}>
-    everyone came back
+    Everyone Came Back
   </Marker>{" "}
-  the next week.
+  The Next Week.
 </p>`,
   "Marker underline and strike": `<p>
   We{" "}
-  <Marker action="underline" color="sky" show>shipped on Friday</Marker>{" "}
-  and{" "}
+  <Marker action="underline" color="sky" show>Shipped On Friday</Marker>{" "}
+  And{" "}
   <Marker action="strike" color="rose" show delay={400}>
-    dropped the cron job
+    Dropped The Cron Job
   </Marker>{" "}
-  right after.
+  Right After.
 </p>`,
   "Marker circle and box": `<p>
-  Circle the{" "}
-  <Marker action="circle" color="violet" show>deadline</Marker>{" "}
-  and box the{" "}
+  Circle The{" "}
+  <Marker action="circle" color="violet" show>Deadline</Marker>{" "}
+  And Box The{" "}
   <Marker action="box" color="primary" show delay={400}>
-    ship date
+    Ship Date
   </Marker>
 </p>`,
   "Morph — shared characters stay put": `const reduced = useReducedMotion();
@@ -148,7 +148,7 @@ const onChange = (next: string) => setPair((p) => ({ prev: p.next, next }));
 <Morph values={[pair.prev, pair.next]} loop={false} step={1} duration={400} />`,
   "Ticker — rolling digits, static punctuation": `const [i, setI] = useState(0);
 
-<div style={{ fontSize: "2rem", fontWeight: 600 }}>
+<div style={{ fontSize: "2rem", fontWeight: 500 }}>
   <Ticker
     value={TICKER_VALUES[i]}
     prefix="$"
@@ -159,29 +159,9 @@ const onChange = (next: string) => setPair((p) => ({ prev: p.next, next }));
   />
 </div>
 <button onClick={() => setI((n) => (n + 1) % TICKER_VALUES.length)}>
-  Change value
+  Change Value
 </button>`,
-  "Shimmer — compositor-thread light beam": `<div style={{ background: "#0b0b12", padding: "24px 28px", borderRadius: 12 }}>
-  <Shimmer
-    spread={220}
-    duration={2400}
-    color="rgba(255,255,255,0.9)"
-    baseColor="#7a7a94"
-  >
-    Powered by next-gen AI
-  </Shimmer>
-</div>`,
-  "Flip Words — 3D flip with reserved box": `<div style={{ fontSize: "1.5rem" }}>
-  Make it{" "}
-  <FlipWords
-    words={["ultra-fast", "bulletproof", "accessible", "production-ready"]}
-    duration={2200}
-    preserveSpace
-    direction="vertical"
-  />
-  .
-</div>`,
-  "Glitch — hover to fire, ::before / ::after only": `<div style={{ fontSize: "1.75rem", fontWeight: 700, letterSpacing: "0.06em" }}>
+      "Glitch — hover to fire, ::before / ::after only": `<div style={{ fontSize: "1.75rem", fontWeight: 500, letterSpacing: "0.06em" }}>
   <Glitch
     text="SYSTEM REBOOT"
     trigger="hover"
@@ -189,16 +169,9 @@ const onChange = (next: string) => setPair((p) => ({ prev: p.next, next }));
     colors={["#00ffff", "#ff00ff"]}
   />
 </div>`,
-  "Curved Text — SVG textPath, compositor rotate": `<div style={{ display: "flex", justifyContent: "center" }}>
-  <CurvedText
-    text="EXPLORE THE SYSTEM • SCROLL DOWN • 2026 • "
-    radius={72}
-    speed={12}
-  />
-</div>`,
-  "Wave — grapheme-safe, per-letter CSS delay": `<div style={{ fontSize: "1.5rem", fontWeight: 500 }}>
+    "Wave — grapheme-safe, per-letter CSS delay": `<div style={{ fontSize: "1.5rem", fontWeight: 500 }}>
   <Wave amplitude={10} interval={90} trigger="hover">
-    Catch the momentum 👩‍👩‍👧‍👦
+    Catch The Momentum
   </Wave>
 </div>`,
   "Ticker — live stats row": `const i = useCycle(STAT_SERIES.length, 2400, true);
@@ -219,50 +192,17 @@ const [landed, setLanded] = useState(true);
     setValue(Math.round(Math.random() * 9000) + 500);
   }}
 >
-  Roll a new value
+  Roll A New Value
 </button>
-<span aria-live="polite">{landed ? "landed" : "rolling…"}</span>`,
-  "Shimmer — loading lines": `const lines = [
-  "Fetching your weekly report…",
-  "Crunching 12,481 events",
-  "Almost there",
-];
+<span aria-live="polite">{landed ? "Landed" : "Rolling…"}</span>`,
+  "Ticker — up, down and auto": `const [value, setValue] = useState(4729);
 
-{lines.map((l, n) => (
-  <Shimmer
-    key={l}
-    baseColor="#3f3f55"
-    color="#9a9ac0"
-    spread={120 + n * 60}
-    duration={1400 + n * 400}
-  >
-    {l}
-  </Shimmer>
-))}`,
-  "Shimmer — lit badge": `<span style={{ borderRadius: 999, padding: "9px 20px" }}>
-  <Shimmer spread={90} duration={1800} baseColor="#c9a227" color="#fff3b0">
-    ✦ Premium tier
-  </Shimmer>
-</span>`,
-  "Flip Words — horizontal, breathing width": `<div style={{ fontSize: "1.5rem" }}>
-  A cache of <em>some</em> size — actually{" "}
-  <FlipWords
-    words={["tiny", "compact", "capacious", "enormous"]}
-    duration={2000}
-    preserveSpace={false}
-    direction="horizontal"
-  />
-  .
-</div>`,
-  "Flip Words — start at your index": `<div style={{ fontSize: "1.4rem" }}>
-  Our promise:{" "}
-  <FlipWords
-    words={["quiet", "steady", "fast", "kind"]}
-    duration={3200}
-    startAtIndex={2}
-  />
-  .
-</div>`,
+<Ticker value={value} direction="up" duration={700} />
+<Ticker value={value} direction="down" duration={700} />
+<Ticker value={value} direction="auto" duration={700} />
+<button onClick={() => setValue(Math.round(Math.random() * 9000) + 500)}>
+  Roll A New Value
+</button>`,
   "Glitch — always on, subtle": `<Glitch text="OUT OF ORDER" trigger="always" intensity="subtle" />`,
   "Glitch — fires on scroll": `<Glitch
   text="SIGNAL LOST"
@@ -270,42 +210,78 @@ const [landed, setLanded] = useState(true);
   intensity="medium"
   colors={["#ffd166", "#ef476f"]}
 />`,
-  "Curved Text — reverse, wide spacing": `<CurvedText
-  text="AROUND WE GO • SLOWLY • "
-  radius={64}
-  speed={8}
-  reverse
-  spacing={2}
-/>`,
-  "Curved Text — compact sticker": `<div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-  <CurvedText text="NEW DROP • 2026 • " radius={34} speed={5} />
-  <span>It spins on the compositor — one keyframe, no JavaScript per frame.</span>
-</div>`,
-  "Wave — endless loop": `<Wave trigger="loop" amplitude={6} interval={70} duration={1000}>
-  Never standing still
+      "Wave — endless loop": `<Wave trigger="loop" amplitude={6} interval={70} duration={1000}>
+  Never Standing Still
 </Wave>`,
   "Wave — rises on view": `<Wave trigger="view" amplitude={12} interval={110}>
-  Good morning ☀️
+  Good Morning
 </Wave>`,
-  "Neon — tube and flicker": `<span style={{ fontSize: "2.2rem", fontWeight: 700 }}>
+  "Neon — tube and flicker": `<span style={{ fontSize: "2.2rem", fontWeight: 500 }}>
   <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
 </span>`,
-  "Neon — lights on hover": `<span style={{ fontSize: "1.8rem", fontWeight: 600 }}>
+  "Neon — tube inks": `<Neon text="LAST CALL" color="cyan" flicker="none" />
+<Neon text="LAST CALL" color="magenta" flicker="none" />
+<Neon text="LAST CALL" color="lime" flicker="none" />
+<Neon text="LAST CALL" color="amber" flicker="none" />`,
+  "Neon — flicker presets": `<Neon text="NEON BAR" color="violet" flicker="none" />
+<Neon text="NEON BAR" color="violet" flicker="soft" />
+<Neon text="NEON BAR" color="violet" flicker="hard" />`,
+  "Neon — lights on hover": `<span style={{ fontSize: "1.8rem", fontWeight: 500 }}>
   <Neon text="VACANCY" color="amber" flicker="none" trigger="hover" />
 </span>`,
-  "Echo — a trail under the text": `<div style={{ fontSize: "1.9rem", fontWeight: 600 }}>
-  <Echo count={4} delay={420} trigger="always">Signal</Echo>
+  "Echo — a trail under the text": `<div style={{ fontSize: "1.9rem", fontWeight: 500 }}>
+  <Echo count={4} delay={420} spread={1.3} trigger="always">SIGNAL</Echo>
 </div>`,
+  "Echo — trail depth": `<Echo count={1} delay={600} trigger="always">Ping</Echo>
+<Echo count={3} delay={420} trigger="always">Ping</Echo>
+<Echo count={6} delay={300} trigger="always">Ping</Echo>`,
   "Echo — pulses on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
-  <Echo count={3} delay={300} duration={1200} trigger="hover">Hover me</Echo>
+  <Echo count={3} delay={300} duration={1200} trigger="hover">Hover Me</Echo>
 </div>`,
-  "Slice — the seam opens and closes": `<div style={{ fontSize: "2rem", fontWeight: 700 }}>
+  "Echo — wider ripple on view": `<Echo
+  count={5}
+  delay={340}
+  duration={1400}
+  spread={1.5}
+  color="var(--color-accent)"
+  trigger="view"
+>
+  You Have Mail
+</Echo>`,
+  "Slice — the seam opens and closes": `<div style={{ fontSize: "2rem", fontWeight: 500 }}>
   <Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />
 </div>`,
-  "Slice — parts on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 600 }}>
+  "Slice — slide distance": `<Slice text="Narrow" amount={6} />
+<Slice text="Middle" />
+<Slice text="Widest" amount={32} />`,
+  "Slice — parts on hover": `<div style={{ fontSize: "1.6rem", fontWeight: 500 }}>
   <Slice text="Bisect" trigger="hover" amount={12} />
 </div>`,
-  "Split Flap — the board turns over": `<span style={{ fontFamily: "var(--font-mono)", fontSize: "1.9rem", fontWeight: 700, letterSpacing: "0.06em" }}>
+  "Slice — parts on view": `<Slice text="Sever" trigger="view" amount={26} duration={620} />`,
+  "Split Flap — the board turns over": `<span style={{ fontFamily: "var(--font-mono)", fontSize: "1.9rem", fontWeight: 500, letterSpacing: "0.06em" }}>
   <SplitFlap text={status} interval={90} />
-</span>`
+</span>`,
+  "Split Flap — a clock of tiles": `const i = useCycle(DEPARTS.length, 2600, !reduced);
+
+<SplitFlap text={DEPARTS[i]} charset="0123456789" interval={70} />`,
+  "Split Flap — flip speed": `{[["fast", 45], ["slow", 160]].map(([label, interval]) => (
+  <SplitFlap key={label} text={gate} interval={interval} />
+))}`,
+  "Split Flap — onDone when the board settles": `const [i, setI] = useState(0);
+const [settled, setSettled] = useState(true);
+
+<SplitFlap
+  text={CALLS[i]}
+  interval={80}
+  onDone={() => setSettled(true)}
+/>
+<button
+  disabled={!settled}
+  onClick={() => {
+    setSettled(false);
+    setI((n) => (n + 1) % CALLS.length);
+  }}
+>
+  Flip A New Line
+</button>`
 };

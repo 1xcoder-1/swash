@@ -2,7 +2,7 @@ import { CodeBlock } from "@/components/code-block";
 import { CodeTabs } from "@/components/code-tabs";
 import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { NeonDemo, NeonHoverDemo } from "@/components/demos";
+import { NeonDemo, NeonInkDemo, NeonFlickerDemo, NeonHoverDemo } from "@/components/demos";
 
 export const metadata = { title: "Neon" };
 
@@ -19,6 +19,8 @@ export default function NeonPage() {
       </p>
 
       <NeonDemo />
+      <NeonInkDemo />
+      <NeonFlickerDemo />
       <NeonHoverDemo />
 
       <CodeTabs

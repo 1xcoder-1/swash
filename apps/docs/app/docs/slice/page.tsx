@@ -2,7 +2,12 @@ import { CodeBlock } from "@/components/code-block";
 import { CodeTabs } from "@/components/code-tabs";
 import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { SliceDemo, SliceHoverDemo } from "@/components/demos";
+import {
+  SliceDemo,
+  SliceAmountDemo,
+  SliceHoverDemo,
+  SliceViewDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Slice" };
 
@@ -19,7 +24,9 @@ export default function SlicePage() {
       </p>
 
       <SliceDemo />
+      <SliceAmountDemo />
       <SliceHoverDemo />
+      <SliceViewDemo />
 
       <CodeTabs
         js={`import { Slice } from "swash";\n\n<Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />`}

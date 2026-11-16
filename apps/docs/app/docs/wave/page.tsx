@@ -22,8 +22,8 @@ export default function WavePage() {
       <WaveViewDemo />
 
       <CodeTabs
-        js={`import { Wave } from "swash";\n\n<Wave amplitude={8} interval={120} trigger="hover">\n  Catch the momentum\n</Wave>`}
-        ts={`import { Wave, type WaveProps } from "swash";\n\nconst props: WaveProps = {\n  amplitude: 8,\n  interval: 120,\n  trigger: "hover",\n  children: "Catch the momentum",\n};\n\n<Wave {...props} />`}
+        js={`import { Wave } from "swash";\n\n<Wave amplitude={8} interval={120} trigger="hover">\n  Catch The Momentum\n</Wave>`}
+        ts={`import { Wave, type WaveProps } from "swash";\n\nconst props: WaveProps = {\n  amplitude: 8,\n  interval: 120,\n  trigger: "hover",\n  children: "Catch The Momentum",\n};\n\n<Wave {...props} />`}
       />
 
       <h2>Installation</h2>

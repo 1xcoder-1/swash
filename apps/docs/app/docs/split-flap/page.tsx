@@ -2,7 +2,12 @@ import { CodeBlock } from "@/components/code-block";
 import { CodeTabs } from "@/components/code-tabs";
 import { InstallTabs } from "@/components/install-tabs";
 import { PropsTable } from "@/components/props-table";
-import { SplitFlapDemo } from "@/components/demos";
+import {
+  SplitFlapDemo,
+  SplitFlapTimeDemo,
+  SplitFlapSpeedDemo,
+  SplitFlapDoneDemo,
+} from "@/components/demos";
 
 export const metadata = { title: "Split Flap" };
 
@@ -20,6 +25,9 @@ export default function SplitFlapPage() {
       </p>
 
       <SplitFlapDemo />
+      <SplitFlapTimeDemo />
+      <SplitFlapSpeedDemo />
+      <SplitFlapDoneDemo />
 
       <CodeTabs
         js={`import { SplitFlap } from "swash";\n\nconst flights = ["DELAYED", "BOARDING", "DEPARTED"];\nconst [i, setI] = useState(0);\n\n<SplitFlap text={flights[i]} interval={90} />`}
