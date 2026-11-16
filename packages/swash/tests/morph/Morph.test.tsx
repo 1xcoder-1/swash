@@ -360,4 +360,32 @@ describe("Morph", () => {
     line.unmount();
     expect(vi.getTimerCount()).toBe(0);
   });
+
+  it("lands an instant swap plainly, with no tweened width behind it", async () => {
+    // A duration of zero is a developer saying "no choreography": the word
+    // has to arrive at rest. Tweening it anyway divided by zero, wrote a NaN
+    // width every frame and left the box at zero on the last one, so the
+    // sentence swapped in an empty slot until the next re-render.
+    const onMorphed = vi.fn();
+    const line = await renderMorphing({ values: ["one", "two"], duration: 0, onMorphed });
+    await line.advance(50);
+    expect(line.text()).toBe("two");
+    expect(line.width()).toBe("");
+    expect(onMorphed).toHaveBeenCalledTimes(1);
+  });
+
+  it("counts a duration that means nothing as the default, not as a crash", async () => {
+    // A NaN that ever reached the engine used to sail past the <= 0 guard:
+    // every frame wrote a NaN width and the finished swap left the word in a
+    // zero-wide box. Through the binding the default takes it, and either way
+    // the line has to land whole.
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const line = await renderMorphing({ values: ["one", "two"], duration: Number.NaN });
+    await line.advance(300);
+    expect(line.text()).not.toBe("two"); // still mid-swap on the default 600ms
+    await line.advance(500);
+    expect(line.text()).toBe("two");
+    expect(line.width()).toBe("");
+    warn.mockRestore();
+  });
 });

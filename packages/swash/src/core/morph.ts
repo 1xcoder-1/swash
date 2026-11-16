@@ -131,7 +131,32 @@ export function createMorpher(
       arm(read());
       return;
     }
-    if (live.reduced || live.duration <= 0) {
+    if (live.reduced || !(live.duration > 0)) {
+      // A duration that means nothing (NaN from a bad prop, or zero) lands
+      // plainly. Tweening against it would write a NaN width every frame and
+      // leave the box at zero on the last one, so the word would swap in an
+      // empty slot until the next re-render.
+      landed(to);
+      return;
+    }
+
+    // The swap clips the line to a single row while it tweens. If either word
+    // needs more than that row where it sits — a container narrower than the
+    // measured line — the clip would flip the block between one row and two
+    // every cycle, a worse jump than the swap it is trying to hide. Text that
+    // wraps at rest lands plainly instead of being choreographed.
+    const metrics = getComputedStyle(body);
+    const lineH =
+      Number.parseFloat(metrics.lineHeight) ||
+      (Number.parseFloat(metrics.fontSize) || 16) * 1.2;
+    const wraps = (text: string) => {
+      const was = body.textContent;
+      body.textContent = text;
+      const tall = body.getBoundingClientRect().height > lineH * 1.5;
+      body.textContent = was;
+      return tall;
+    };
+    if (wraps(to) || wraps(from)) {
       landed(to);
       return;
     }
