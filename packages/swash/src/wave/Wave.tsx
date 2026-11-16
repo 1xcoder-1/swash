@@ -155,6 +155,9 @@ export function Wave(props: WaveProps) {
       style={{ ...vars, ...style }}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
+      onPointerDown={() => trigger === "hover" && setHovering(true)}
+      onPointerUp={() => trigger === "hover" && setHovering(false)}
+      onPointerCancel={() => trigger === "hover" && setHovering(false)}
     >
       {/* A real node carries the line for assistive tech — an aria-label on a
           bare span has no role, and the pieces below are hidden from it. */}

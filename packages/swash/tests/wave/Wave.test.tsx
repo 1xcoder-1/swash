@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { installIntersectionMock } from "../helpers/intersection-mock";
 import { installMatchMediaMock } from "../helpers/match-media-mock";
@@ -20,6 +20,23 @@ afterEach(() => {
 });
 
 describe("Wave", () => {
+  it("runs on touch through the pointer events, not mouseenter alone", async () => {
+    // Touch devices never send mouseenter: the hover trigger went dead on
+    // every phone. pointerdown starts the wave, pointerup and cancel stop it.
+    const { Wave } = await import("../../src/wave/Wave");
+    const { container } = render(<Wave>Hello wave</Wave>);
+    const root = container.firstChild as HTMLElement;
+    expect(root.className).not.toContain("playing");
+    act(() => {
+      fireEvent.pointerDown(root);
+    });
+    expect(root.className).toContain("playing");
+    act(() => {
+      fireEvent.pointerUp(root);
+    });
+    expect(root.className).not.toContain("playing");
+  });
+
   it("keeps a family emoji in one animated piece", async () => {
     const { Wave } = await import("../../src/wave/Wave");
     const { container } = render(
