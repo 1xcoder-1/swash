@@ -176,7 +176,7 @@ export default function Home() {
             <span className="pr-when">zero dependencies</span>
           </div>
           <div className="pr-body">
-            <div className="pr-file">npm i swash</div>
+            <div className="pr-file">npm i react-swash</div>
             <div className="pr-finding">
               <span className="pr-rule">11 components</span>
               <span className="pr-sev">&bull; 4.2 kB</span>

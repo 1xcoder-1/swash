@@ -3,7 +3,7 @@
 // a Next.js server, and a text.split("") turns every family emoji into two
 // broken halves somewhere a test was never written for.
 //
-// Run through `pnpm --filter swash check`, which is what CI runs.
+// Run through `pnpm --filter react-swash check`, which is what CI runs.
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";

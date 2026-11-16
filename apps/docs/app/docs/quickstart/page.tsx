@@ -22,7 +22,7 @@ export default function Quickstart() {
       <h2>2. Use a component</h2>
       <CodeBlock
         caption="hero.tsx"
-        copy={`import { Reveal, Marker } from "swash";\n\nexport function Hero() {\n  return (\n    <h1>\n      <Reveal by="word">Ship text effects</Reveal>{" "}\n      <Marker action="highlight" color="amber">without the yak shave.</Marker>\n    </h1>\n  );\n}`}
+        copy={`import { Reveal, Marker } from "react-swash";\n\nexport function Hero() {\n  return (\n    <h1>\n      <Reveal by="word">Ship text effects</Reveal>{" "}\n      <Marker action="highlight" color="amber">without the yak shave.</Marker>\n    </h1>\n  );\n}`}
       />
       <p>
         Components that touch the DOM are client components already marked for

@@ -36,19 +36,19 @@ export default function CounterPage() {
       <TypeDemo />
 
       <CodeTabs
-        js={`import { Morph } from "swash";\n\n// A number that changes stays a number — only changed digits move:\n<Morph values={["1,204", "1,318", "1,999"]} loop={false} step={i} duration={600} />\n\n// Rewrites as you type — the box holds the widest value so nothing jumps.\n<Morph values={[previous, next]} loop={false} step={1} duration={400} />`}
-        ts={`import { Morph, type MorphProps } from "swash";\n\nconst values: MorphProps["values"] = ["1,204", "1,318", "1,999"];\n\n<Morph values={values} loop={false} step={i} duration={600} />`}
+        js={`import { Morph } from "react-swash";\n\n// A number that changes stays a number — only changed digits move:\n<Morph values={["1,204", "1,318", "1,999"]} loop={false} step={i} duration={600} />\n\n// Rewrites as you type — the box holds the widest value so nothing jumps.\n<Morph values={[previous, next]} loop={false} step={1} duration={400} />`}
+        ts={`import { Morph, type MorphProps } from "react-swash";\n\nconst values: MorphProps["values"] = ["1,204", "1,318", "1,999"];\n\n<Morph values={values} loop={false} step={i} duration={600} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Counter } from "swash";' />
+      <CodeBlock copy='import { Counter } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Set the number to land on — it counts up on view:</p>
       <CodeTabs
         js={`<Counter\n  to={12450}\n  prefix="$"\n  duration={1800}\n  startOnView\n  once\n/>\n\n<Counter to={98} suffix="%" format={(n) => n.toFixed(1)} />`}
-        ts={`import { Counter, type CounterProps } from "swash";\n\nconst format: CounterProps["format"] = (n) => n.toFixed(1);\n\n<Counter to={12450} prefix="$" duration={1800} startOnView once />\n\n<Counter to={98} suffix="%" format={format} />`}
+        ts={`import { Counter, type CounterProps } from "react-swash";\n\nconst format: CounterProps["format"] = (n) => n.toFixed(1);\n\n<Counter to={12450} prefix="$" duration={1800} startOnView once />\n\n<Counter to={98} suffix="%" format={format} />`}
       />
 
       <h2>Props</h2>

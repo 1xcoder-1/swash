@@ -29,13 +29,13 @@ export default function EchoPage() {
       <EchoStyleDemo />
 
       <CodeTabs
-        js={`import { Echo } from "swash";\n\n<Echo count={4} delay={420} trigger="always">\n  Signal\n</Echo>`}
-        ts={`import { Echo, type EchoProps } from "swash";\n\nconst props: EchoProps = {\n  count: 4,\n  delay: 420,\n  trigger: "always",\n  children: "Signal",\n};\n\n<Echo {...props} />`}
+        js={`import { Echo } from "react-swash";\n\n<Echo count={4} delay={420} trigger="always">\n  Signal\n</Echo>`}
+        ts={`import { Echo, type EchoProps } from "react-swash";\n\nconst props: EchoProps = {\n  count: 4,\n  delay: 420,\n  trigger: "always",\n  children: "Signal",\n};\n\n<Echo {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Echo } from "swash";' />
+      <CodeBlock copy='import { Echo } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

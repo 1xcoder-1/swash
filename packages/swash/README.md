@@ -1,17 +1,13 @@
-# swash
+# react-swash
 
-Ready-made text effects for React: one line of JSX each, zero runtime dependencies, and the bugs that made the old libraries in this space infamous are fixed before you meet them.
+Ready-made text effects for React: one line of JSX each, zero runtime dependencies, and the bugs that made the older libraries in this space infamous are fixed up front.
 
 The name comes from typography. A swash is a decorative stroke added to a letter. That is what these components add to text.
 
 Swash is not an animation engine. It does not compete with Framer Motion or GSAP. It competes with the snippet you paste out of a copy-paste UI collection and with the npm package that has not been touched in two years.
 
 ```bash
-npm install swash      # or: pnpm add swash
-```
-
-```bash
-bun add swash          # or: deno add npm:swash
+npm install react-swash    # or: pnpm add react-swash, bun add react-swash, deno add npm:react-swash
 ```
 
 React 18 or newer. Every component is a client component already, so a Next.js App Router page needs no `"use client"` line of its own to use them.
@@ -35,10 +31,10 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [Echo](#echo) | Trails copies out from under still text, one travelling pulse |
 | [Slice](#slice) | Cuts a phrase along its middle and slides the halves apart |
 
-Every example below is copy-pasteable. Import the names you use from `swash`:
+Every example below is copy-pasteable. Import the names you use from `react-swash`:
 
 ```tsx
-import { Counter, Marker, Reveal } from "swash";
+import { Counter, Marker, Reveal } from "react-swash";
 ```
 
 ## Typewriter
@@ -96,8 +92,7 @@ The outline sweeps around the child's border box and the chip's letter-spacing a
 </Reveal>
 ```
 
-With `effect="blur"` each piece pulls into focus out of a Gaussian
-blur instead of rising — the depth-of-field entrance, on the same engine.
+With `effect="blur"` each piece pulls into focus out of a Gaussian blur instead of rising. This is the depth-of-field entrance, on the same engine.
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
@@ -216,9 +211,7 @@ No Tailwind, no CSS framework, no config. The named inks come with a dark-mode v
 <Ticker value={499.95} prefix="$" duration={600} />
 ```
 
-Odometer digits on vertical strips, tabular-num locked so a change from
-"199" to "200" never shoves the row. Punctuation sits still; onDone fires
-when the last column lands.
+Odometer digits on vertical strips, tabular-num locked so a change from "199" to "200" never shoves the row. Punctuation sits still; onDone fires when the last column lands.
 
 ## Glitch
 
@@ -226,16 +219,7 @@ when the last column lands.
 <Glitch text="SYSTEM REBOOT" trigger="hover" intensity="medium" />
 ```
 
-Chromatic-aberration glitch drawn by ::before and ::after from `attr(data-text)`,
-so the DOM carries one clean text node — copy/paste and screen readers see the
-phrase once.
-
-
-```tsx
-```
-
-Text on a circle through a native SVG `<textPath>`, rotated by one
-compositor keyframe. Glyph spacing and hinting stay the renderer's job.
+Chromatic-aberration glitch drawn by ::before and ::after from `attr(data-text)`, so the DOM carries one clean text node. Copy/paste and screen readers see the phrase once.
 
 ## Wave
 
@@ -243,9 +227,7 @@ compositor keyframe. Glyph spacing and hinting stay the renderer's job.
 <Wave trigger="loop" amplitude={8} interval={80}>Hello there</Wave>
 ```
 
-Each grapheme gets an index CSS variable and one shared keyframe runs with a
-per-letter negative delay — the offset is what makes the wave travel, with no
-per-frame JavaScript.
+Each grapheme gets an index CSS variable and one shared keyframe runs with a per-letter negative delay. The offset is what makes the wave travel, with no per-frame JavaScript.
 
 ## Neon
 
@@ -253,9 +235,7 @@ per-frame JavaScript.
 <Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />
 ```
 
-A neon tube: two text-shadow glow layers derived from one ink through
-`color-mix()`, and a steps() flicker that only the light loses — the letters
-hold steady. Reduced motion keeps the glow, drops the flicker.
+A neon tube: two text-shadow glow layers derived from one ink through `color-mix()`, and a steps() flicker that only the light loses. The letters hold steady. Reduced motion keeps the glow, drops the flicker.
 
 ## SplitFlap
 
@@ -263,10 +243,7 @@ hold steady. Reduced motion keeps the glow, drops the flicker.
 <SplitFlap text={status} interval={90} />
 ```
 
-An airport departures board: every cell that differs from the new line spins
-through tiles and lands on its character, left to right. The tiles are
-uncontrolled after mount, so a parent re-render can never land the board
-instantly.
+An airport departures board: every cell that differs from the new line spins through tiles and lands on its character, left to right. The tiles are uncontrolled after mount, so a parent re-render can never land the board instantly.
 
 ## Echo
 
@@ -274,9 +251,7 @@ instantly.
 <Echo count={4} delay={420}>Signal</Echo>
 ```
 
-Copies of the text expand out from under it and fade, staggered with negative
-delays so the trail reads as one travelling pulse. The reader's text stays
-one selectable, readable phrase.
+Copies of the text expand out from under it and fade, staggered with negative delays so the trail reads as one travelling pulse. The reader's text stays one selectable, readable phrase.
 
 ## Slice
 
@@ -284,9 +259,7 @@ one selectable, readable phrase.
 <Slice text="DIVIDED" trigger="hover" amount={14} />
 ```
 
-The phrase cut along its middle: two copies clipped with `clip-path: inset`
-stacked exactly over one another, so the seam never has to be measured. The
-halves part on cue and come back.
+The phrase cut along its middle: two copies clipped with `clip-path: inset` stacked exactly over one another, so the seam never has to be measured. The halves part on cue and come back.
 
 ## Why this exists
 
@@ -337,7 +310,7 @@ Zero runtime dependencies. React is a peer dependency, which means your app's co
 The whole package is about 98 KB of ESM before gzip, unminified, and every component tree-shakes alone: an app that imports `Counter` gets `Counter` and the shared engine, not the marker's path generator.
 
 ```bash
-npm install swash
+npm install react-swash
 ```
 
 MIT licensed.

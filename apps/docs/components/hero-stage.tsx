@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const CMD = "npm i swash";
+const CMD = "npm i react-swash";
 
 const TL = {
   cmdStart: 200,
@@ -20,7 +20,7 @@ const CODE: React.ReactNode[] = [
     <span className="tok-k">import</span> {"{ "}
     <span className="tok-t">Typewriter</span>, <span className="tok-t">Scramble</span>
     {" } "}
-    <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
+    <span className="tok-k">from</span> <span className="tok-s">"react-swash"</span>;
   </>,
   <>&nbsp;</>,
   <>

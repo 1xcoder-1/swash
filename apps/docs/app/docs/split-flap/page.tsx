@@ -30,13 +30,13 @@ export default function SplitFlapPage() {
       <SplitFlapDoneDemo />
 
       <CodeTabs
-        js={`import { SplitFlap } from "swash";\n\nconst flights = ["DELAYED", "BOARDING", "DEPARTED"];\nconst [i, setI] = useState(0);\n\n<SplitFlap text={flights[i]} interval={90} />`}
-        ts={`import { SplitFlap, type SplitFlapProps } from "swash";\n\nconst props: SplitFlapProps = {\n  text: "BOARDING",\n  interval: 90,\n};\n\n<SplitFlap {...props} />`}
+        js={`import { SplitFlap } from "react-swash";\n\nconst flights = ["DELAYED", "BOARDING", "DEPARTED"];\nconst [i, setI] = useState(0);\n\n<SplitFlap text={flights[i]} interval={90} />`}
+        ts={`import { SplitFlap, type SplitFlapProps } from "react-swash";\n\nconst props: SplitFlapProps = {\n  text: "BOARDING",\n  interval: 90,\n};\n\n<SplitFlap {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { SplitFlap } from "swash";' />
+      <CodeBlock copy='import { SplitFlap } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

@@ -24,13 +24,13 @@ export default function NeonPage() {
       <NeonHoverDemo />
 
       <CodeTabs
-        js={`import { Neon } from "swash";\n\n<Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />`}
-        ts={`import { Neon, type NeonProps } from "swash";\n\nconst props: NeonProps = {\n  text: "OPEN ALL NIGHT",\n  color: "magenta",\n  flicker: "soft",\n};\n\n<Neon {...props} />`}
+        js={`import { Neon } from "react-swash";\n\n<Neon text="OPEN ALL NIGHT" color="magenta" flicker="soft" />`}
+        ts={`import { Neon, type NeonProps } from "react-swash";\n\nconst props: NeonProps = {\n  text: "OPEN ALL NIGHT",\n  color: "magenta",\n  flicker: "soft",\n};\n\n<Neon {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Neon } from "swash";' />
+      <CodeBlock copy='import { Neon } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

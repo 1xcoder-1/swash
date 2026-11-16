@@ -34,19 +34,19 @@ export default function RevealPage() {
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Reveal } from "swash";' />
+      <CodeBlock copy='import { Reveal } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Wrap your text — words, letters or lines rise into place:</p>
       <CodeTabs
         js={`<Reveal by="word" stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
-        ts={`import { Reveal, type RevealProps } from "swash";\n\nconst by: RevealProps["by"] = "word";\n\n<Reveal by={by} stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
+        ts={`import { Reveal, type RevealProps } from "react-swash";\n\nconst by: RevealProps["by"] = "word";\n\n<Reveal by={by} stagger={70} startOnView once>\n  Every word arrives on its own beat.\n</Reveal>`}
       />
 
       <p>Or arrive the other way — out of a blur, like a camera finding focus:</p>
       <CodeTabs
         js={`<Reveal by="word" effect="blur" blur={12} stagger={70}>\n  Focus, on cue.\n</Reveal>`}
-        ts={`import { Reveal, type RevealProps } from "swash";\n\n<Reveal by="word" effect="blur" blur={12} stagger={70}>\n  Focus, on cue.\n</Reveal>`}
+        ts={`import { Reveal, type RevealProps } from "react-swash";\n\n<Reveal by="word" effect="blur" blur={12} stagger={70}>\n  Focus, on cue.\n</Reveal>`}
       />
 
       <h2>Props</h2>

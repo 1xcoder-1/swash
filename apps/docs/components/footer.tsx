@@ -28,7 +28,7 @@ export function Footer() {
             GitHub
           </a>
           <a
-            href="https://www.npmjs.com/package/swash"
+            href="https://www.npmjs.com/package/react-swash"
             target="_blank"
             rel="noreferrer"
           >

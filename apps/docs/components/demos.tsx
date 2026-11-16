@@ -16,7 +16,7 @@ import {
   Echo,
   Slice,
   SplitFlap,
-} from "swash";
+} from "react-swash";
 import { Preview } from "./preview";
 import { PixelButton } from "./pixel-button";
 

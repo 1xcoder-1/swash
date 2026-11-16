@@ -29,13 +29,13 @@ export default function SlicePage() {
       <SliceViewDemo />
 
       <CodeTabs
-        js={`import { Slice } from "swash";\n\n<Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />`}
-        ts={`import { Slice, type SliceProps } from "swash";\n\nconst props: SliceProps = {\n  text: "DIVIDED",\n  trigger: "loop",\n  hold: 1300,\n  amount: 18,\n};\n\n<Slice {...props} />`}
+        js={`import { Slice } from "react-swash";\n\n<Slice text="DIVIDED" trigger="loop" hold={1300} amount={18} />`}
+        ts={`import { Slice, type SliceProps } from "react-swash";\n\nconst props: SliceProps = {\n  text: "DIVIDED",\n  trigger: "loop",\n  hold: 1300,\n  amount: 18,\n};\n\n<Slice {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Slice } from "swash";' />
+      <CodeBlock copy='import { Slice } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

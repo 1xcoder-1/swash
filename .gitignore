@@ -9,3 +9,5 @@ ram-main/
 skills-lock.json
 .smoke/
 *.tgz
+
+.claude/

@@ -27,13 +27,13 @@ export default function FramePage() {
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Frame } from "swash";' />
+      <CodeBlock copy='import { Frame } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Wrap any element — the frame draws itself around it:</p>
       <CodeTabs
         js={`<Frame label="step 2" color="var(--accent)" radius={10}>\n  <button>Continue</button>\n</Frame>`}
-        ts={`import { Frame, type FrameProps } from "swash";\n\nconst frame: Partial<FrameProps> = {\n  label: "step 2",\n  color: "var(--accent)",\n  radius: 10,\n};\n\n<Frame {...frame}>\n  <button>Continue</button>\n</Frame>`}
+        ts={`import { Frame, type FrameProps } from "react-swash";\n\nconst frame: Partial<FrameProps> = {\n  label: "step 2",\n  color: "var(--accent)",\n  radius: 10,\n};\n\n<Frame {...frame}>\n  <button>Continue</button>\n</Frame>`}
       />
 
       <h2>Props</h2>

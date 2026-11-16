@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const config: NextConfig = {
-  transpilePackages: ["swash"],
+  transpilePackages: ["react-swash"],
 };
 
 export default config;

@@ -27,13 +27,13 @@ export default function MarkerPage() {
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Marker } from "swash";' />
+      <CodeBlock copy='import { Marker } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Wrap the words you want to emphasise — the mark draws itself:</p>
       <CodeTabs
         js={`<p>\n  The launch was <Marker action="highlight" color="amber">a success</Marker> for\n  everyone involved.\n</p>`}
-        ts={`import { Marker, type MarkerAction, type MarkerColor } from "swash";\n\nconst action: MarkerAction = "highlight";\nconst color: MarkerColor = "amber";\n\n<p>\n  The launch was <Marker action={action} color={color}>a success</Marker> for\n  everyone involved.\n</p>`}
+        ts={`import { Marker, type MarkerAction, type MarkerColor } from "react-swash";\n\nconst action: MarkerAction = "highlight";\nconst color: MarkerColor = "amber";\n\n<p>\n  The launch was <Marker action={action} color={color}>a success</Marker> for\n  everyone involved.\n</p>`}
       />
 
       <h2>Props</h2>

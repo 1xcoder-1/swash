@@ -39,14 +39,14 @@ export default function MorphPage() {
       <SpringDemo />
 
       <CodeTabs
-        js={`import { Morph } from "swash";
+        js={`import { Morph } from "react-swash";
 
 // A sentence rewriting itself in place:
 <Morph values={["Running late.", "Almost there, hold tight."]} loop={false} step={i} />
 
 // A quicker, tighter swap:
 <Morph values={["Settled", "Bouncy", "Gentle"]} loop={false} step={i} duration={450} />`}
-        ts={`import { Morph, type MorphProps } from "swash";
+        ts={`import { Morph, type MorphProps } from "react-swash";
 
 const phrases: MorphProps["values"] = ["Running late.", "Almost there, hold tight."];
 
@@ -55,13 +55,13 @@ const phrases: MorphProps["values"] = ["Running late.", "Almost there, hold tigh
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Morph } from "swash";' />
+      <CodeBlock copy='import { Morph } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Give it a list of words — it morphs between them in place:</p>
       <CodeTabs
         js={`<Morph values={["fast", "focused", "finished"]} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
-        ts={`import { Morph, type MorphProps } from "swash";\n\nconst values: MorphProps["values"] = ["fast", "focused", "finished"];\n\n<Morph values={values} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
+        ts={`import { Morph, type MorphProps } from "react-swash";\n\nconst values: MorphProps["values"] = ["fast", "focused", "finished"];\n\n<Morph values={values} hold={1100} />\n\n// Or drive it from your own state:\n<Morph values={steps} loop={false} step={current} onMorphed={report} />`}
       />
 
       <h2>Props</h2>

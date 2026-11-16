@@ -16,7 +16,7 @@ import {
   Echo,
   Slice,
   SplitFlap,
-} from "swash";
+} from "react-swash";
 import { CopyButton } from "./copy-button";
 import { Highlighted } from "./highlight";
 import { PRESETS } from "./example-presets";

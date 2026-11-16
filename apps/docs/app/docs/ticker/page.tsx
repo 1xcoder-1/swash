@@ -24,13 +24,13 @@ export default function TickerPage() {
       <TickerDirectionDemo />
 
       <CodeTabs
-        js={`import { Ticker } from "swash";\n\n<Ticker\n  value={499.95}\n  prefix="$"\n  duration={600}\n  stagger={40}\n  decimals={2}\n/>`}
-        ts={`import { Ticker, type TickerProps } from "swash";\n\nconst props: TickerProps = {\n  value: 499.95,\n  prefix: "$",\n  duration: 600,\n  stagger: 40,\n  decimals: 2,\n};\n\n<Ticker {...props} />`}
+        js={`import { Ticker } from "react-swash";\n\n<Ticker\n  value={499.95}\n  prefix="$"\n  duration={600}\n  stagger={40}\n  decimals={2}\n/>`}
+        ts={`import { Ticker, type TickerProps } from "react-swash";\n\nconst props: TickerProps = {\n  value: 499.95,\n  prefix: "$",\n  duration: 600,\n  stagger: 40,\n  decimals: 2,\n};\n\n<Ticker {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Ticker } from "swash";' />
+      <CodeBlock copy='import { Ticker } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

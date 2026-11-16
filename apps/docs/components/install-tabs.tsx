@@ -19,11 +19,11 @@ import {
 } from "./brand-icons";
 
 export const MANAGERS = [
-  { id: "pnpm", label: "pnpm", cmd: "pnpm add swash", icon: IconPnpm },
-  { id: "npm", label: "npm", cmd: "npm i swash", icon: IconNpm },
-  { id: "bun", label: "bun", cmd: "bun add swash", icon: IconBun },
-  { id: "yarn", label: "yarn", cmd: "yarn add swash", icon: IconYarn },
-  { id: "deno", label: "deno", cmd: "deno add npm:swash", icon: IconDeno },
+  { id: "pnpm", label: "pnpm", cmd: "pnpm add react-swash", icon: IconPnpm },
+  { id: "npm", label: "npm", cmd: "npm i react-swash", icon: IconNpm },
+  { id: "bun", label: "bun", cmd: "bun add react-swash", icon: IconBun },
+  { id: "yarn", label: "yarn", cmd: "yarn add react-swash", icon: IconYarn },
+  { id: "deno", label: "deno", cmd: "deno add npm:react-swash", icon: IconDeno },
 ] as const;
 
 export type ManagerId = (typeof MANAGERS)[number]["id"];
@@ -71,13 +71,13 @@ Install package:
 ${cmd}
 
 Package summary:
-- "swash" provides zero-runtime-dependency React text motion components (React 18+).
+- "react-swash" provides zero-runtime-dependency React text motion components (React 18+).
 - Fully compatible with Next.js App Router (SSR-safe, zero hydration mismatch, no "use client" wrapper needed).
 - Grapheme-cluster safe text processing via Intl.Segmenter (emojis and ligatures never split in half).
 - Reduced motion (prefers-reduced-motion) renders instant static states.
 
 Import in client components:
-import { Typewriter, Counter, Reveal, Marker, Morph, Scramble, Frame } from "swash";
+import { Typewriter, Counter, Reveal, Marker, Morph, Scramble, Frame } from "react-swash";
 
 Usage examples:
 <Typewriter loop={["Build fast.", "Ship smoothly.", "Measure impact."]} feel="snappy" />
@@ -93,7 +93,7 @@ Add dependency:
 ${cmd}
 
 Guidelines:
-1. Import text effect components directly from "swash" (e.g., Typewriter, Counter, Reveal, Marker, Morph, Scramble).
+1. Import text effect components directly from "react-swash" (e.g., Typewriter, Counter, Reveal, Marker, Morph, Scramble).
 2. Zero external dependencies; uses platform Web Animations API.
 3. SSR-safe with Next.js 14/15/16 App Router.
 4. Always preserve full strings in the markup for screen readers and SEO.`;
@@ -106,7 +106,7 @@ Install:
 ${cmd}
 
 Rules:
-- Library: "swash" (React text effects).
+- Library: "react-swash" (React text effects).
 - Components: Typewriter, Reveal, Counter, Marker, Morph, Scramble, Frame.
 - No Framer Motion or GSAP needed for text animations.
 - SSR-safe, zero layout shift (CLS = 0).`;
@@ -133,7 +133,7 @@ Add lightweight text animations with <Reveal by="word"> and <Typewriter loop={["
   return `# Windsurf / Codeium instructions for swash
 
 Install: ${cmd}
-Use components from "swash": Typewriter, Reveal, Counter, Marker, Morph, Scramble.`;
+Use components from "react-swash": Typewriter, Reveal, Counter, Marker, Morph, Scramble.`;
 }
 
 async function writeClipboard(text: string) {

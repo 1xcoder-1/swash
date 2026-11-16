@@ -27,13 +27,13 @@ export default function TypewriterPage() {
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Typewriter } from "swash";' />
+      <CodeBlock copy='import { Typewriter } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Drop the component into any client component — no provider, no config:</p>
       <CodeTabs
         js={`<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={["First.", "Second.", "Third."]}\n  feel="snappy"\n  onLoopDone={(phrase) => console.log(phrase)}\n/>`}
-        ts={`import { Typewriter, type TypewriterProps } from "swash";\n\nconst loop: TypewriterProps["loop"] = ["First.", "Second.", "Third."];\n\n<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={loop}\n  feel="snappy"\n  onLoopDone={(phrase, index) => console.log(phrase, index)}\n/>`}
+        ts={`import { Typewriter, type TypewriterProps } from "react-swash";\n\nconst loop: TypewriterProps["loop"] = ["First.", "Second.", "Third."];\n\n<Typewriter text="One phrase, typed once." />\n\n<Typewriter\n  loop={loop}\n  feel="snappy"\n  onLoopDone={(phrase, index) => console.log(phrase, index)}\n/>`}
       />
 
       <h2>Props</h2>
