@@ -72,6 +72,13 @@ export function createSplitFlapper(
     animations.push(out);
     const swap = () => {
       if (mine !== token) return;
+      // The up-half holds its last angle through `fill: forwards`. If it is
+      // still on the element when the down-half is later cancelled, that
+      // held -90deg becomes the dominant fill again and the tile lands
+      // rotated away — invisible under backface-visibility:hidden. Retire
+      // the up-half the moment the down-half owns the transform; the two
+      // hand over inside one task, so no frame paints between them.
+      out.cancel();
       el.textContent = next;
       const back = el.animate(
         [{ transform: "rotateX(90deg)" }, { transform: "rotateX(0deg)" }],
@@ -80,9 +87,10 @@ export function createSplitFlapper(
       animations.push(back);
       const settle = () => {
         if (mine !== token) return;
-        // The held fill effect wrote its last angle; hand the resting look
-        // back to the element and let the animation go.
+        // The down-half held its last angle; cancelling hands the resting
+        // look back to the element (no transform at all, the upright tile).
         back.cancel();
+        animations = animations.filter((a) => a !== out && a !== back);
         then?.();
       };
       if (back.finished) back.finished.then(settle, settle);

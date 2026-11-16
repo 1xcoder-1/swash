@@ -51,10 +51,13 @@ export function SplitFlap(props: SplitFlapProps) {
   // once, at mount, and the engine owns every change after that. Re-rendering
   // the graphemes of the current text would overwrite the tiles mid-flip and
   // land every character instantly — which is the bug that turns a board
-  // into plain text.
+  // into plain text. The cell count tracks the current word so a line that
+  // shrinks retires its extra tiles instead of leaving a blank one parked at
+  // the end of the board; the written content stays the mount word (first),
+  // which is what keeps React from ever touching a tile the engine owns.
   const first = useRef(splitGraphemes(text));
   const graphemes = splitGraphemes(text);
-  const cellCount = Math.max(first.current.length, graphemes.length);
+  const cellCount = graphemes.length;
 
   const cells = useRef(new Map<number, HTMLElement>());
   const refCache = useRef(new Map<number, (el: HTMLElement | null) => void>());
@@ -79,9 +82,14 @@ export function SplitFlap(props: SplitFlapProps) {
     };
   }, []);
 
+  // One reader for both cues: a new line, and the reader flipping the OS
+  // reduced-motion setting while a run is in the air. Reduced motion must
+  // land the board instantly, not let a cycle keep spinning in a run the
+  // engine started before the setting changed. One effect rather than two
+  // also keeps mount from scheduling the same run twice.
   useIsomorphicLayoutEffect(() => {
     flapper.current?.run(live.current);
-  }, [key]);
+  }, [key, reduced]);
 
   useIsomorphicLayoutEffect(() => {
     if (text === "") {
@@ -97,6 +105,7 @@ export function SplitFlap(props: SplitFlapProps) {
           <span
             key={index}
             ref={charRef(index)}
+            className="swash-splitflap-cell"
             data-swash-flap-cell=""
           >
             {first.current[index] ?? ""}
