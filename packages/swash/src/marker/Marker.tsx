@@ -84,11 +84,23 @@ export function Marker(props: MarkerProps) {
     live.current = { children, action: known, reduced, duration: take, delay: wait };
   });
 
+  // A controlled mark that is already down has no "next pass" to land on, so
+  // a change to the mark or to the words it sits over is drawn now: wipe what
+  // is on screen, then put the current pass down in its place.
+  const content = typeof children === "string" ? children : "";
+  const drawn = useRef<{ action: string; content: string } | null>(null);
   useIsomorphicLayoutEffect(() => {
     if (show === undefined) return;
-    if (show) ctrl.draw(live.current);
-    else ctrl.wipe();
-  }, [ctrl, show]);
+    if (show) {
+      const last = drawn.current;
+      if (last && (last.action !== known || last.content !== content)) ctrl.wipe();
+      ctrl.draw(live.current);
+      drawn.current = { action: known, content };
+    } else {
+      ctrl.wipe();
+      drawn.current = null;
+    }
+  }, [ctrl, show, known, content]);
 
   // Uncontrolled: the pen comes down when the phrase is on screen, once.
   const uncontrolled = show === undefined;

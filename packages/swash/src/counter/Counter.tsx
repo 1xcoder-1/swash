@@ -106,13 +106,28 @@ export function Counter(props: CounterProps) {
 
   useEffect(() => {
     if (!startOnView || !root.current) return;
+    // `from` is deliberately not a dependency: a parent changing it mid-life
+    // must not re-register the observer, whose first record would look like a
+    // fresh visit and recount a number that already landed.
     return observeInview(root.current, { once, ratio: 0.3 }, () => {
       // With `once` off, coming back into view means counting again from the
       // beginning rather than picking up where the last pass stopped.
       if (!once) restart.current = true;
       setVisits((n) => n + 1);
     });
-  }, [startOnView, once, from]);
+  }, [startOnView, once]);
+
+  // The count writes its own text, so nothing here re-renders it and a new
+  // `format` would never reach the number already on screen. The engine keeps
+  // the value; this re-paints the resting display through the new format when
+  // only the format changed.
+  const format = props.format;
+  useIsomorphicLayoutEffect(() => {
+    const el = valueEl.current;
+    const controller = ctrl.current;
+    if (!el || !controller) return;
+    el.textContent = (format ?? defaultFormat)(controller.current());
+  }, [format]);
 
   // A hidden tab throttles frames, which makes the next visible frame look
   // like a giant jump. Better to freeze on the value the reader last saw.

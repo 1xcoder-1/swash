@@ -41,7 +41,7 @@ function span(text: string): HTMLSpanElement {
  * The framework-free morphing engine. It owns nothing but the two elements it
  * is handed — the body that shows the word and the hidden ruler that measures
  * it — and reads its current configuration through `read` each time it acts,
- * so React, Vue and Svelte can all drive the same machine from their own
+ * so any framework binding can drive the same machine from its own
  * lifecycle without any of it depending on React.
  */
 export function createMorpher(
@@ -54,6 +54,10 @@ export function createMorpher(
   let run: ReturnType<typeof tween> | null = null;
   let timer: number | null = null;
   let heading: string | null = null;
+  /** The word at rest on screen. Null until the first pass has run; while a
+   *  swap is in flight the body carries both tails, so its textContent is not
+   *  a word anyone said. */
+  let value: string | null = null;
 
   const clear = () => {
     if (timer !== null) window.clearTimeout(timer);
@@ -70,6 +74,7 @@ export function createMorpher(
 
   /** The resting state: plain text, no width of its own, free to wrap. */
   const rest = (text: string) => {
+    value = text;
     body.textContent = text;
     body.style.width = "";
     body.style.overflow = "";
@@ -98,13 +103,21 @@ export function createMorpher(
     if (live.values.length < 2) {
       // The list shrank under a pass that was already scheduled.
       clear();
-      rest(live.values[0] ?? "");
+      rest(value ?? live.values[0] ?? "");
       return;
     }
     const to = live.values[next] ?? "";
-    // Read from what is on screen rather than from an index: the list may have
+    // A swap in flight has both tails on screen at once, and reading the body
+    // as the next `from` would plan the turn from text that never existed.
+    // Land the swap on the word it was heading for, then turn from there.
+    if (run) {
+      clear();
+      rest(heading ?? value ?? "");
+    }
+    heading = null;
+    // Read from what is at rest rather than from an index: the list may have
     // changed underneath this run, and the reader's eye is still on the old word.
-    const from = body.textContent ?? "";
+    const from = value ?? body.textContent ?? "";
     index = next;
     clear();
 
@@ -118,7 +131,32 @@ export function createMorpher(
       arm(read());
       return;
     }
-    if (live.reduced || live.duration <= 0) {
+    if (live.reduced || !(live.duration > 0)) {
+      // A duration that means nothing (NaN from a bad prop, or zero) lands
+      // plainly. Tweening against it would write a NaN width every frame and
+      // leave the box at zero on the last one, so the word would swap in an
+      // empty slot until the next re-render.
+      landed(to);
+      return;
+    }
+
+    // The swap clips the line to a single row while it tweens. If either word
+    // needs more than that row where it sits — a container narrower than the
+    // measured line — the clip would flip the block between one row and two
+    // every cycle, a worse jump than the swap it is trying to hide. Text that
+    // wraps at rest lands plainly instead of being choreographed.
+    const metrics = getComputedStyle(body);
+    const lineH =
+      Number.parseFloat(metrics.lineHeight) ||
+      (Number.parseFloat(metrics.fontSize) || 16) * 1.2;
+    const wraps = (text: string) => {
+      const was = body.textContent;
+      body.textContent = text;
+      const tall = body.getBoundingClientRect().height > lineH * 1.5;
+      body.textContent = was;
+      return tall;
+    };
+    if (wraps(to) || wraps(from)) {
       landed(to);
       return;
     }
@@ -211,7 +249,7 @@ export function createMorpher(
       const live = read();
       clear();
       if (live.values.length < 2) {
-        rest(live.values[0] ?? "");
+        rest(value ?? live.values[0] ?? "");
         return;
       }
       arm(live);

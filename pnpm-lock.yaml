@@ -217,12 +217,12 @@ importers:
       react-icons:
         specifier: ^5.7.0
         version: 5.7.0(react@19.3.1)
+      react-swash:
+        specifier: workspace:*
+        version: link:../../packages/swash
       shiki:
         specifier: ^4.6.0
         version: 4.6.0
-      swash:
-        specifier: workspace:*
-        version: link:../../packages/swash
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.3.5

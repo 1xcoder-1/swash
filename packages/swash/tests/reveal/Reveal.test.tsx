@@ -21,6 +21,19 @@ async function advance(ms: number) {
   });
 }
 
+/** Text the reader sees: the screen-reader copy carries the same line, so it
+ *  is taken back out before the assertion. */
+function visibleText(container: HTMLElement) {
+  const sr = container.querySelector("[data-swash-sr]");
+  return (container.textContent ?? "").replace(sr?.textContent ?? "", "");
+}
+
+/** The starting filter of the first keyframe this piece was handed. */
+function filterOf(el: Element): string {
+  const key = animationAt(el, 0)!.keys[0] as { filter?: string };
+  return String(key.filter);
+}
+
 function pieceEls(container: HTMLElement) {
   return [...container.querySelectorAll<HTMLElement>("[data-swash-reveal]")];
 }
@@ -73,7 +86,7 @@ afterEach(() => {
 describe("Reveal", () => {
   it("sends the whole line in the markup and animates nothing until it arrives", async () => {
     const { container, pieces } = await renderRevealed({ children: "Ship it" });
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     const units = pieces();
     expect(units).toHaveLength(2);
     expect(units.map((el) => el.style.opacity)).toEqual(["", ""]);
@@ -87,7 +100,7 @@ describe("Reveal", () => {
     });
     arrive();
     const units = pieces();
-    expect(container.textContent).toBe("Ship it out");
+    expect(visibleText(container)).toBe("Ship it out");
     expect(units).toHaveLength(3);
     expect(units.map((el) => animateCallCount(el))).toEqual([1, 1, 1]);
     expect(units.map((el) => animationAt(el, 0)?.options.delay)).toEqual([0, 40, 80]);
@@ -105,12 +118,13 @@ describe("Reveal", () => {
     const { container, pieces, root } = await renderRevealed({
       children: "Read me as one line",
     });
-    expect(root.getAttribute("aria-label")).toBe("Read me as one line");
+    const sr = root.querySelector("[data-swash-sr]");
+    expect(sr?.textContent).toBe("Read me as one line");
     const units = pieces();
     expect(units.length).toBeGreaterThan(1);
     expect(units.every((el) => el.getAttribute("aria-hidden") === "true")).toBe(true);
     // The visible text is unchanged, so nothing is lost without a reader.
-    expect(container.textContent).toBe("Read me as one line");
+    expect(visibleText(container)).toBe("Read me as one line");
   });
 
   it("reveals again when once is off and the line comes back", async () => {
@@ -165,7 +179,7 @@ describe("Reveal", () => {
     });
     arrive();
     expect(pieces()).toHaveLength(1);
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     expect(animateCallCount(pieces()[0]!)).toBe(1);
   });
 
@@ -174,7 +188,7 @@ describe("Reveal", () => {
     const { arrive, container, pieces } = await renderRevealed({ children: "Ship it" });
     arrive();
     expect(pieces().map((el) => animateCallCount(el))).toEqual([0, 0]);
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
   });
 
   it("does not restart when a parent re-renders around it", async () => {
@@ -199,7 +213,7 @@ describe("Reveal", () => {
       children: <em>Ship it</em>,
     });
     arrive();
-    expect(container.textContent).toBe("Ship it");
+    expect(visibleText(container)).toBe("Ship it");
     expect(pieces()).toHaveLength(0);
     expect(warn.mock.calls.filter((call) => String(call[0]).includes("string"))).toHaveLength(1);
   });
@@ -241,5 +255,57 @@ describe("Reveal", () => {
     falling.arrive();
     expect(transformOf(falling.pieces()[0]!)).toBe("translateY(-20px)");
     warn.mockRestore();
+  });
+
+  it("pulls pieces into focus when the blur effect is asked for", async () => {
+    const { arrive, pieces, root } = await renderRevealed({
+      children: "Focus on cue",
+      effect: "blur",
+      blur: 12,
+      by: "word",
+    });
+    arrive();
+    const units = pieces();
+    expect(units).toHaveLength(3);
+    expect(filterOf(units[0]!)).toBe("blur(12px)");
+    // The blur entrance scales instead of rising.
+    expect(transformOf(units[0]!)).toBe("scale(1.04)");
+    expect(animateCallCount(units[0]!)).toBe(1);
+  });
+
+  it("rises without a filter when the rise effect is asked for", async () => {
+    const { arrive, pieces } = await renderRevealed({ children: "Ship it", effect: "rise" });
+    arrive();
+    const unit = pieces()[0]!;
+    expect(transformOf(unit)).toMatch(/translateY/);
+    expect(filterOf(unit)).toBe("undefined");
+  });
+
+  it("reads a y of zero as a distance, not as a missing prop", async () => {
+    // "Fade in place" is a reveal a developer is allowed to ask for. The old
+    // guard treated 0 the way it treated NaN and sent the piece back to the
+    // default rise, so the line moved when it was told not to.
+    const { pieces } = await renderRevealed({
+      children: "Ship it",
+      y: 0,
+      startOnView: false,
+    });
+    expect(transformOf(pieces()[0]!)).toBe("translateY(0px)");
+  });
+
+  it("keeps a zero-duration pass a real pass for every piece", async () => {
+    // The engine clamps what it is handed: a zero duration must still reach
+    // the pieces (a fill of both parks them on their start frame otherwise),
+    // and a negative one must not survive into Web Animations, which throws
+    // and takes the page down over a typo in a prop.
+    const { pieces } = await renderRevealed({
+      children: "Ship it out",
+      duration: 0,
+      stagger: 40,
+      startOnView: false,
+    });
+    const units = pieces();
+    expect(units.map((el) => animationAt(el, 0)?.options.duration)).toEqual([0, 0, 0]);
+    expect(units.map((el) => animationAt(el, 0)?.options.delay)).toEqual([0, 40, 80]);
   });
 });

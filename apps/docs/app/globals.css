@@ -1,5 +1,5 @@
 /* swash docs — react.doctor design language, Tailwind v4 (original work) */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap");
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------ tokens */
@@ -24,6 +24,9 @@
     Roboto, Arial, sans-serif;
   --font-mono: "Geist Mono", "JetBrains Mono", ui-monospace, "Cascadia Code",
     "SF Mono", Menlo, Consolas, monospace;
+  /* Handwriting face for the Marker demos: annotations read as pen on paper,
+     not as UI text with shapes drawn over a title. */
+  --font-hand: "Caveat", "Segoe Script", "Bradley Hand", cursive;
 
   --radius-btn: 7px;
   --radius-card: 8px;
@@ -271,12 +274,51 @@
     border-color 0.15s var(--ease-out);
 }
 .btn-primary {
+  /* Contain the pixel canvas: without this the absolutely-positioned
+     canvas resolves inset:0 against BODY and stretches into the hero. */
+  position: relative;
+  --pixel-glow: #fff;
+  isolation: isolate;
+  overflow: hidden;
   color: #fff;
-  background: var(--color-accent-bottom);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  /* Aceternity pixel-prompt blue, verbatim */
+  background: #2b5cfd;
+  text-shadow: color-mix(color-mix(rgb(43, 92, 253) 45%, black) 35%, transparent)
+    0 1px 1px;
+  box-shadow:
+    rgba(255, 255, 255, 0.35) 0px 1px 0px 0px inset,
+    color-mix(color-mix(rgb(43, 92, 253) 45%, black) 35%, transparent) 0px -1px
+      0px 0px inset,
+    color-mix(rgb(43, 92, 253) 68%, black) 0px 0px 0px 1px,
+    color-mix(rgb(43, 92, 253) 55%, transparent) 0px 6px 16px -6px,
+    color-mix(color-mix(rgb(43, 92, 253) 68%, black) 30%, transparent) 0px 1px 2px;
 }
-.btn-primary:hover {
-  background: #0f9bff;
+/* Aceternity's overlay: top sheen to bottom shade, verbatim */
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    rgba(255, 255, 255, 0.12),
+    transparent 45%,
+    color-mix(color-mix(rgb(43, 92, 253) 45%, black) 18%, transparent)
+  );
+}
+.btn-primary canvas {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.btn-primary:focus-visible {
+  outline: 3px solid color-mix(in oklab, #2b5cfd 40%, transparent);
+  outline-offset: 2px;
 }
 .btn-ghost {
   color: var(--color-fg);
@@ -325,6 +367,111 @@
   flex-wrap: wrap;
   gap: 12px;
   margin-bottom: 48px;
+}
+
+/* ------------------------------------------- direction-aware selection */
+/* Aceternity's Direction Aware Selection, values measured from the live
+   demo: frame border rgb(48,116,254) 2px, four 8px corner handles at -5px
+   filled with the page background, a #3074FE size tag with rolling odometer
+   digits, and the word filling bright from the edge the pointer enters. */
+.ds {
+  position: relative;
+  display: block;
+}
+.ds-word {
+  position: relative;
+  display: inline-block;
+  /* Base text keeps the surrounding color (bright hero copy); the hover
+     fill sweeps in pure white so the direction-aware reveal still reads. */
+  color: inherit;
+  outline: none;
+  border-radius: 3px;
+}
+.ds-word-fill {
+  position: absolute;
+  inset: 0;
+  display: inline-block;
+  color: #fff;
+  clip-path: inset(0 100% 0 0);
+  pointer-events: none;
+  transition: clip-path 0.28s var(--ease-out);
+}
+.ds-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  border: 2px solid #3074fe;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.18s var(--ease-out);
+  z-index: 3;
+}
+.ds-handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid #3074fe;
+  background: var(--color-sheet);
+}
+.ds-handle-tl {
+  top: -5px;
+  left: -5px;
+}
+.ds-handle-tr {
+  top: -5px;
+  right: -5px;
+}
+.ds-handle-br {
+  bottom: -5px;
+  right: -5px;
+}
+.ds-handle-bl {
+  bottom: -5px;
+  left: -5px;
+}
+.ds-tag {
+  position: absolute;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #3074fe;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ds-digit-col {
+  display: inline-block;
+  height: 12px;
+  width: 1ch;
+  overflow: hidden;
+  vertical-align: top;
+}
+.ds-digit-roll {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s var(--ease-out);
+}
+.ds-digit {
+  height: 12px;
+  line-height: 12px;
+  text-align: center;
+}
+.ds-times {
+  padding: 0 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ds-word-fill,
+  .ds-digit-roll {
+    transition: none;
+  }
 }
 .install {
   display: inline-flex;
@@ -381,6 +528,23 @@
 .ai-prompt-bar:hover {
   border-color: rgba(255, 255, 255, 0.22);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* In the hero, the blue pixel-prompt button is the only "lit" element.
+   The install/prompt bars sit beside it as quiet ghost controls — a bright
+   bordered box next to the button kills the pixel-button feeling. */
+.hero-actions .install-command-bar,
+.hero-actions .ai-prompt-bar {
+  border-color: rgba(255, 255, 255, 0.07);
+  background: transparent;
+  box-shadow: none;
+}
+
+.hero-actions .install-command-bar:hover,
+.hero-actions .ai-prompt-bar:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: none;
 }
 
 .cmd-main-btn,
@@ -1089,86 +1253,139 @@
 }
 
 /* --------------------------------------------------------- component catalog */
-.catalog {
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-panel);
-  background: var(--color-card);
-  overflow: hidden;
-}
-.catalog-head {
+/* A prism bento: rounded cells in mixed widths (even spans only, so the
+   6-column grid always packs without holes). Each cell carries its own hue
+   (--h, set per index in catalog.tsx) that washes in on hover — a ghost
+   index number, the name, and an arrow that slides in. */
+.cat-grid {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 56px;
-  gap: 24px;
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--color-line);
-  background: var(--color-inset);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-faint);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+  grid-auto-flow: dense;
 }
-.catalog-row {
-  display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) 56px;
-  gap: 24px;
-  align-items: center;
-  padding: 18px 24px;
-  border-bottom: 1px solid var(--color-line);
-  color: inherit;
+.cat-cell {
   position: relative;
-  transition: background 0.18s var(--ease-out);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  grid-column: span 2;
+  min-height: 116px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--color-line);
+  background: linear-gradient(168deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0) 42%),
+    var(--color-inset);
+  transition: transform 0.22s var(--ease-out), border-color 0.22s var(--ease-out),
+    box-shadow 0.22s var(--ease-out);
 }
-.catalog-row:last-child {
-  border-bottom: none;
-}
-.catalog-row::before {
+/* The hue wash — off until hover, so the resting grid stays quiet. */
+.cat-cell::before {
   content: "";
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: var(--color-accent);
-  transform: scaleY(0);
-  transition: transform 0.2s var(--ease-out);
+  inset: 0;
+  background: radial-gradient(95% 130% at 88% -12%,
+      hsl(var(--h) 90% 55% / 0.16), transparent 58%);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease-out);
+  pointer-events: none;
 }
-.catalog-row:hover {
-  background: var(--color-inset);
+.cat-cell:hover {
+  transform: translateY(-3px);
+  border-color: hsl(var(--h) 80% 55% / 0.45);
+  box-shadow: 0 14px 34px -14px hsl(var(--h) 90% 50% / 0.28);
 }
-.catalog-row:hover::before {
-  transform: scaleY(1);
+.cat-cell:hover::before {
+  opacity: 1;
 }
-.catalog-name {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 12px;
+.cat-cell:focus-visible {
+  outline: 2px solid var(--color-accent-ring);
+  outline-offset: 2px;
+}
+.cat-lg {
+  grid-column: span 4;
+}
+.cat-idx {
+  position: absolute;
+  top: 4px;
+  right: 14px;
   font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 46px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(255, 255, 255, 0.05);
+  font-variant-numeric: tabular-nums;
+  transition: color 0.22s var(--ease-out);
+  pointer-events: none;
+}
+.cat-cell:hover .cat-idx {
+  color: hsl(var(--h) 85% 62% / 0.4);
+}
+.cat-name {
+  position: relative;
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--color-fg);
   transition: color 0.16s var(--ease-out);
 }
-.catalog-row:hover .catalog-name {
-  color: var(--color-accent);
+.cat-lg .cat-name {
+  font-size: 17px;
 }
-.catalog-idx {
-  font-size: 12px;
+.cat-cell:hover .cat-name {
+  color: #fff;
+}
+.cat-arrow {
+  margin-left: auto;
+  align-self: center;
+  position: relative;
   color: var(--color-faint);
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out),
+    color 0.18s var(--ease-out);
 }
-.catalog-desc {
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--color-muted);
+.cat-cell:hover .cat-arrow {
+  opacity: 1;
+  transform: none;
+  color: hsl(var(--h) 85% 62%);
 }
-.catalog-docs {
-  display: flex;
-  justify-content: flex-end;
-  color: var(--color-faint);
-  transition: color 0.16s var(--ease-out);
+@media (max-width: 980px) {
+  .cat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .cat-lg {
+    grid-column: span 4;
+  }
 }
-.catalog-row:hover .catalog-docs {
-  color: var(--color-accent);
+@media (max-width: 680px) {
+  .cat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .cat-cell,
+  .cat-lg {
+    grid-column: span 2;
+  }
+  .cat-cell {
+    min-height: 96px;
+  }
+}
+@media (max-width: 460px) {
+  .cat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cat-cell,
+  .cat-cell::before,
+  .cat-idx,
+  .cat-name,
+  .cat-arrow {
+    transition: none;
+  }
+  .cat-cell:hover {
+    transform: none;
+  }
 }
 
 /* --------------------------------------------------------------- testimonials */
@@ -1373,7 +1590,7 @@
   display: block;
   margin: clamp(24px, 4vw, 48px) auto -0.19em;
   font-weight: 500;
-  font-size: clamp(160px, 40vw, 480px);
+  font-size: clamp(96px, 22vw, 480px);
   line-height: 1;
   letter-spacing: -0.01em;
   text-align: center;
@@ -1492,6 +1709,9 @@
 /* language tabs (JavaScript / TypeScript), like torph.lochie.me */
 .code-tabbar {
   display: flex;
+  /* without centering, the 28px copy button stretches the row and the
+     16px language logo pins to the top — they read as two different lines */
+  align-items: center;
   gap: 2px;
   padding: 6px 10px;
   border-bottom: 1px solid var(--color-line);
@@ -1638,6 +1858,41 @@
   border-color: #2a2d31;
 }
 
+/* In-panel demo controls: a quiet pill whose frame stays hidden until the
+   pointer arrives, so it reads as part of the widget, not as panel chrome. */
+.demo-btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+.demo-btn:hover {
+  color: var(--color-fg);
+  border-color: var(--color-rule);
+  background: var(--color-panel);
+}
+.demo-btn:active {
+  transform: translateY(1px);
+}
+.demo-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.demo-btn.is-active {
+  color: var(--color-fg);
+  border-color: var(--color-rule);
+  background: var(--color-panel);
+}
+
 /* pixel button: a pill built from tiny lit pixels */
 .pixel-button {
   position: relative;
@@ -1679,6 +1934,22 @@
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+/* While a board is still flipping, the flip button is disabled until onDone
+   lands it: dim the pill and hold the resting surface so it reads as busy
+   without a separate status label next to it. */
+.pixel-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.pixel-button:disabled:hover {
+  background: var(--color-panel);
+}
+/* Selected toggle state (e.g. Ticker direction pills): a lit fill so the
+   chosen option reads as pressed-in without leaving the pixel design. */
+.pixel-button.is-active {
+  background: color-mix(in srgb, var(--color-accent) 16%, var(--color-panel));
+  color: var(--color-fg);
+}
 
 /* copy button */
 .copy-btn {
@@ -1701,7 +1972,9 @@
 .demo-amount {
   display: inline-flex;
   align-items: baseline;
-  gap: 1px;
+  /* A thin space between the sign and the amount, the way the command bar
+     reads "$ pnpm …": same ink, but the sign is not welded to the digits. */
+  gap: 0.12em;
   font-family: var(--font-mono);
   font-size: 30px;
   font-weight: 500;
@@ -1709,11 +1982,14 @@
   color: var(--color-fg);
   font-variant-numeric: tabular-nums;
 }
+/* The sign shares the amount's ink; the breathing room is the flex gap above. */
 .demo-prefix {
-  color: var(--color-muted);
+  color: inherit;
 }
 .demo-bubble {
-  max-width: 340px;
+  /* A fixed width, not a max: the bubble is content-hug, so with max-width it
+     breathes with every tweened frame of the morph and the chrome itself jitters. */
+  width: 340px;
   padding: 14px 18px;
   border-radius: 14px;
   background: var(--color-inset);
@@ -1721,7 +1997,10 @@
   font-size: 15.5px;
   line-height: 1.55;
   color: var(--color-fg);
-  text-align: left;
+  /* The width is fixed so the morph never breathes; a short sentence pinned
+     left would then leave a dead gap on the right, so the line is centred
+     inside the stable box. */
+  text-align: center;
 }
 .demo-tone {
   display: inline-flex;
@@ -1750,8 +2029,11 @@
 }
 .demo-readout {
   font-family: var(--font-mono);
-  font-size: 26px;
+  /* Same voice as .counter-stat-value, so the typed readout reads as the
+     answer, not as a repeat of the small field above it. */
+  font-size: 34px;
   font-weight: 500;
+  letter-spacing: -0.02em;
   color: var(--color-fg);
   font-variant-numeric: tabular-nums;
   min-height: 1.4em;
@@ -1769,7 +2051,20 @@
   gap: 6px;
   justify-items: center;
 }
-.counter-stat > span {
+/* The number is Counter's own root <span>, so a bare ".counter-stat > span"
+   selector styled it like the label — 11.5px uppercase mono, which made every
+   stat read as caption text. Value and label are now named separately, and
+   the value rule stands on its own so a Counter outside .counter-stat (the
+   from/to demo) is sized by it too. */
+.counter-stat-value {
+  font-family: var(--font-mono);
+  font-size: 34px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-fg);
+}
+.counter-stat > .counter-stat-label {
   font-family: var(--font-mono);
   font-size: 11.5px;
   letter-spacing: 0.08em;
@@ -1795,8 +2090,11 @@
   margin: 0;
   max-width: 430px;
   text-align: left;
-  font-size: 17px;
-  font-weight: 400;
+  /* Caveat is a small-x handwriting face, so it needs a larger point size
+     than Inter to read at the same weight on the page. */
+  font-family: var(--font-hand);
+  font-size: 24px;
+  font-weight: 500;
   line-height: 2.1;
   color: var(--color-fg);
 }
@@ -1810,6 +2108,19 @@
   font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--color-faint);
+}
+
+/* A trigger="click" line must look clickable, or it just reads as dead text: */
+.demo-scramble {
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-accent) 45%, transparent);
+  padding-bottom: 1px;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.demo-scramble:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
 }
 
 /* ------------------------------------------------------------- examples */
@@ -1886,21 +2197,11 @@
   .bento-card.span-3 {
     grid-column: auto;
   }
-  .catalog-head {
-    display: none;
+  .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .catalog-row {
-    grid-template-columns: minmax(0, 1fr) 40px;
-    gap: 6px 16px;
-    padding: 16px 18px;
-  }
-  .catalog-desc {
-    grid-column: 1;
-  }
-  .catalog-docs {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
+  .catalog-card {
+    padding: 14px 16px 16px;
   }
   .tst-masonry {
     columns: 1;
@@ -1914,28 +2215,79 @@
   }
   .docs-layout {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 0;
+    padding-top: 0;
   }
+  /* On a narrow screen the groups collapse into one sticky strip of pills
+     that scrolls sideways, instead of a wrapped column that pushes the
+     whole document below a wall of links. */
   .sidebar {
-    position: static;
+    position: sticky;
+    top: 67px;
+    z-index: 40;
     max-height: none;
     flex-direction: row;
-    flex-wrap: wrap;
-    gap: 16px;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 10px 16px;
+    background: color-mix(in srgb, var(--color-sheet) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+  .sidebar-group {
+    display: contents;
+  }
+  .sidebar-group h4 {
+    display: none;
+  }
+  .sidebar-group a {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 5px 12px;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 13px;
+  }
+  .doc {
+    padding-top: 24px;
   }
   .footer-top {
     grid-template-columns: 1fr 1fr;
+    gap: 40px 24px;
+    padding: 56px 16px 0;
+  }
+  .footer-logo {
+    grid-column: 1 / -1;
+    width: 48px;
+    height: 48px;
+  }
+  .footer-logo svg {
+    width: 48px;
+    height: 48px;
   }
 }
 @media (max-width: 600px) {
   .hide-sm {
     display: none;
   }
+  .catalog-grid {
+    grid-template-columns: 1fr;
+  }
   .nav {
     gap: 0;
   }
   .footer-top {
     grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 48px 16px 0;
+  }
+  .footer-mark {
+    font-size: clamp(80px, 24vw, 160px);
   }
 }
 

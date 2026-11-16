@@ -23,13 +23,13 @@ export default function GlitchPage() {
       <GlitchScrollDemo />
 
       <CodeTabs
-        js={`import { Glitch } from "swash";\n\n<Glitch\n  text="SYSTEM REBOOT"\n  trigger="hover"\n  intensity="medium"\n  colors={["#00ffff", "#ff00ff"]}\n/>`}
-        ts={`import { Glitch, type GlitchProps } from "swash";\n\nconst props: GlitchProps = {\n  text: "SYSTEM REBOOT",\n  trigger: "hover",\n  intensity: "medium",\n  colors: ["#00ffff", "#ff00ff"],\n};\n\n<Glitch {...props} />`}
+        js={`import { Glitch } from "react-swash";\n\n<Glitch\n  text="SYSTEM REBOOT"\n  trigger="hover"\n  intensity="medium"\n  colors={["#00ffff", "#ff00ff"]}\n/>`}
+        ts={`import { Glitch, type GlitchProps } from "react-swash";\n\nconst props: GlitchProps = {\n  text: "SYSTEM REBOOT",\n  trigger: "hover",\n  intensity: "medium",\n  colors: ["#00ffff", "#ff00ff"],\n};\n\n<Glitch {...props} />`}
       />
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Glitch } from "swash";' />
+      <CodeBlock copy='import { Glitch } from "react-swash";' />
 
       <h2>Props</h2>
       <PropsTable

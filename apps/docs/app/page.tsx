@@ -2,6 +2,9 @@ import Link from "next/link";
 import { HeroStage } from "@/components/hero-stage";
 import { InstallTabs } from "@/components/install-tabs";
 import { BentoGrid, BentoCard } from "@/components/bento";
+import { PromptButton } from "@/components/prompt-button";
+import { HeroCopy } from "@/components/hero-copy";
+import { Catalog, type CatalogItem } from "@/components/catalog";
 
 const PRINCIPLES = [
   {
@@ -53,7 +56,7 @@ const PRINCIPLES = [
   },
   {
     title: "Tree-shakes to one component",
-    body: "About 83 KB of ESM for all fourteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
+    body: "About 98 KB of ESM for all fourteen, unminified — and an app that imports Typewriter gets Typewriter and the shared engine, nothing else.",
     span: 1 as const,
     icon: (
       <>
@@ -73,91 +76,23 @@ const PRINCIPLES = [
   },
 ];
 
+// Four cells are wide ("lg"); the rest are normal — even spans only, so
+// the 6-column bento always packs without holes.
 const COMPONENTS = [
-  {
-    name: "Typewriter",
-    href: "/docs/typewriter",
-    desc: "Types phrases one grapheme at a time, with rhythm presets and a caret that never lies about the character count.",
-    span: 2 as const,
-  },
-  {
-    name: "Frame",
-    href: "/docs/frame",
-    desc: "A selection frame that sweeps itself around any element, with a corner badge and imperative control.",
-    span: 1 as const,
-  },
-  {
-    name: "Reveal",
-    href: "/docs/reveal",
-    desc: "Words, letters or lines that rise into place on scroll, using kerning-safe ranges so nothing jumps.",
-    span: 1 as const,
-  },
-  {
-    name: "Scramble",
-    href: "/docs/scramble",
-    desc: "Decode-in text that churns through a charset and settles glyph by glyph, stable under every re-render.",
-    span: 1 as const,
-  },
-  {
-    name: "Morph",
-    href: "/docs/morph",
-    desc: "One word becomes the next with whole-grapheme transitions and width compensation mid-swap.",
-    span: 1 as const,
-  },
-  {
-    name: "Counter",
-    href: "/docs/counter",
-    desc: "Counts a number up when it scrolls into view. A parent re-rendering mid-count changes nothing.",
-    span: 1 as const,
-  },
-  {
-    name: "Marker",
-    href: "/docs/marker",
-    desc: "Hand-drawn emphasis — highlight, underline, strike, circle, box — that wraps lines and needs no Tailwind.",
-    span: 2 as const,
-  },
-  {
-    name: "Ticker",
-    href: "/docs/ticker",
-    desc: "Odometer digits that roll to the new value with tabular-num columns, so a price change never nudges the row.",
-    span: 1 as const,
-  },
-  {
-    name: "Shimmer",
-    href: "/docs/shimmer",
-    desc: "An iridescent beam that sweeps across text and pauses itself when the element scrolls off-screen.",
-    span: 1 as const,
-  },
-  {
-    name: "Blur Reveal",
-    href: "/docs/blur-reveal",
-    desc: "Depth-of-field entrance — words come into focus one after another with a stagger, no JavaScript per frame.",
-    span: 1 as const,
-  },
-  {
-    name: "Flip Words",
-    href: "/docs/flip-words",
-    desc: "A 3D cycler between rotating words that reserves the widest word's box so nothing around it shifts.",
-    span: 1 as const,
-  },
-  {
-    name: "Glitch",
-    href: "/docs/glitch",
-    desc: "Chromatic-aberration glitch painted through ::before and ::after, so copy/paste and screen readers see one clean phrase.",
-    span: 1 as const,
-  },
-  {
-    name: "Curved Text",
-    href: "/docs/curved-text",
-    desc: "Text on a circular path via native SVG <textPath>, with a compositor-driven rotation — no per-letter trigonometry.",
-    span: 1 as const,
-  },
-  {
-    name: "Wave",
-    href: "/docs/wave",
-    desc: "Kinetic sine-wave letters that hover, scroll or loop — one keyframe plus a per-letter negative delay, no per-frame JS.",
-    span: 1 as const,
-  },
+  { name: "Typewriter", href: "/docs/typewriter", size: "lg" as const },
+  { name: "Frame", href: "/docs/frame" },
+  { name: "Reveal", href: "/docs/reveal" },
+  { name: "Scramble", href: "/docs/scramble" },
+  { name: "Morph", href: "/docs/morph" },
+  { name: "Counter", href: "/docs/counter" },
+  { name: "Marker", href: "/docs/marker", size: "lg" as const },
+  { name: "Ticker", href: "/docs/ticker" },
+  { name: "Glitch", href: "/docs/glitch", size: "lg" as const },
+  { name: "Wave", href: "/docs/wave" },
+  { name: "Neon", href: "/docs/neon", size: "lg" as const },
+  { name: "Split Flap", href: "/docs/split-flap" },
+  { name: "Echo", href: "/docs/echo" },
+  { name: "Slice", href: "/docs/slice" },
 ];
 
 const FAQ = [
@@ -214,28 +149,17 @@ export default function Home() {
   return (
     <>
       <section className="hero wrap">
-        <h1>Text that moves the way readers already do.</h1>
-        <p className="sub">
-          No animation library. No layout shift. Motion that always has a
-          fallback.
-        </p>
+        <HeroCopy />
         <div className="hero-actions">
           <InstallTabs />
-          <Link href="/docs/quickstart" className="btn btn-primary">
-            Read the docs
-          </Link>
+          <PromptButton href="/docs/quickstart">Read the docs</PromptButton>
         </div>
 
         <HeroStage />
         <div className="stage-cta">
-          <a
-            href="https://github.com/1xcoder-1/swash"
-            target="_blank"
-            rel="noreferrer"
-            className="btn btn-primary"
-          >
+          <PromptButton href="https://github.com/1xcoder-1/swash" external>
             Try it on your codebase
-          </a>
+          </PromptButton>
         </div>
       </section>
 
@@ -252,14 +176,14 @@ export default function Home() {
             <span className="pr-when">zero dependencies</span>
           </div>
           <div className="pr-body">
-            <div className="pr-file">npm i swash</div>
+            <div className="pr-file">npm i react-swash</div>
             <div className="pr-finding">
-              <span className="pr-rule">14 components</span>
+              <span className="pr-rule">11 components</span>
               <span className="pr-sev">&bull; 4.2 kB</span>
             </div>
             <div className="pr-fix">
               Typewriter, Scramble, Morph, Reveal, Counter, Frame, Marker, Ticker,
-              Shimmer, Blur Reveal, Flip Words, Glitch, Curved Text and Wave
+              Blur Reveal, Glitch,and Wave
               &mdash; each tree-shaken to just what you import.
             </div>
           </div>
@@ -310,41 +234,14 @@ export default function Home() {
       <section className="section wrap" id="components">
         <div className="section-head">
           <p className="eyebrow">The catalogue</p>
-          <h2>Fourteen components, one engine</h2>
+          <h2>Seventeen components, one engine</h2>
           <p>
-            Each one solves a text problem developers keep re-solving badly.
-            Open any row for the full API.
+            Pick a name, open its docs — every page has live examples,
+            props and copy-paste code. One engine underneath: zero
+            dependencies, reduced motion built in.
           </p>
         </div>
-        <div className="catalog">
-          <div className="catalog-head" aria-hidden>
-            <span>Component</span>
-            <span>What it does</span>
-            <span>Docs</span>
-          </div>
-          {COMPONENTS.map((c, i) => (
-            <Link className="catalog-row" href={c.href} key={c.name}>
-              <span className="catalog-name">
-                <span className="catalog-idx">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                {c.name}
-              </span>
-              <span className="catalog-desc">{c.desc}</span>
-              <span className="catalog-docs">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-                  <path
-                    d="M5 11 11 5M6 5h5v5"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </Link>
-          ))}
-        </div>
+        <Catalog items={COMPONENTS as CatalogItem[]} />
       </section>
 
       <section className="section wrap" id="praise">
@@ -389,9 +286,9 @@ export default function Home() {
         <h2>Ship the effect, not the yak shave</h2>
         <p>One install, fourteen components, zero dependencies.</p>
         <div className="hero-actions">
-          <Link href="/docs/quickstart" className="btn btn-primary">
+          <PromptButton href="/docs/quickstart">
             Start with the quickstart
-          </Link>
+          </PromptButton>
           <a
             className="btn btn-ghost"
             href="https://github.com/1xcoder-1/swash"

@@ -16,7 +16,8 @@ export interface TickerProps {
   duration?: number;
   /** Per-column delay, in ms. Default 40. */
   stagger?: number;
-  /** Rolling direction. Default "auto". */
+  /** Rolling direction. "up" only climbs, "down" only descends, and "auto"
+   *  (the default) takes the shorter way round the digit wheel. */
   direction?: "up" | "down" | "auto";
   /** Fixed decimals. If omitted, natural decimals from the value. */
   decimals?: number;

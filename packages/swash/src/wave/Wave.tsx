@@ -6,7 +6,7 @@ import { splitGraphemes } from "../shared/grapheme";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
 import { ms, pixels } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import type { WaveProps } from "./types";
 
@@ -81,7 +81,14 @@ export function Wave(props: WaveProps) {
     if (trigger !== "view") return;
     const root = rootRef.current;
     if (!root) return;
-    return observeInview(root, { once: false, ratio: 0.25 }, () => setInview(true));
+    // Both edges now: leaving the viewport stops the animation, so a wave
+    // below the fold is not still bouncing for the rest of the page's life.
+    return observeInview(
+      root,
+      { once: false, ratio: 0.25 },
+      () => setInview(true),
+      () => setInview(false),
+    );
   }, [trigger]);
 
   const playing =
@@ -146,12 +153,15 @@ export function Wave(props: WaveProps) {
       ref={rootRef}
       className={rootCls}
       style={{ ...vars, ...style }}
-      aria-label={text}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
-      onFocus={() => trigger === "hover" && setHovering(true)}
-      onBlur={() => trigger === "hover" && setHovering(false)}
+      onPointerDown={() => trigger === "hover" && setHovering(true)}
+      onPointerUp={() => trigger === "hover" && setHovering(false)}
+      onPointerCancel={() => trigger === "hover" && setHovering(false)}
     >
+      {/* A real node carries the line for assistive tech — an aria-label on a
+          bare span has no role, and the pieces below are hidden from it. */}
+      <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
       {rendered}
     </span>
   );

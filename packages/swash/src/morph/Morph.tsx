@@ -21,8 +21,7 @@ const DEFAULT_HOLD = 1200;
  * measured so the sentence around it never flinches.
  *
  * The morphing itself lives in the framework-free `createMorpher`; this file is
- * only the React binding around it, so the same engine can drive Vue and
- * Svelte too.
+ * only the React binding around it, so the same engine can drive other bindings.
  */
 export function Morph(props: MorphProps) {
   const {

@@ -16,12 +16,12 @@ const ORDER = [
   { href: "/docs/counter", title: "Counter" },
   { href: "/docs/marker", title: "Marker" },
   { href: "/docs/ticker", title: "Ticker" },
-  { href: "/docs/shimmer", title: "Shimmer" },
-  { href: "/docs/blur-reveal", title: "Blur Reveal" },
-  { href: "/docs/flip-words", title: "Flip Words" },
   { href: "/docs/glitch", title: "Glitch" },
-  { href: "/docs/curved-text", title: "Curved Text" },
   { href: "/docs/wave", title: "Wave" },
+  { href: "/docs/neon", title: "Neon" },
+  { href: "/docs/echo", title: "Echo" },
+  { href: "/docs/slice", title: "Slice" },
+  { href: "/docs/split-flap", title: "Split Flap" },
 ];
 
 /**

@@ -39,7 +39,7 @@ function pace(speed: number): number {
 
 /**
  * The framework-free scramble engine. It owns a single element's text and does
- * one run at a time, so it can be driven from React, Vue or Svelte without any
+ * one run at a time, so it can be driven from any framework without
  * of it depending on a framework.
  */
 export function createScrambler(el: HTMLElement): ScrambleController {

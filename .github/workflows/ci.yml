@@ -12,3 +12,16 @@ jobs:
       # build also emits the type declarations; check runs the gates over src and
       # loads the built files the way an application would.
       - run: pnpm typecheck && pnpm test && pnpm build && pnpm check
+
+  # The docs app has its own TS config and its own dependency on swash;
+  # a break there is invisible to the package jobs above.
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter react-swash build
+      - run: pnpm --filter docs typecheck && pnpm --filter docs build

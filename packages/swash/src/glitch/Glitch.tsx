@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import type { GlitchProps } from "./types";
 
 /**
@@ -28,6 +28,15 @@ const GLITCH_CSS = [
   "  inset:0;",
   "  pointer-events:none;",
   "  mix-blend-mode:screen;",
+  // The channel copies only exist while the glitch plays. Without this gate
+  // they render fully at rest: the screen-blend of cyan over magenta washes
+  // over the glyphs — nearly invisible on white, tinted everywhere — so the
+  // phrase stopped reading in its own colour whenever the glitch was off.
+  "  opacity:0;",
+  "}",
+  ".swash-glitch.playing::before,",
+  ".swash-glitch.playing::after{",
+  "  opacity:1;",
   "}",
   ".swash-glitch::before{color:var(--swash-glitch-a,#0ff);}",
   ".swash-glitch::after{color:var(--swash-glitch-b,#f0f);}",
@@ -77,7 +86,13 @@ export function Glitch(props: GlitchProps) {
     if (trigger !== "scroll") return;
     const root = rootRef.current;
     if (!root) return;
-    return observeInview(root, { once: false, ratio: 0.25 }, () => setInview(true));
+    // Both edges, so a glitch that has scrolled past stops drawing.
+    return observeInview(
+      root,
+      { once: false, ratio: 0.25 },
+      () => setInview(true),
+      () => setInview(false),
+    );
   }, [trigger]);
 
   const playing = !reduced && (trigger === "always" || (trigger === "hover" && hovering) || (trigger === "scroll" && inview));
@@ -105,11 +120,12 @@ export function Glitch(props: GlitchProps) {
       style={{ ...vars, ...style }}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
-      onFocus={() => trigger === "hover" && setHovering(true)}
-      onBlur={() => trigger === "hover" && setHovering(false)}
-      aria-label={text}
+      onPointerDown={() => trigger === "hover" && setHovering(true)}
+      onPointerUp={() => trigger === "hover" && setHovering(false)}
+      onPointerCancel={() => trigger === "hover" && setHovering(false)}
     >
-      {text}
+      <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
+      <span aria-hidden="true">{text}</span>
     </span>
   );
 }

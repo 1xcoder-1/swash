@@ -3,12 +3,12 @@
   "private": true,
   "packageManager": "pnpm@12.18.0",
   "scripts": {
-    "build": "pnpm -r --filter swash build",
+    "build": "pnpm -r --filter react-swash build",
     "docs:dev": "pnpm --filter docs dev",
     "docs:build": "pnpm build && pnpm --filter docs build",
-    "test": "pnpm -r --filter swash test",
-    "typecheck": "pnpm -r --filter swash typecheck",
-    "check": "pnpm -r --filter swash check"
+    "test": "pnpm -r --filter react-swash test",
+    "typecheck": "pnpm -r --filter react-swash typecheck",
+    "check": "pnpm -r --filter react-swash check"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^7.0.1",

@@ -27,13 +27,13 @@ export default function ScramblePage() {
 
       <h2>Installation</h2>
       <InstallTabs />
-      <CodeBlock copy='import { Scramble } from "swash";' />
+      <CodeBlock copy='import { Scramble } from "react-swash";' />
 
       <h2>Usage</h2>
       <p>Point it at a line — it churns, then settles into the real text:</p>
       <CodeTabs
         js={`<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger="prop" speed={1.4} onDone={track} />`}
-        ts={`import { Scramble, type ScrambleProps } from "swash";\n\nconst trigger: ScrambleProps["trigger"] = "prop";\n\n<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger={trigger} speed={1.4} onDone={track} />`}
+        ts={`import { Scramble, type ScrambleProps } from "react-swash";\n\nconst trigger: ScrambleProps["trigger"] = "prop";\n\n<Scramble text="Initiating decode sequence." trigger="mount" />\n\n// Re-decode whenever the line changes:\n<Scramble text={headline} trigger={trigger} speed={1.4} onDone={track} />`}
       />
 
       <h2>Props</h2>

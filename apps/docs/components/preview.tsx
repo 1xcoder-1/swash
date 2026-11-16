@@ -14,9 +14,12 @@ import { DEMO_CODE } from "./demo-code";
 export function Preview({
   label,
   children,
+  hideReplay = false,
 }: {
   label: string;
   children: ReactNode;
+  /** For demos that already auto-loop — a manual Replay is redundant. */
+  hideReplay?: boolean;
 }) {
   const [run, setRun] = useState(0);
   const [tab, setTab] = useState<"preview" | "code">("preview");
@@ -71,13 +74,15 @@ export function Preview({
           </div>
           <div className="preview-bar">
             <span className="preview-label">{label}</span>
-            <button
-              type="button"
-              className="preview-replay"
-              onClick={() => setRun((n) => n + 1)}
-            >
-              Replay
-            </button>
+            {hideReplay ? null : (
+              <button
+                type="button"
+                className="preview-replay"
+                onClick={() => setRun((n) => n + 1)}
+              >
+                Replay
+              </button>
+            )}
           </div>
         </>
       )}

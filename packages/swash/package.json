@@ -1,5 +1,5 @@
 {
-  "name": "swash",
+  "name": "react-swash",
   "version": "0.1.0",
   "description": "Dependency-free text morphing and motion components for React.",
   "license": "MIT",

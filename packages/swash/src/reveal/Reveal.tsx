@@ -4,7 +4,7 @@ import { useIsomorphicLayoutEffect } from "../shared/client";
 import { observeInview } from "../shared/inview";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
-import { useStyle } from "../shared/style";
+import { srOnlyStyle, useStyle } from "../shared/style";
 import { warnOnce } from "../shared/warn";
 import {
   REVEAL_CSS,
@@ -13,6 +13,7 @@ import {
   runReveal,
   tokenize,
 } from "../core/reveal";
+import type { RevealEffect } from "./types";
 import type { RevealProps } from "./types";
 
 /**
@@ -20,16 +21,23 @@ import type { RevealProps } from "./types";
  * server sent, and only after mount does each piece get its animation, so
  * hydration never sees a difference and the reader never sees a flash.
  *
+ * One component carries both entrances: `effect="rise"` moves each piece up
+ * from below, `effect="blur"` pulls it into focus from a Gaussian blur and a
+ * slight scale — the depth-of-field entrance — and both run on the same
+ * engine, with no second stylesheet and no second markup shape.
+ *
  * The animating lives in the framework-free `runReveal`; this file only renders
- * the pieces and drives it, so the same engine can drive Vue and Svelte too.
+ * the pieces and drives it, so the same engine can drive other bindings too.
  */
 export function Reveal(props: RevealProps) {
   const {
     children,
     by = "word",
+    effect = "rise",
     stagger,
     duration,
     y,
+    blur,
     startOnView = true,
     once = true,
     className,
@@ -41,6 +49,15 @@ export function Reveal(props: RevealProps) {
   // which would take the page down over a typo in a prop.
   const take = ms(duration, 400, "duration", "Reveal");
   const gap = ms(stagger, 40, "stagger", "Reveal");
+  // An effect nobody on the list knows would fall through the keyframe
+  // switch and rise silently, so it is named as the mistake it is.
+  const kind: RevealEffect = effect === "blur" ? "blur" : "rise";
+  if (effect !== "rise" && effect !== "blur") {
+    warnOnce(
+      `reveal:effect:${String(effect)}`,
+      `Reveal effect "${String(effect)}" is not one of "rise", "blur". Using "rise".`,
+    );
+  }
   const pieces = useMemo(
     () => (text === null ? [] : tokenize(text, by)),
     [text, by],
@@ -54,9 +71,9 @@ export function Reveal(props: RevealProps) {
   // Timing and the motion setting are read when a pass starts rather than
   // when its effect was built, so retuning either one cannot restart a line
   // that is already on its way.
-  const live = useRef({ duration: take, stagger: gap, y, reduced });
+  const live = useRef({ duration: take, stagger: gap, y, blur, effect: kind, reduced });
   useIsomorphicLayoutEffect(() => {
-    live.current = { duration: take, stagger: gap, y, reduced };
+    live.current = { duration: take, stagger: gap, y, blur, effect: kind, reduced };
   });
 
   useIsomorphicLayoutEffect(() => {
@@ -74,9 +91,11 @@ export function Reveal(props: RevealProps) {
     if (!root || !shown) return;
     const cleanup = runReveal(root, {
       by,
+      effect: live.current.effect,
       duration: live.current.duration,
       stagger: live.current.stagger,
       y: live.current.y,
+      blur: live.current.blur,
       reduced: live.current.reduced,
     });
     dispose.current = cleanup;
@@ -105,16 +124,10 @@ export function Reveal(props: RevealProps) {
   }, [startOnView, once]);
 
   return (
-    <span
-      ref={rootRef}
-      className={className}
-      style={style}
-      // The split pieces are visual only. Reading them one at a time makes a
-      // screen reader spell a heading out letter by letter, so the whole line is
-      // announced once from here and every piece is hidden from assistive tech —
-      // the same contract Typewriter and Scramble keep.
-      aria-label={text ?? undefined}
-    >
+    <span ref={rootRef} className={className} style={style}>
+      {/* A real node carries the line for assistive tech; the split pieces are
+          hidden from it, so a heading is announced once, never spelled out. */}
+      {text !== null ? <span data-swash-sr="" style={srOnlyStyle}>{text}</span> : null}
       {pieces.map((piece, i) =>
         piece.animated ? (
           <span key={i} data-swash-reveal="" aria-hidden="true">

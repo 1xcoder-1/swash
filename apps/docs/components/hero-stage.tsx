@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const CMD = "npm i swash";
+const CMD = "npm i react-swash";
 
 const TL = {
   cmdStart: 200,
@@ -20,7 +20,7 @@ const CODE: React.ReactNode[] = [
     <span className="tok-k">import</span> {"{ "}
     <span className="tok-t">Typewriter</span>, <span className="tok-t">Scramble</span>
     {" } "}
-    <span className="tok-k">from</span> <span className="tok-s">"swash"</span>;
+    <span className="tok-k">from</span> <span className="tok-s">"react-swash"</span>;
   </>,
   <>&nbsp;</>,
   <>
@@ -60,9 +60,19 @@ function useElapsed() {
       return;
     }
     let start = 0;
+    // The timeline is re-rendered from state, so the clock is quantised to
+    // 50ms steps: every visual cue in it is a fade or a character that lands
+    // no more than a step late, and the hero stops re-rendering on all but
+    // every third frame instead of on every frame the monitor sends.
+    const STEP = 50;
+    let last = -1;
     const tick = (t: number) => {
       if (!start) start = t;
-      setEl((t - start) % TL.cycle);
+      const at = Math.floor(((t - start) % TL.cycle) / STEP) * STEP;
+      if (at !== last) {
+        last = at;
+        setEl(at);
+      }
       raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);

@@ -1,6 +1,9 @@
 interface Recorded {
   keys: PropertyDescriptor[] | Keyframe[];
   options: KeyframeAnimationOptions;
+  /** Set the moment `cancel` is called, so a test can tell a settled
+   *  animation that was retired from one left filling on the element. */
+  canceled: boolean;
 }
 
 interface FakeAnimation {
@@ -30,7 +33,8 @@ export function installWaapiMock() {
     const list = calls.get(this) ?? [];
     const timing: KeyframeAnimationOptions =
       typeof options === "number" ? { duration: options } : options;
-    list.push({ keys, options: timing });
+    const record: Recorded = { keys, options: timing, canceled: false };
+    list.push(record);
     calls.set(this, list);
 
     let done!: () => void;
@@ -53,6 +57,7 @@ export function installWaapiMock() {
       cancel() {
         window.clearTimeout(timer);
         this.playstate = "idle";
+        record.canceled = true;
       },
       finish,
       play() {
