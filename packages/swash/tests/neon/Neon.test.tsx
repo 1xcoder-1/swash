@@ -45,6 +45,36 @@ describe("Neon", () => {
     expect(root.className).toContain("swash-neon-dim");
   });
 
+  it("lights on touch: pointerdown renders, pointerup dims", async () => {
+    // Touch devices never send mouseenter: the hover trigger went dead on
+    // every phone. pointerdown lights the sign, pointerup and cancel dim it.
+    media = installMatchMediaMock(false);
+    Observer = installIntersectionMock();
+    const { root } = await renderNeon({ text: "BAR", trigger: "hover" });
+    expect(root.className).toContain("swash-neon-dim");
+    act(() => {
+      fireEvent.pointerDown(root);
+    });
+    expect(root.className).toContain("swash-neon-flicker");
+    act(() => {
+      fireEvent.pointerUp(root);
+    });
+    expect(root.className).toContain("swash-neon-dim");
+  });
+
+  it("keeps every keyframe offset inside 0-100%", async () => {
+    // The soft flicker once ended at 100.1% — an offset over 100 invalidates
+    // the whole keyframe rule, dropping the re-light after the 86% dip.
+    media = installMatchMediaMock(false);
+    Observer = installIntersectionMock();
+    const { root } = await renderNeon({ text: "BAR", trigger: "always", flicker: "soft" });
+    const css = Array.from(document.querySelectorAll("style"))
+      .map((n) => n.textContent)
+      .join("\n");
+    expect(css).not.toContain("100.1%");
+    expect(root.className).toContain("swash-neon-flicker");
+  });
+
   it("stops the flicker, not the glow, under reduced motion", async () => {
     media = installMatchMediaMock(true);
     Observer = installIntersectionMock();

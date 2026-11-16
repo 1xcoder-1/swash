@@ -8,40 +8,48 @@ import { warnOnce } from "../shared/warn";
 import type { NeonProps } from "./types";
 
 /**
- * A neon tube: the glyphs carry the colour, and the glow lives in two
- * text-shadow layers around them — a tight one that reads as the gas lit
- * close to the glass, and a wide one that washes the wall behind. Both are
- * derived from one ink through `color-mix`, so a name or a raw CSS colour
- * makes the whole sign.
+ * A neon tube drawn in two stacked layers: the letters carry the colour and
+ * a tight 1px glow that reads as the gas lit close to the glass, and a
+ * transparent duplicate on top carries the wide wash that lights the wall.
+ * Both are derived from one ink through `color-mix`, so a name or a raw CSS
+ * colour makes the whole sign.
  *
- * Flicker is a steps() keyframe on an opacity of the glow layer only — the
+ * Flicker is a steps() keyframe on the opacity of the glow layer only — the
  * letters themselves hold steady, because a tube that loses its glyphs reads
- * as a broken page, not a broken sign.
+ * as a broken page, not a broken sign. The flicker classes stay on the root
+ * (that is the public DOM), and the animation reaches through to the glow.
  */
 
 const NEON_CSS = [
-  ".swash-neon{",
-  "  position:relative;display:inline-block;",
+  ".swash-neon{position:relative;display:inline-block;}",
+  // The letters: steady colour, plus the tight glow that hugs the glass.
+  ".swash-neon>.swash-neon-text{",
   "  color:var(--swash-neon-lit,#fff);",
+  "  text-shadow:0 0 1px color-mix(in srgb, var(--swash-neon-ink) 60%, #fff);",
+  "}",
+  // The wide wash, painted by a transparent copy stacked over the letters.
+  ".swash-neon>.swash-neon-glow{",
+  "  position:absolute;left:0;top:0;",
+  "  color:transparent;",
   "  text-shadow:",
-  "    0 0 1px color-mix(in srgb, var(--swash-neon-ink) 60%, #fff),",
   "    0 0 8px color-mix(in srgb, var(--swash-neon-ink) 85%, transparent),",
   "    0 0 24px color-mix(in srgb, var(--swash-neon-ink) 55%, transparent),",
   "    0 0 64px color-mix(in srgb, var(--swash-neon-ink) 35%, transparent);",
   "}",
   // The unlit tube: the glass is still there, the gas is not.
-  ".swash-neon.swash-neon-dim{",
+  ".swash-neon.swash-neon-dim>.swash-neon-text{",
   "  color:color-mix(in srgb, var(--swash-neon-ink) 30%, transparent);",
   "  text-shadow:0 0 1px color-mix(in srgb, var(--swash-neon-ink) 25%, transparent);",
   "}",
-  ".swash-neon-flicker{animation:swash-neon-flicker-soft 6s steps(1,end) infinite}",
-  ".swash-neon-flicker-hard{animation:swash-neon-flicker-hard 3.4s steps(1,end) infinite}",
+  ".swash-neon.swash-neon-dim>.swash-neon-glow{opacity:0}",
+  ".swash-neon.swash-neon-flicker>.swash-neon-glow{animation:swash-neon-flicker-soft 6s steps(1,end) infinite}",
+  ".swash-neon.swash-neon-flicker-hard>.swash-neon-glow{animation:swash-neon-flicker-hard 3.4s steps(1,end) infinite}",
   "@keyframes swash-neon-flicker-soft{",
   "  0%,79%,100%{opacity:1}",
   "  80%{opacity:.55}",
   "  81%,85%{opacity:1}",
   "  86%{opacity:.7}",
-  "  87%,100.1%{opacity:1}",
+  "  87%,100%{opacity:1}",
   "}",
   "@keyframes swash-neon-flicker-hard{",
   "  0%,38%,41%,63%,66%,100%{opacity:1}",
@@ -49,7 +57,8 @@ const NEON_CSS = [
   "  64%,65%{opacity:.5}",
   "}",
   "@media (prefers-reduced-motion: reduce){",
-  "  .swash-neon-flicker,.swash-neon-flicker-hard{animation:none}",
+  "  .swash-neon.swash-neon-flicker>.swash-neon-glow,",
+  "  .swash-neon.swash-neon-flicker-hard>.swash-neon-glow{animation:none}",
   "}",
 ].join("\n");
 
@@ -82,6 +91,20 @@ export function Neon(props: NeonProps) {
   const reduced = useReducedMotion();
 
   const ink = neonInk(color);
+  // A colour the browser cannot parse would silence the rule it appears in:
+  // the sign would draw with the CSS fallbacks and the developer would never
+  // find out why. Say so once, in dev, before that happens.
+  if (
+    !(color in NEON_INKS) &&
+    typeof CSS !== "undefined" &&
+    typeof CSS.supports === "function" &&
+    !CSS.supports("color", color)
+  ) {
+    warnOnce(
+      `neon:color:${color}`,
+      `Neon colour "${color}" is not a colour the browser can paint. Using the default tube ink.`,
+    );
+  }
   const known = ["none", "soft", "hard"] as const;
   let flick = flicker;
   if (!known.includes(flicker)) {
@@ -142,9 +165,13 @@ export function Neon(props: NeonProps) {
       style={{ ...vars, ...style }}
       onMouseEnter={() => trigger === "hover" && setHovering(true)}
       onMouseLeave={() => trigger === "hover" && setHovering(false)}
+      onPointerDown={() => trigger === "hover" && setHovering(true)}
+      onPointerUp={() => trigger === "hover" && setHovering(false)}
+      onPointerCancel={() => trigger === "hover" && setHovering(false)}
     >
       <span data-swash-sr="" style={srOnlyStyle}>{text}</span>
-      <span aria-hidden="true">{text}</span>
+      <span aria-hidden="true" className="swash-neon-text">{text}</span>
+      <span aria-hidden="true" className="swash-neon-glow">{text}</span>
     </span>
   );
 }
