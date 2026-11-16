@@ -1,9 +1,5 @@
 export { Counter } from "./counter/Counter";
 export type { CounterProps } from "./counter/types";
-export { CurvedText } from "./curved-text/CurvedText";
-export type { CurvedTextProps } from "./curved-text/types";
-export { FlipWords } from "./flip-words/FlipWords";
-export type { FlipWordsProps } from "./flip-words/types";
 export { Frame } from "./frame/Frame";
 export type { FrameProps } from "./frame/types";
 export { Glitch } from "./glitch/Glitch";
@@ -24,8 +20,6 @@ export { Reveal } from "./reveal/Reveal";
 export type { RevealProps } from "./reveal/types";
 export { Scramble } from "./scramble/Scramble";
 export type { ScrambleProps } from "./scramble/types";
-export { Shimmer } from "./shimmer/Shimmer";
-export type { ShimmerProps } from "./shimmer/types";
 export { Ticker } from "./ticker/Ticker";
 export type { TickerProps } from "./ticker/types";
 export { Typewriter } from "./typewriter/Typewriter";

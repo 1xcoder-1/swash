@@ -28,10 +28,7 @@ React 18 or newer. Every component is a client component already, so a Next.js A
 | [Counter](#counter) | Counts a number up when it scrolls into view |
 | [Marker](#marker) | Draws a hand-drawn highlight, underline, strike, ring or box over a phrase |
 | [Ticker](#ticker) | Rolls odometer digits to a new value without shifting the row |
-| [Shimmer](#shimmer) | Sweeps an iridescent beam across a title or badge |
-| [FlipWords](#flipwords) | Cycles phrases with a 3D flip, holding the widest word's box |
 | [Glitch](#glitch) | Splits a phrase into RGB channel copies with a clip-path jitter |
-| [CurvedText](#curvedtext) | Runs text around a circle on a native SVG textPath |
 | [Wave](#wave) | Bounces letters on a travelling sine wave |
 | [Neon](#neon) | Lights a neon tube with layered glow and a flicker that spares the letters |
 | [SplitFlap](#splitflap) | Lands an airport board on a new line, cell by cell |
@@ -223,24 +220,6 @@ Odometer digits on vertical strips, tabular-num locked so a change from
 "199" to "200" never shoves the row. Punctuation sits still; onDone fires
 when the last column lands.
 
-## Shimmer
-
-```tsx
-<Shimmer duration={2400} baseColor="#94a3b8">Paid plan</Shimmer>
-```
-
-An iridescent beam through `background-clip: text` on its own layer, so the
-base copy is never repainted. Pauses itself when it scrolls off-screen.
-
-## FlipWords
-
-```tsx
-<FlipWords words={["ultra-fast", "bulletproof", "accessible"]} />
-```
-
-A 3D cycler that reserves the widest word's box so nothing around it shifts,
-and freezes when the tab is backgrounded instead of burst-flipping on return.
-
 ## Glitch
 
 ```tsx
@@ -251,10 +230,8 @@ Chromatic-aberration glitch drawn by ::before and ::after from `attr(data-text)`
 so the DOM carries one clean text node — copy/paste and screen readers see the
 phrase once.
 
-## CurvedText
 
 ```tsx
-<CurvedText text="AROUND WE GO • " radius={60} speed={12} />
 ```
 
 Text on a circle through a native SVG `<textPath>`, rotated by one
