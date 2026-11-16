@@ -7,3 +7,5 @@ ram-main/
 .superpowers/
 .agents/
 skills-lock.json
+.smoke/
+*.tgz
