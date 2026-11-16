@@ -1,8 +1,10 @@
 "use client";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useIsomorphicLayoutEffect } from "../shared/client";
 import { useReducedMotion } from "../shared/motion";
 import { ms } from "../shared/number";
 import { srOnlyStyle, useStyle } from "../shared/style";
+import { warnOnce } from "../shared/warn";
 import type { TickerProps } from "./types";
 
 /**
@@ -26,6 +28,17 @@ const TICKER_CSS = [
   ".swash-ticker .swash-ticker-cell{display:block;height:1em;line-height:1;text-align:center}",
 ].join("\n");
 
+/** Ten 0-9 repeats per column: the wheel a roll moves along. */
+const WHEEL_CELLS = 100;
+const WHEEL_HALF = 50;
+const WHEEL_LAST = WHEEL_CELLS - 1;
+/** Built once for the page; the elements are stateless and shared by React. */
+const WHEEL = Array.from({ length: WHEEL_CELLS }, (_, i) => (
+  <span key={i} className="swash-ticker-cell">
+    {i % 10}
+  </span>
+));
+
 /** Splits a formatted number into digit / static tokens. */
 export function tokenizeNumber(
   value: number,
@@ -33,15 +46,28 @@ export function tokenizeNumber(
   separator: string,
 ): { text: string; isDigit: boolean }[] {
   if (!Number.isFinite(value)) return [{ text: "0", isDigit: true }];
-  const fixed =
-    decimals === undefined
-      ? // Let the number decide, but avoid the exponent notation for large or
-        // small values; `toLocaleString` handles that better than `String`.
-        value.toLocaleString("en-US", {
-          maximumFractionDigits: 20,
-          useGrouping: false,
-        })
-      : value.toFixed(decimals);
+  // toFixed throws a RangeError outside 0..100, and it would throw straight
+  // through the render: the page goes down over one stray prop. A decimals
+  // count that means nothing is dropped, said out loud once, and the number
+  // speaks for itself.
+  let fixed: string;
+  if (decimals === undefined) {
+    fixed = value.toLocaleString("en-US", {
+      maximumFractionDigits: 20,
+      useGrouping: false,
+    });
+  } else if (Number.isInteger(decimals) && decimals >= 0 && decimals <= 100) {
+    fixed = value.toFixed(decimals);
+  } else {
+    warnOnce(
+      "ticker:decimals",
+      `Ticker decimals wants a whole number of digits from 0 to 100, got ${decimals}. Using the number's own decimals.`,
+    );
+    fixed = value.toLocaleString("en-US", {
+      maximumFractionDigits: 20,
+      useGrouping: false,
+    });
+  }
   const [intPart = "0", fracPart] = fixed.split(".");
   const tokens: { text: string; isDigit: boolean }[] = [];
   const pushDigits = (digits: string, withSep: boolean) => {
@@ -70,6 +96,7 @@ export function Ticker(props: TickerProps) {
     suffix = "",
     duration,
     stagger,
+    direction = "auto",
     decimals,
     separator = ",",
     onDone,
@@ -81,6 +108,16 @@ export function Ticker(props: TickerProps) {
   const reduced = useReducedMotion();
 
   useStyle("swash-ticker", TICKER_CSS);
+
+  // The wheel markup means nothing without the clipping CSS, and that sheet
+  // only lands client-side: shipping the strips from the server made a reload
+  // paint "$01234567890123..." until hydration finished. So the server (and
+  // the hydration pass) ships the target number as plain text, and the layout
+  // effect upgrades it to the strip before the browser's first paint.
+  const [mounted, setMounted] = useState(false);
+  useIsomorphicLayoutEffect(() => {
+    setMounted(true);
+  }, []);
 
   const tokens = useMemo(
     () => tokenizeNumber(value, decimals, separator),
@@ -107,6 +144,45 @@ export function Ticker(props: TickerProps) {
     onDone?.();
   };
 
+  /**
+   * Where each column's wheel currently sits, as a cell index on ten 0-9
+   * repeats. A roll is a move from the current index to the next occurrence
+   * of the target digit, so "up" only ever climbs, "down" only ever
+   * descends, and "auto" takes the shorter way round: 7 to 2 rolls five
+   * cells forward, not eight cells back, which is the difference between an
+   * odometer and a rewind. The result is memoised by value and direction:
+   * a re-render of the same number (StrictMode's double render, a parent
+   * that re-renders) must not advance the wheel a second time, and a
+   * column that already shows its digit must not travel a whole extra
+   * revolution just because the direction was flipped.
+   */
+  const wheelRef = useRef<{ key: string; slots: number[] } | null>(null);
+
+  const wheelSlots = (digits: number[]): number[] => {
+    const key = `${direction}:${digits.join("")}`;
+    const cached = wheelRef.current;
+    if (cached && cached.key === key) return cached.slots;
+    const prev = cached?.slots;
+    const slots = digits.map((digit, i) => {
+      const at = prev?.[i] ?? WHEEL_HALF + digit;
+      const forward = ((digit - at) % 10 + 10) % 10;
+      const backward = forward - 10;
+      const delta =
+        forward === 0
+          ? 0
+          : direction === "up"
+            ? forward
+            : direction === "down"
+              ? backward
+              : forward <= 5
+                ? forward
+                : backward;
+      return Math.min(WHEEL_LAST, Math.max(0, at + delta));
+    });
+    wheelRef.current = { key, slots };
+    return slots;
+  };
+
   useEffect(() => {
     // `Object.is` matters for the NaN case: `NaN === NaN` is false, so the
     // strict equality below would think the value changed on every re-render
@@ -131,6 +207,25 @@ export function Ticker(props: TickerProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value, reduced, dur, gap, lastIndex, digitTokens.length]);
 
+  const serverText = prefix + tokens.map((t) => t.text).join("") + suffix;
+
+  // Pre-hydration: plain text of the number, which needs no stylesheet to
+  // read correctly. All hooks above have already run, so this early return
+  // keeps the hook order stable.
+  if (!mounted) {
+    return (
+      <span
+        className={className ? `swash-ticker ${className}` : "swash-ticker"}
+        style={style}
+        aria-label={serverText}
+      >
+        {serverText}
+      </span>
+    );
+  }
+
+  const slots = wheelSlots(digitTokens.map((t) => Number(t.text)));
+
   let digitIndex = -1;
   const rendered = tokens.map((t, i) => {
     if (!t.isDigit) {
@@ -146,29 +241,30 @@ export function Ticker(props: TickerProps) {
     }
     digitIndex += 1;
     const current = digitIndex;
-    const digit = Number(t.text);
+    // Where the wheel lands for this digit, in the direction asked for.
+    const slot = slots[current]!;
     return (
       <span key={`${i}-digit`} className="swash-ticker-col">
         <span
           className={reduced ? "swash-ticker-strip reduced" : "swash-ticker-strip"}
           style={{
-            transform: `translateY(-${digit}em)`,
+            transform: `translateY(-${slot}em)`,
             transitionDuration: reduced ? "0ms" : `${dur}ms`,
             transitionDelay: reduced ? "0ms" : `${current * gap}ms`,
           }}
           data-digit-index={current}
         >
-          {Array.from({ length: 10 }, (_, d) => (
-            <span key={d} className="swash-ticker-cell">
-              {d}
-            </span>
-          ))}
+          {WHEEL}
         </span>
       </span>
     );
   });
 
   const handleTransitionEnd = (e: React.TransitionEvent<HTMLElement>) => {
+    // Only the roll itself counts. A column clamped at the wheel's edge
+    // settles with a normalising transition of a fraction of the distance,
+    // and counting that would report the whole number done early.
+    if (e.propertyName !== "transform") return;
     const target = e.target as HTMLElement;
     const idx = target.getAttribute("data-digit-index");
     if (idx === null) return;
@@ -179,8 +275,6 @@ export function Ticker(props: TickerProps) {
     completedRef.current.add(Number(idx));
     if (completedRef.current.size >= digitTokens.length) fireDone();
   };
-
-  const serverText = prefix + tokens.map((t) => t.text).join("") + suffix;
 
   return (
     <span
