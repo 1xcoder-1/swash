@@ -1,6 +1,6 @@
 import { EASE_CSS } from "../shared/bezier";
 import { splitGraphemes, splitWordTokens } from "../shared/grapheme";
-import { offset } from "../shared/number";
+import { warnOnce } from "../shared/warn";
 import type { RevealBy, RevealEffect } from "../reveal/types";
 
 /** The line is subordinate to the scroll that brings it, so it asks for less of the viewport than it takes. */
@@ -84,10 +84,28 @@ export function runReveal(root: HTMLElement, cfg: RevealRun): () => void {
   // A distance that is not a usable number would land inside the transform
   // string, and one invalid property throws the whole keyframe away: the
   // pieces would fade in place instead of rising, with nothing said about it.
-  const rise = offset(cfg.y, Math.round(fontSize * 0.35), "y", "Reveal");
+  // Zero is read here, though, and not sent back as a miss: "rise nothing but
+  // fade" is a distance a developer is allowed to ask for, and only a
+  // distance that means nothing (NaN, Infinity) falls back, said out loud.
+  const defaultRise = Math.round(fontSize * 0.35);
+  let rise = defaultRise;
+  if (cfg.y !== undefined) {
+    if (Number.isFinite(cfg.y)) rise = cfg.y;
+    else
+      warnOnce(
+        "reveal:y",
+        `Reveal y wants a number of pixels, got ${cfg.y}. Using ${defaultRise}.`,
+      );
+  }
   // A blur radius the caller never asked for would still be read here, and
   // clamped so a typo cannot hand the filter an unusable number.
   const blur = Math.max(0, cfg.blur ?? 10);
+  // A zero duration is valid Web Animations (the piece lands at its end
+  // state), but the stagger multiplies into each piece's delay, and a fill of
+  // both with a delay that outlives a zero-length run would park the later
+  // pieces on their invisible start frame for the rest of the page's life.
+  const duration = Math.max(0, cfg.duration);
+  const stagger = Math.max(0, cfg.stagger);
 
   const from: Keyframe =
     cfg.effect === "blur"
@@ -101,9 +119,15 @@ export function runReveal(root: HTMLElement, cfg: RevealRun): () => void {
     return el.animate(
       [from, to],
       {
-        duration: cfg.duration,
-        delay: steps[i]! * cfg.stagger,
-        easing: EASE_CSS.out,
+        duration,
+        delay: steps[i]! * stagger,
+        // The rise entrance wants the expo-out: it arrives fast and settles.
+        // The blur entrance does not — under that curve the radius is spent
+        // inside the first third of the run, so the piece pops in faintly
+        // soft instead of pulling into focus. An in-out holds the blur while
+        // the piece fades up, then resolves it through the rest of the run,
+        // which is how a depth-of-field rack actually reads.
+        easing: cfg.effect === "blur" ? EASE_CSS.inOut : EASE_CSS.out,
         // Both, so the gap between the trigger and a staggered piece's turn
         // is spent invisible rather than showing the finished line first.
         fill: "both",

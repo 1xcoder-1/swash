@@ -280,4 +280,32 @@ describe("Reveal", () => {
     expect(transformOf(unit)).toMatch(/translateY/);
     expect(filterOf(unit)).toBe("undefined");
   });
+
+  it("reads a y of zero as a distance, not as a missing prop", async () => {
+    // "Fade in place" is a reveal a developer is allowed to ask for. The old
+    // guard treated 0 the way it treated NaN and sent the piece back to the
+    // default rise, so the line moved when it was told not to.
+    const { pieces } = await renderRevealed({
+      children: "Ship it",
+      y: 0,
+      startOnView: false,
+    });
+    expect(transformOf(pieces()[0]!)).toBe("translateY(0px)");
+  });
+
+  it("keeps a zero-duration pass a real pass for every piece", async () => {
+    // The engine clamps what it is handed: a zero duration must still reach
+    // the pieces (a fill of both parks them on their start frame otherwise),
+    // and a negative one must not survive into Web Animations, which throws
+    // and takes the page down over a typo in a prop.
+    const { pieces } = await renderRevealed({
+      children: "Ship it out",
+      duration: 0,
+      stagger: 40,
+      startOnView: false,
+    });
+    const units = pieces();
+    expect(units.map((el) => animationAt(el, 0)?.options.duration)).toEqual([0, 0, 0]);
+    expect(units.map((el) => animationAt(el, 0)?.options.delay)).toEqual([0, 40, 80]);
+  });
 });
