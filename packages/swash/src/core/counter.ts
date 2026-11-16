@@ -21,6 +21,9 @@ export interface CounterRun {
 export interface CounterController {
   /** Counts toward `to`, resuming from the value already on screen. */
   run(cfg: CounterRun): void;
+  /** Where the count stands right now, so a binding can re-paint a resting
+   *  display through a new format without scraping it off the element. */
+  current(): number;
   dispose(): void;
 }
 
@@ -65,7 +68,14 @@ export function createCounter(valueEl: HTMLElement): CounterController {
         cfg.onDone?.();
         return;
       }
-      if (value === cfg.to) return;
+      if (value === cfg.to) {
+        // Nothing to count, but the caller still asked for this run: a replay
+        // that lands where it already was is over, and a caller waiting on
+        // onDone to chain the next stat must not be left waiting forever.
+        write(value, cfg.format);
+        cfg.onDone?.();
+        return;
+      }
 
       ctrl = tween({
         from: value,
@@ -83,6 +93,9 @@ export function createCounter(valueEl: HTMLElement): CounterController {
         },
       });
       started = true;
+    },
+    current() {
+      return value;
     },
     dispose() {
       ctrl?.cancel();

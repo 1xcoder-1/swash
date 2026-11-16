@@ -209,4 +209,32 @@ describe("Counter", () => {
     await vi.advanceTimersByTimeAsync(1600);
     expect(numberOf(counted.display())).toBe(100);
   });
+
+  it("tells the caller a replay landed even when the number never travelled", async () => {
+    // With `once` off, a revisit restarts from `from`. When from and to are
+    // the same number there is nothing to count, but the run is still over:
+    // a page chaining the next stat on onDone must not wait forever.
+    const onDone = vi.fn();
+    const counted = await renderCounted({ to: 100, from: 100, startOnView: false, onDone });
+    await vi.runAllTimersAsync();
+    expect(counted.display()).toBe("100");
+    expect(onDone).toHaveBeenCalled();
+  });
+
+  it("re-paints a landed count when only the format changes", async () => {
+    // The engine writes the number straight to the element and React never
+    // re-renders it, so a new format prop used to arrive at a display still
+    // wearing the old one until something else kicked a run.
+    const counted = await renderCounted({ to: 1000, startOnView: false, duration: 100 });
+    await vi.runAllTimersAsync();
+    expect(counted.display()).toBe("1,000");
+
+    counted.update({
+      to: 1000,
+      startOnView: false,
+      duration: 100,
+      format: (n: number) => `${n}+`,
+    });
+    expect(counted.display()).toBe("1000+");
+  });
 });

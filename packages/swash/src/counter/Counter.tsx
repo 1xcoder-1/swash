@@ -117,6 +117,18 @@ export function Counter(props: CounterProps) {
     });
   }, [startOnView, once]);
 
+  // The count writes its own text, so nothing here re-renders it and a new
+  // `format` would never reach the number already on screen. The engine keeps
+  // the value; this re-paints the resting display through the new format when
+  // only the format changed.
+  const format = props.format;
+  useIsomorphicLayoutEffect(() => {
+    const el = valueEl.current;
+    const controller = ctrl.current;
+    if (!el || !controller) return;
+    el.textContent = (format ?? defaultFormat)(controller.current());
+  }, [format]);
+
   // A hidden tab throttles frames, which makes the next visible frame look
   // like a giant jump. Better to freeze on the value the reader last saw.
   useEffect(() => {
