@@ -6,7 +6,6 @@ This repository is a pnpm workspace:
 
 - `packages/swash/` the library, published to npm as `react-swash`, with CI gates (`scripts/gates.mjs`) and a packaged-output smoke test (`scripts/smoke.mjs`)
 - `apps/docs/` the documentation site (Next.js)
-- `docs/superpowers/` the design spec and implementation plan
 
 Common commands, run from the repository root:
 

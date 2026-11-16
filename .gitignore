@@ -11,3 +11,6 @@ skills-lock.json
 *.tgz
 
 .claude/
+
+# Internal planning docs and one-off scripts, not for the public repo
+docs/superpowers/
